@@ -1,0 +1,10 @@
+/**
+ * Dark mode
+ *
+ * Tailwind comes with a pre-built dark mode that is toggled with the CSS 
+ * feature `prefers-color-scheme`. Since we manually toggle the dark mode in
+ * our app with `next-theme`, we have to override the default behaviour of 
+ * Tailwind.
+ * -------------------------------------------------------------------------- */
+
+@custom-variant dark (&:where(.dark, .dark *));
