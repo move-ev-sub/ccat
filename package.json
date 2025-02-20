@@ -11,7 +11,7 @@
     "test": "vitest --run",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
+    "docs:start": "vitepress preview docs",
     "format:write": "prettier --write .",
     "format:check": "prettier --check .",
     "db:start": "supabase start",
