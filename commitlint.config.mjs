@@ -12,7 +12,7 @@
 // translation: Translation updates
 // security: Security updates
 
-module.exports = {
+const config = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'body-leading-blank': [1, 'always'],
@@ -52,3 +52,5 @@ module.exports = {
     ],
   },
 };
+
+export default config;
