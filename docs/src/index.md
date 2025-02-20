@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: 'CCAT Documentation'
-  text: 'Documentation for the Consulting Contact Application Tool'
+  text: 'Documentation of the ConsultingContact Application Tool'
   tagline: My great project tagline
   actions:
     - theme: brand
