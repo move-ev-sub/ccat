@@ -1,0 +1,322 @@
+/**
+* Colors: Primary
+* 
+* The primary color palette is used to set the overall look and feel of the
+* application. It is used for backgrounds, text, and other elements that are
+* not interactive. This pallete reffers to the Zinc color palette but can also
+* be customized to any other grey scale color palette.
+* 
+* The primary colour palette should only be used directly in the code if 
+* there is no utility class for the specific use case.
+* -------------------------------------------------------------------------- */
+@layer base {
+  :root {
+    --primary-50: var(--color-zinc-50);
+    --primary-100: var(--color-zinc-100);
+    --primary-200: var(--color-zinc-200);
+    --primary-300: var(--color-zinc-300);
+    --primary-400: var(--color-zinc-400);
+    --primary-500: var(--color-zinc-500);
+    --primary-600: var(--color-zinc-600);
+    --primary-700: var(--color-zinc-700);
+    --primary-800: var(--color-zinc-800);
+    --primary-900: var(--color-zinc-900);
+    --primary-950: var(--color-zinc-950);
+  }
+}
+
+/**
+ * Colors: Accent
+ *
+ * The primary accent color is used to set accents in the UI. It should not
+ * be used for text or backgrounds. The usage of the accent color should be
+ * limited to elements like buttons, links, and other interactive elements
+ * and follow the 70/20/10 rule.
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    --accent-50: var(--color-blue-50);
+    --accent-100: var(--color-blue-100);
+    --accent-200: var(--color-blue-200);
+    --accent-300: var(--color-blue-300);
+    --accent-400: var(--color-blue-400);
+    --accent-500: var(--color-blue-500);
+    --accent-600: var(--color-blue-600);
+    --accent-700: var(--color-blue-700);
+    --accent-800: var(--color-blue-800);
+    --accent-900: var(--color-blue-900);
+    --accent-950: var(--color-blue-950);
+
+    --accent: var(--accent-500);
+  }
+
+  .dark {
+    --accent-50: var(--color-blue-50);
+    --accent-100: var(--color-blue-100);
+    --accent-200: var(--color-blue-200);
+    --accent-300: var(--color-blue-300);
+    --accent-400: var(--color-blue-400);
+    --accent-500: var(--color-blue-500);
+    --accent-600: var(--color-blue-600);
+    --accent-700: var(--color-blue-700);
+    --accent-800: var(--color-blue-800);
+    --accent-900: var(--color-blue-900);
+    --accent-950: var(--color-blue-950);
+
+    --accent: var(--accent-500);
+  }
+}
+
+/**
+ * Colors: Background
+ *
+ * Primarly used to set background colors for large areas of the UI.
+ *
+ * - `background`: Main background color for the entire application.
+ *
+ * - `background-muted`: Background color for elements that need to be 
+ *   emphasized. For example, the background color for a card component.
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --background-muted: var(--primary-100);
+  }
+  .dark {
+    --background: var(--primary-900);
+    --background-muted: var(--primary-800);
+  }
+}
+
+/**
+ * Colors: Foreground
+ *
+ * Used for text and icons, which are placed on top of background colors.
+ *
+ * - `foreground`: Main text color for the entire application. This color is
+ *   used for most of the text in the application.
+ *
+ * - `secondary`: Secondary text color for the entire application. This color
+ *   is used for text that is less important than the main text color.
+ *
+ * - `foreground-muted`: Color for text elements which are placed on top of 
+ *   the background `background-muted` color.
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    --foreground: var(--primary-800);
+    --secondary: var(--primary-500);
+    --muted-foreground: var(--primary-600);
+  }
+  .dark {
+    --foreground: #ffffff;
+    --secondary: var(--primary-400);
+    --muted-foreground: var(--primary-400);
+  }
+}
+
+/**
+ * Colors: Borders
+ *
+ * Used for border colors of elements.
+ *
+ * - `border`: Main border color used for outlines of cards, buttons, and other
+ *   elements.
+ *
+ * - `border-secondary`: Secondary border color when more contrast is needed.
+ *   This color should only be used when the `border` color does not provide
+ *   enough contrast.
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    --border: var(--primary-200);
+    --border-secondary: var(--primary-300);
+  }
+  .dark {
+    --border: var(--primary-700);
+    --border-secondary: var(--primary-600);
+  }
+}
+
+/**
+ * Colors: Ring
+ *
+ * When an element receives focus, a ring is placed around the element to
+ * indicate that it is focused.
+ *
+ * - `ring`: Color for the ring that is placed around an element when it is
+ *   focused. This color reffers to the accent color.
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    --ring: var(--accent-500);
+  }
+  .dark {
+    --ring: var(--accent-500);
+  }
+}
+
+/**
+ * Colors: Success
+ *
+ * Colors used to indicate success states in the UI.
+ *
+ * - `success`: Default color for success states.
+ *
+ * - `success-background`: Background color for success states.
+ *
+ * - `success-foreground`: Foreground color for text elements and icons placed
+ *   on top of the `success-background` color.
+ *
+ * - `success-border`: Border color for success states.
+ * -------------------------------------------------------------------------- */
+@layer base {
+  :root {
+    --success: var(--color-green-500);
+    --success-background: var(--color-green-500);
+    --success-foreground: var(--color-green-50);
+    --success-border: var(--color-green-600);
+  }
+  .dark {
+    --success: var(--color-green-500);
+    --success-background: var(--color-green-500);
+    --success-foreground: var(--color-green-50);
+    --success-border: var(--color-green-600);
+  }
+}
+
+/**
+ * Colors: Destructive
+ *
+ * Colors used to indicate destructive states in the UI.
+ *
+ * - `destructive`: Default color for destructive states.
+ *
+ * - `destructive-background`: Background color for destructive states.
+ *
+ * - `destructive-foreground`: Foreground color for text elements and icons placed
+ *   on top of the `destructive-background` color.
+ *
+ * - `destructive-border`: Border color for destructive states.
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    --destructive: var(--color-red-500);
+    --destructive-background: var(--color-red-500);
+    --destructive-foreground: var(--color-red-50);
+    --destructive-border: var(--color-red-600);
+  }
+  .dark {
+    --destructive: var(--color-red-500);
+    --destructive-background: var(--color-red-500);
+    --destructive-foreground: var(--color-red-50);
+    --destructive-border: var(--color-red-600);
+  }
+}
+
+/**
+ * Colors: Warning
+ *
+ * Colors used to indicate warning states in the UI.
+ *
+ * - `warning`: Default color for warning states.
+ *
+ * - `warning-background`: Background color for warning states.
+ *
+ * - `warning-foreground`: Foreground color for text elements and icons placed
+ *   on top of the `warning-background` color.
+ *
+ * - `warning-border`: Border color for warning states.
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    --warning: var(--color-amber-500);
+    --warning-background: var(--color-amber-500);
+    --warning-foreground: var(--color-amber-50);
+    --warning-border: var(--color-amber-600);
+  }
+  .dark {
+    --warning: var(--color-amber-500);
+    --warning-background: var(--color-amber-500);
+    --warning-foreground: var(--color-amber-50);
+    --warning-border: var(--color-amber-600);
+  }
+}
+
+/**
+ * Composition
+ *
+ * After defining the colors for each palette, they now have to be integrated into 
+ * the tailwindcss configuration.
+ * -------------------------------------------------------------------------- */
+
+@theme {
+  /* Primary color palette */
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+
+  /* Accent color palette */
+  --color-accent-50: var(--accent-50);
+  --color-accent-100: var(--accent-100);
+  --color-accent-200: var(--accent-200);
+  --color-accent-300: var(--accent-300);
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+  --color-accent-800: var(--accent-800);
+  --color-accent-900: var(--accent-900);
+  --color-accent-950: var(--accent-950);
+
+  --color-accent: var(--accent);
+
+  /* Background colors */
+  --color-background: var(--background);
+  --color-background-muted: var(--background-muted);
+
+  /* Foreground colors */
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Border colors */
+  --color-border: var(--border);
+  --color-border-secondary: var(--border-secondary);
+
+  /* Ring color */
+  --color-ring: var(--ring);
+
+  /* Success colors */
+  --color-success: var(--success);
+  --color-success-background: var(--success-background);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-border: var(--success-border);
+
+  /* Destructive colors */
+  --color-destructive: var(--destructive);
+  --color-destructive-background: var(--destructive-background);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-border: var(--destructive-border);
+
+  /* Warning colors */
+  --color-warning: var(--warning);
+  --color-warning-background: var(--warning-background);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-border: var(--warning-border);
+}
