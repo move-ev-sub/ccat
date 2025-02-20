@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "CCAT Documentation"
-  text: "Documentation for the Consulting Contact Application Tool"
+  name: 'CCAT Documentation'
+  text: 'Documentation for the Consulting Contact Application Tool'
   tagline: My great project tagline
   actions:
     - theme: brand
@@ -22,4 +22,3 @@ features:
   - title: Feature C
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
-
