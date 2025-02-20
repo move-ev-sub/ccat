@@ -13,6 +13,8 @@
     "docs:preview": "vitepress preview docs",
     "format:write": "prettier --write .",
     "format:check": "prettier --check .",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
     "prepare": "husky"
   },
   "dependencies": {
@@ -38,6 +40,7 @@
     "postcss": "^8",
     "prettier": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "supabase": "^2.12.1",
     "tailwindcss": "^4.0.7",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
