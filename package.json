@@ -10,9 +10,6 @@
     "lint": "next lint",
     "test": "vitest --run",
     "check": "turbo lint format:check test",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:start": "vitepress preview docs",
     "format:write": "prettier --write .",
     "format:check": "prettier --check .",
     "db:start": "supabase start",
@@ -57,7 +54,6 @@
     "turbo": "^2.4.2",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitepress": "^1.6.3",
     "vitest": "^3.0.6"
   },
   "packageManager": "pnpm@9.0.0",

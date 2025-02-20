@@ -1,1 +1,0 @@
-# Einführung für Anwender
