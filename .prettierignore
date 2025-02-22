@@ -7,3 +7,5 @@ pnpm-lock.yaml
 docs/.vitepress/dist
 docs/.vitepress/cache
 .turbo
+
+drizzle
