@@ -9,11 +9,19 @@ import {
 import { signInWithPassword, signUpWithEmail } from '@/server/services/auth';
 import { redirect } from 'next/navigation';
 
-export async function signup({ email, password }: SignUpData) {
-  const parseRes = await signUpSchema.safeParseAsync({ email, password });
+export async function signup({ email, password, confirmPassword }: SignUpData) {
+  const parseRes = await signUpSchema.safeParseAsync({
+    email,
+    password,
+    confirmPassword,
+  });
 
   if (!parseRes.success) {
     return { status: 'Error', error: parseRes.error };
+  }
+
+  if (!password || password !== confirmPassword) {
+    return { status: 'Error', error: 'Passwords do not match' };
   }
 
   const res = await signUpWithEmail(email, password);

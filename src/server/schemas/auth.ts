@@ -5,6 +5,7 @@ export const signUpSchema = z.object({
   password: z
     .string()
     .min(6, { message: 'Passwort muss mindestens 6 Zeichen lang sein.' }),
+  confirmPassword: z.string(),
 });
 
 export type SignUpData = z.infer<typeof signUpSchema>;
