@@ -134,6 +134,31 @@ export const subEventsTable = pgTable('sub_events', {
   startDate: timestamp('start_date', {
     withTimezone: true,
   }).notNull(),
+  slot: uuid('slot_id').references(() => slotsTable.id, {
+    onDelete: 'set null',
+  }),
+  endDate: timestamp('end_date', {
+    withTimezone: true,
+  }).notNull(),
+  createdBy: uuid('created_by')
+    .notNull()
+    .default(DEFAULT_PROFILE_ID)
+    .references(() => profilesTable.id, {
+      onDelete: 'set default',
+    }),
+});
+
+export const slotsTable = pgTable('slots', {
+  id: uuid().primaryKey().unique().defaultRandom(),
+  eventId: uuid('event_id')
+    .notNull()
+    .references(() => eventsTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  startDate: timestamp('start_date', {
+    withTimezone: true,
+  }).notNull(),
   endDate: timestamp('end_date', {
     withTimezone: true,
   }).notNull(),
