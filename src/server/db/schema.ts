@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
   boolean,
+  integer,
   pgEnum,
   pgTable,
   timestamp,
@@ -103,6 +104,33 @@ export const phasesTable = pgTable('phases', {
       onUpdate: 'cascade',
     }),
   type: phaseTypeEnum().notNull().default('PREPERATION'),
+  startDate: timestamp('start_date', {
+    withTimezone: true,
+  }).notNull(),
+  endDate: timestamp('end_date', {
+    withTimezone: true,
+  }).notNull(),
+  createdBy: uuid('created_by')
+    .notNull()
+    .default(DEFAULT_PROFILE_ID)
+    .references(() => profilesTable.id, {
+      onDelete: 'set default',
+    }),
+});
+
+export const subEventsTable = pgTable('sub_events', {
+  id: uuid().primaryKey().unique().defaultRandom(),
+  eventId: uuid('event_id')
+    .notNull()
+    .references(() => eventsTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  name: varchar('name', {
+    length: 255,
+  }).notNull(),
+  description: varchar('description'),
+  maxParticipants: integer('max_participants').notNull().default(30),
   startDate: timestamp('start_date', {
     withTimezone: true,
   }).notNull(),
