@@ -1,14 +1,11 @@
-import { Button } from '@/components/ui/button';
+import { LoginForm } from '@/components/forms/login';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 
 export default async function LoginPage() {
@@ -22,22 +19,8 @@ export default async function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="block">
-              E-Mail
-            </Label>
-            <Input id="email" type="email" placeholder="max@mustermann.de" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="block">
-              Passwort
-            </Label>
-            <Input id="password" type="password" placeholder="********" />
-          </div>
+          <LoginForm />
         </CardContent>
-        <CardFooter>
-          <Button className="w-full">Anmelden</Button>
-        </CardFooter>
       </Card>
       <p className="text-secondary text-center text-sm">
         Du hast noch keinen Account?{' '}

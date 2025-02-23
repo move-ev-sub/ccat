@@ -9,13 +9,13 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { login } from '@/server/actions/auth';
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -27,7 +27,7 @@ export function LoginForm() {
   });
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+    login(values);
   }
 
   return (
@@ -42,7 +42,6 @@ export function LoginForm() {
               <FormControl>
                 <Input placeholder="max@mustermann.de" {...field} />
               </FormControl>
-              <FormDescription>This is your email address.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -56,7 +55,6 @@ export function LoginForm() {
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
-              <FormDescription>This is your password.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
