@@ -1,4 +1,12 @@
-import { boolean, pgEnum, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import {
+  boolean,
+  pgEnum,
+  pgTable,
+  timestamp,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 
 export const profileType = pgEnum('profile_type', ['user', 'company', 'admin']);
 
@@ -46,4 +54,31 @@ export const adminProfilesTable = pgTable('admin_profiles', {
   lastName: varchar('last_name', {
     length: 255,
   }).notNull(),
+});
+
+export const eventStatusEnum = pgEnum('event_status', [
+  'draft',
+  'published',
+  'archived',
+]);
+
+export const eventsTable = pgTable('events', {
+  id: uuid().primaryKey().unique().defaultRandom(),
+  name: varchar('name', {
+    length: 255,
+  }).notNull(),
+  description: varchar('description'),
+  status: eventStatusEnum().notNull().default('draft'),
+  createdBy: uuid('created_by')
+    .notNull()
+    // TODO: Add a default value for createdBy
+    .default('40c8a8ca-d68f-41f3-a626-284edcc7e717')
+    .references(() => profilesTable.id, {
+      onDelete: 'set default',
+    }),
+  lastUpdated: timestamp('last_updated', {
+    withTimezone: true,
+  })
+    .notNull()
+    .default(sql`now()`),
 });
