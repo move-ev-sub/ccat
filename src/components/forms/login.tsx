@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { login } from '@/server/actions/auth';
 import React from 'react';
 
 export function LoginForm() {
@@ -34,11 +35,13 @@ export function LoginForm() {
     setLoading(true);
     setError(undefined);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const res = await login(values);
 
-    setError('Falsche E-Mail oder Passwort');
+    if (res.status === 'error') {
+      setError(res.error);
+    }
+
     setLoading(false);
-    console.log(values);
   }
 
   return (

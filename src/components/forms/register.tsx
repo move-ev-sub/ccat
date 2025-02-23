@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { signup } from '@/server/actions/auth';
 import { signUpSchema } from '@/server/schemas/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
@@ -34,11 +35,13 @@ export function RegisterForm() {
     setLoading(true);
     setError(undefined);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const res = await signup(values);
 
-    setError('Falsche E-Mail oder Passwort');
+    if (res.status === 'error') {
+      setError(res.error);
+    }
+
     setLoading(false);
-    console.log(values);
   }
 
   return (
