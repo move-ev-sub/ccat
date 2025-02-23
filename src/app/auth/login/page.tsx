@@ -1,53 +1,43 @@
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { LoginForm } from '@/components/forms/login';
+import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default async function LoginPage() {
+  const client = await createClient();
+
+  // If a user is already authenticated, redirect them to the home page
+  if (client.auth.getUser() !== null) {
+    redirect('/');
+  }
+
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-4 px-8">
-      <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>
-            Melde dich an um auf das CCAT zuzugreifen.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="block">
-              E-Mail
-            </Label>
-            <Input id="email" type="email" placeholder="max@mustermann.de" />
+    <main className="grid min-h-svh grid-cols-1 md:grid-cols-2">
+      <div className="flex flex-col items-center justify-center px-8 py-12">
+        <div className="w-full max-w-sm">
+          <div>
+            <h1 className="text-foreground text-xl font-medium">Anmeldung</h1>
+            <p className="text-secondary mt-2 text-sm">
+              Melde dich an um auf das CCAT zuzugreifen.
+            </p>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="block">
-              Passwort
-            </Label>
-            <Input id="password" type="password" placeholder="********" />
+          <div className="mt-10">
+            <LoginForm />
           </div>
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full">Anmelden</Button>
-        </CardFooter>
-      </Card>
-      <p className="text-secondary text-center text-sm">
-        Du hast noch keinen Account?{' '}
-        <Link
-          href="/auth/register"
-          className="text-primary text-foreground hover:text-accent font-medium transition-colors"
-        >
-          Registrieren
-        </Link>
-      </p>
+          <div className="mt-10">
+            <p className="text-secondary text-sm">
+              Du hast noch keinen Account?{' '}
+              <Link
+                href="/auth/register"
+                className="text-foreground hover:text-accent font-medium transition-colors"
+              >
+                Registrieren
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="border-border hidden border-l bg-zinc-50 md:block dark:bg-zinc-950"></div>
     </main>
   );
 }

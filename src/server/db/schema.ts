@@ -16,7 +16,7 @@ export const profileType = pgEnum('profile_type', ['user', 'company', 'admin']);
 
 export const profilesTable = pgTable('profiles', {
   id: uuid().primaryKey().unique().defaultRandom(),
-  type: profileType().notNull().default('user'),
+  profileType: profileType('profile_type').notNull().default('user'),
 });
 
 export const userProfilesTable = pgTable('user_profiles', {
