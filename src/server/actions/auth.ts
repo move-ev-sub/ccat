@@ -8,8 +8,13 @@ import {
 } from '@/server/schemas/auth';
 import { signInWithPassword, signUpWithEmail } from '@/server/services/auth';
 import { redirect } from 'next/navigation';
+import { AuthActionResponse } from '../types/action-response';
 
-export async function signup({ email, password, confirmPassword }: SignUpData) {
+export async function signup({
+  email,
+  password,
+  confirmPassword,
+}: SignUpData): Promise<AuthActionResponse<null>> {
   const parseRes = await signUpSchema.safeParseAsync({
     email,
     password,
@@ -17,35 +22,48 @@ export async function signup({ email, password, confirmPassword }: SignUpData) {
   });
 
   if (!parseRes.success) {
-    return { status: 'Error', error: parseRes.error };
+    return {
+      status: 'error',
+      error: parseRes.error.message || 'Eingabe ist invalide.',
+    };
   }
 
   if (!password || password !== confirmPassword) {
-    return { status: 'Error', error: 'Passwords do not match' };
+    return { status: 'error', error: 'Passwörter stimmen nicht überein.' };
   }
 
   const res = await signUpWithEmail(email, password);
 
-  if (res.error || !res.data) {
-    return { status: 'Error', error: res.error };
+  if (res.error) {
+    return {
+      status: 'error',
+      error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
+    };
   }
 
   redirect('/');
 }
 
-export async function login({ email, password }: LoginData) {
-  console.log('login for email:', email);
+export async function login({
+  email,
+  password,
+}: LoginData): Promise<AuthActionResponse<null>> {
   const parseRes = await loginSchema.safeParseAsync({ email, password });
 
   if (!parseRes.success) {
-    console.error('Failed to validate login form:', parseRes.error);
-    return { status: 'Error', error: parseRes.error };
+    return {
+      status: 'error',
+      error: parseRes.error.message || 'Eingabe ist invalide.',
+    };
   }
 
   const res = await signInWithPassword(email, password);
 
-  if (res.error || !res.data) {
-    return { status: 'Error', error: res.error };
+  if (res.error) {
+    return {
+      status: 'error',
+      error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
+    };
   }
 
   redirect('/');
