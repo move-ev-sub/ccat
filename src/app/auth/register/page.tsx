@@ -1,7 +1,16 @@
 import { RegisterForm } from '@/components/forms/register';
+import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default async function RegisterPage() {
+  const client = await createClient();
+
+  // If a user is already authenticated, redirect them to the home page
+  if (client.auth.getUser() !== null) {
+    redirect('/');
+  }
+
   return (
     <main className="grid min-h-svh grid-cols-1 md:grid-cols-2">
       <div className="flex flex-col items-center justify-center px-8 py-12">
