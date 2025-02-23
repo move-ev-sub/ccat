@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
   boolean,
+  decimal,
   integer,
   pgEnum,
   pgTable,
@@ -168,4 +169,86 @@ export const slotsTable = pgTable('slots', {
     .references(() => profilesTable.id, {
       onDelete: 'set default',
     }),
+});
+
+export const universitysTable = pgTable('universitys', {
+  id: uuid().primaryKey().unique().defaultRandom(),
+  name: varchar('name', {
+    length: 255,
+  }).notNull(),
+});
+
+export const applicationStatusEnum = pgEnum('applications_status', [
+  'SAVED',
+  'SUBMITTED',
+  'CLOSED',
+]);
+
+export const genderEnum = pgEnum('gender', [
+  'MALE',
+  'FEMALE',
+  'DIVERSE',
+  'PREFER_NOT_TO_SAY',
+]);
+
+export const degreeEnum = pgEnum('degree', [
+  'HOCHSCHULREIFE',
+  'ABITUR',
+  'BACHELOR',
+  'MASTER',
+  'DOKTOR',
+]);
+
+export const applicationsTable = pgTable('applications', {
+  id: uuid().primaryKey().unique().defaultRandom(),
+  eventId: uuid('event_id')
+    .notNull()
+    .references(() => eventsTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  user: uuid('user_id')
+    .notNull()
+    .references(() => profilesTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  status: applicationStatusEnum().notNull().default('SAVED'),
+  firstName: varchar('first_name', {
+    length: 255,
+  }).notNull(),
+  lastName: varchar('last_name', {
+    length: 255,
+  }).notNull(),
+  birthDate: timestamp('birth_date', {
+    withTimezone: true,
+  }).notNull(),
+  gender: genderEnum().notNull().default('PREFER_NOT_TO_SAY'),
+  university: uuid('university_id')
+    .notNull()
+    .references(() => universitysTable.id, {
+      // TODO: Add Cascade handling
+      onDelete: 'no action',
+      onUpdate: 'no action',
+    }),
+  currentDegree: degreeEnum().notNull().default('HOCHSCHULREIFE'),
+  targetDegree: degreeEnum().notNull().default('BACHELOR'),
+  fieldOfStudy: varchar('field_of_study', {
+    length: 255,
+  }).notNull(),
+  currentSemester: integer().notNull(),
+  expectedGraduation: timestamp('expected_graduation', {
+    withTimezone: true,
+  }).notNull(),
+  currentGpa: decimal('current_gpa', {
+    precision: 3,
+    scale: 2,
+  }).notNull(),
+  abiturGrade: decimal('abitur_grade', {
+    precision: 3,
+    scale: 2,
+  }).notNull(),
+  experienceAbroad: integer('experience_abroad').default(0),
+  experienceInternships: integer('experience_internships').default(0),
+  experienceConsulting: integer('experience_consulting').default(0),
 });
