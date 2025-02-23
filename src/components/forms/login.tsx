@@ -9,15 +9,19 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormError,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { login } from '@/server/actions/auth';
+import React from 'react';
 
 export function LoginForm() {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | undefined>();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -26,13 +30,20 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    login(values);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    setLoading(true);
+    setError(undefined);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    setError('Falsche E-Mail oder Passwort');
+    setLoading(false);
+    console.log(values);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="email"
@@ -40,7 +51,11 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="max@mustermann.de" {...field} />
+                <Input
+                  type="email"
+                  placeholder="max@mustermann.de"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -51,15 +66,18 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Passwort</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input type="password" placeholder="**********" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Anmelden</Button>
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading ? 'Lädt...' : 'Anmelden'}
+        </Button>
+        <FormError visible={!!error} message={error} />
       </form>
     </Form>
   );
