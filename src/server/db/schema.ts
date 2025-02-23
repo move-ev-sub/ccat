@@ -8,6 +8,8 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 
+const DEFAULT_PROFILE_ID = '40c8a8ca-d68f-41f3-a626-284edcc7e717';
+
 export const profileType = pgEnum('profile_type', ['user', 'company', 'admin']);
 
 export const profilesTable = pgTable('profiles', {
@@ -72,7 +74,7 @@ export const eventsTable = pgTable('events', {
   createdBy: uuid('created_by')
     .notNull()
     // TODO: Add a default value for createdBy
-    .default('40c8a8ca-d68f-41f3-a626-284edcc7e717')
+    .default(DEFAULT_PROFILE_ID)
     .references(() => profilesTable.id, {
       onDelete: 'set default',
     }),
@@ -81,4 +83,36 @@ export const eventsTable = pgTable('events', {
   })
     .notNull()
     .default(sql`now()`),
+});
+
+export const phaseTypeEnum = pgEnum('phase_type', [
+  'PREPERATION',
+  'APPLICATION',
+  'SELECTION_ONE',
+  'SELECTION_TWO',
+  'EVENT',
+]);
+
+export const phasesTable = pgTable('phases', {
+  id: uuid().primaryKey().unique().defaultRandom(),
+  description: varchar(),
+  eventId: uuid('event_id')
+    .notNull()
+    .references(() => eventsTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  type: phaseTypeEnum().notNull().default('PREPERATION'),
+  startDate: timestamp('start_date', {
+    withTimezone: true,
+  }).notNull(),
+  endDate: timestamp('end_date', {
+    withTimezone: true,
+  }).notNull(),
+  createdBy: uuid('created_by')
+    .notNull()
+    .default(DEFAULT_PROFILE_ID)
+    .references(() => profilesTable.id, {
+      onDelete: 'set default',
+    }),
 });
