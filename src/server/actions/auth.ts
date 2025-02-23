@@ -41,6 +41,8 @@ export async function signup({
     };
   }
 
+  // If the user was successfully created, redirect to the home page where
+  // they will be redirected to their user specific page
   redirect('/');
 }
 
