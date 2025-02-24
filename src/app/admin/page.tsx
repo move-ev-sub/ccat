@@ -18,7 +18,7 @@ export default async function AdminOverviewPage() {
       <div className="container">
         <h1 className="text-foreground text-xl font-medium">Veranstaltungen</h1>
         <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <NewEventCard href={'/admin/events/new'} />
+          <NewEventCard href={'/admin/new/event'} />
           {events.data &&
             events.data.map((event) => (
               <EventThumbnailCard href={'#'} key={event.id} event={event} />

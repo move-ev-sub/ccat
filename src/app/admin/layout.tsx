@@ -13,7 +13,7 @@ export default async function AdminLayout({
 }: React.PropsWithChildren) {
   const allowAccess = await isAdmin();
 
-  if (!allowAccess) {
+  if (!allowAccess.data) {
     redirect('/');
   }
 
