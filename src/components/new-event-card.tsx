@@ -29,12 +29,12 @@ export function NewEventCard({
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, []);
+  }, [router, href]);
 
   return (
     <Link
       className={cn(
-        'bg-background-muted border-border-secondary text-muted-foreground focus-visible:ring-ring focus-visible: ring-offset-background group flex min-h-48 items-center justify-center gap-1.5 rounded-lg border border-dashed p-8 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'bg-background-muted border-border-secondary text-muted-foreground focus-visible:ring-ring focus-visible: ring-offset-background group flex min-h-48 items-center justify-center gap-1.5 rounded-xl border border-dashed p-8 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
         className
       )}
       href={href}
