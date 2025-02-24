@@ -4,20 +4,17 @@ import {
   UserDropdownMenu,
 } from '@/components/profile-dropdown-menu';
 import { TopNav, TopNavItem } from '@/components/ui/top-nav';
-import { createClient } from '@/utils/supabase/server';
+import { isAdmin } from '@/server/actions/auth';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
 export default async function AdminLayout({
   children,
 }: React.PropsWithChildren) {
-  const client = await createClient();
-  const {
-    data: { user },
-  } = await client.auth.getUser();
+  const allowAccess = await isAdmin();
 
-  if (!user) {
-    redirect('/auth/login');
+  if (!allowAccess) {
+    redirect('/');
   }
 
   return (
