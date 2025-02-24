@@ -41,14 +41,14 @@ export async function signInWithPassword(
 ): Promise<ServiceResult<object>> {
   if (!email || !password) {
     console.log('Email and password are required.');
-    return { status: 'Error', error: 'Email and password are required.' };
+    return { status: 'error', error: 'Email and password are required.' };
   }
 
   const client = await createClient();
 
   if (!client) {
     console.log('Failed to create Supabase client.');
-    return { status: 'Error', error: 'Failed to create Supabase client.' };
+    return { status: 'error', error: 'Failed to create Supabase client.' };
   }
   const { error, data } = await client.auth.signInWithPassword({
     email,
@@ -57,7 +57,7 @@ export async function signInWithPassword(
 
   console.log('signInWithPassword:', { error, data });
 
-  if (error) return { status: 'Error', error: error.message };
+  if (error) return { status: 'error', error: error.message };
 
-  return { status: 'Success', data };
+  return { status: 'success', data };
 }

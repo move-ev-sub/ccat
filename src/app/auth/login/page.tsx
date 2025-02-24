@@ -5,9 +5,12 @@ import { redirect } from 'next/navigation';
 
 export default async function LoginPage() {
   const client = await createClient();
+  const {
+    data: { user },
+  } = await client.auth.getUser();
 
   // If a user is already authenticated, redirect them to the home page
-  if (client.auth.getUser() !== null) {
+  if (user) {
     redirect('/');
   }
 
