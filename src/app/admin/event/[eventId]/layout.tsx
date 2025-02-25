@@ -37,7 +37,7 @@ export default async function AdminEventLayout({
           </div>
         </AdminMobileNav>
         <div className="hidden gap-2.5 lg:flex">
-          <NavigationItem href={'#'}>Veranstaltungen</NavigationItem>
+          <NavigationItem href={'/admin'}>Veranstaltungen</NavigationItem>
           <NavigationItem href={'#'}>Nutzerverwaltung</NavigationItem>
           <NavigationItem href={'#'}>Unternehmensverwaltung</NavigationItem>
         </div>
