@@ -1,1 +1,5 @@
-export default async function AdminEventOverviewPage() {}
+export default async function AdminEventOverviewPage({}: {
+  params: Promise<{
+    eventId: string;
+  }>;
+}) {}

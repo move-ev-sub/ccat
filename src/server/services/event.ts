@@ -119,3 +119,42 @@ export async function createEvent({
     data: res,
   };
 }
+
+export async function getEvent(
+  eventId: string
+): Promise<ServiceResult<EventSelectResult>> {
+  const client = await createClient();
+
+  const {
+    data: { user },
+  } = await client.auth.getUser();
+
+  // Only authenticated users can read events
+  if (!user || user.id === null) {
+    return {
+      status: 'error',
+      error: 'User is not authenticated.',
+    };
+  }
+
+  const res = await db
+    .select()
+    .from(eventsTable)
+    .where(eq(eventsTable.id, eventId));
+
+  if (!res || res.length === 0) {
+    return {
+      status: 'error',
+      error: 'Failed to fetch event.',
+    };
+  }
+
+  if (res.length > 1) {
+    console.warn('More than one event was found.');
+  }
+
+  return {
+    status: 'success',
+    data: res[0],
+  };
+}

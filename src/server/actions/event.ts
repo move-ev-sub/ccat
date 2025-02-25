@@ -49,3 +49,21 @@ export async function createEvent(
     data: res.data[0],
   };
 }
+
+export async function getEvent(
+  eventId: string
+): Promise<ActionResponse<EventSelectResult>> {
+  const res = await eventService.getEvent(eventId);
+
+  if (res.error || !res.data) {
+    return {
+      status: 'error',
+      error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
+    };
+  }
+
+  return {
+    status: 'success',
+    data: res.data,
+  };
+}
