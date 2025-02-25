@@ -1,34 +1,17 @@
-import { Navbar } from '@/components/navbar';
-import {
-  AdminDropdownMenu,
-  UserDropdownMenu,
-} from '@/components/profile-dropdown-menu';
-import { TopNav, TopNavItem } from '@/components/ui/top-nav';
 import { isAdmin } from '@/server/actions/auth';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
+// Wrap all admin routes in this layout to ensure only admins can access them
 export default async function AdminLayout({
   children,
 }: React.PropsWithChildren) {
+  // Only admins can access these routes
   const allowAccess = await isAdmin();
 
   if (!allowAccess.data) {
     redirect('/');
   }
 
-  return (
-    <main>
-      <Navbar className="flex">
-        <TopNav className="mr-auto">
-          <TopNavItem href={'#'}>Home</TopNavItem>
-          <TopNavItem href={'#'}>About</TopNavItem>
-          <TopNavItem href={'#'}>Contact</TopNavItem>
-        </TopNav>
-        <UserDropdownMenu />
-        <AdminDropdownMenu />
-      </Navbar>
-      {children}
-    </main>
-  );
+  return <main>{children}</main>;
 }
