@@ -9,7 +9,7 @@ export function SubNavigation({
     <div
       data-slot="sub-navigation"
       className={cn(
-        'border-border flex max-w-screen items-center justify-start overflow-x-auto border-b px-8 md:hidden',
+        'border-border flex max-w-screen items-center justify-start overflow-x-auto border-b px-8',
         className
       )}
       {...props}
