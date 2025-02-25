@@ -10,7 +10,7 @@ export function SubNavigationItem({
     <Link
       data-slot={'sub-navigation-item'}
       className={cn(
-        'text-foreground active:bg-background-muted data-[active=true]:text-accent data-[active=true]:bg-accent-50 dark:data-[active=true]:bg-accent-950 group relative w-fit px-3 py-4 font-medium sm:py-2.5 sm:text-sm',
+        'text-foreground active:bg-background-muted data-[active=true]:text-accent data-[active=true]:bg-accent-50 dark:data-[active=true]:bg-accent-950 group relative w-fit px-4 py-3 text-sm font-medium sm:py-2.5',
         className
       )}
       {...props}
