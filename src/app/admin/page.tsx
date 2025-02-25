@@ -21,7 +21,11 @@ export default async function AdminOverviewPage() {
           <NewEventCard href={'/admin/new/event'} />
           {events.data &&
             events.data.map((event) => (
-              <EventThumbnailCard href={'#'} key={event.id} event={event} />
+              <EventThumbnailCard
+                href={`/admin/event/${event.id}`}
+                key={event.id}
+                event={event}
+              />
             ))}
         </div>
       </div>
