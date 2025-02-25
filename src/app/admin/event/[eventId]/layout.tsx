@@ -8,7 +8,7 @@ export default async function AdminEventLayout({
   children,
 }: React.PropsWithChildren & {
   params: Promise<{
-    'event-id': string;
+    eventId: string;
   }>;
 }) {
   const res = await getAllEvents();
