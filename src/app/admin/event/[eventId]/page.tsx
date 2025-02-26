@@ -1,3 +1,5 @@
+import { PageContainer } from '@/components/page-container';
+import { PageDesc, PageTitle } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { getEvent } from '@/server/actions/event';
 import {
@@ -25,38 +27,32 @@ export default async function AdminEventOverviewPage({
   const { name, status, description } = res.data;
 
   return (
-    <div className="py-20">
-      <div className="container">
-        <div className="flex flex-col-reverse items-start justify-center gap-4 sm:flex-row sm:items-center sm:justify-start">
-          <h1 className="text-foreground w-fit items-center justify-start text-2xl font-medium sm:text-xl">
-            {name}
-          </h1>
-          {status == 'archived' && (
-            <Badge variant={'warn'}>
-              <InboxArrowDownIcon />
-              Archiviert
-            </Badge>
-          )}
-          {status == 'draft' && (
-            <Badge variant={'default'}>
-              <InboxStackIcon />
-              Entwurf
-            </Badge>
-          )}
-          {status == 'published' && (
-            <Badge variant={'success'}>
-              <EyeIcon />
-              Veröffentlicht
-            </Badge>
-          )}
-        </div>
-        {description && (
-          <p className="text-secondary mt-4 max-w-prose sm:mt-2 sm:text-sm">
-            {description}
-          </p>
+    <PageContainer>
+      <div className="flex flex-col-reverse items-start justify-center gap-4 sm:flex-row sm:items-center sm:justify-start">
+        <PageTitle>{name}</PageTitle>
+        {status == 'archived' && (
+          <Badge variant={'warn'}>
+            <InboxArrowDownIcon />
+            Archiviert
+          </Badge>
+        )}
+        {status == 'draft' && (
+          <Badge variant={'default'}>
+            <InboxStackIcon />
+            Entwurf
+          </Badge>
+        )}
+        {status == 'published' && (
+          <Badge variant={'success'}>
+            <EyeIcon />
+            Veröffentlicht
+          </Badge>
         )}
       </div>
-      <div className="container mt-12 grid grid-cols-3 gap-8">
+
+      {description && <PageDesc>{description}</PageDesc>}
+
+      <div className="mt-12 grid grid-cols-3 gap-8">
         {/* Render for divs from a loop */}
         {[1, 2, 3].map((i) => (
           <div
@@ -65,6 +61,6 @@ export default async function AdminEventOverviewPage({
           />
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
 }

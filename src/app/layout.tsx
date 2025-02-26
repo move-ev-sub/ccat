@@ -23,7 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn(interSans.variable, interSans.className, 'antialiased')}
+        className={cn(
+          interSans.variable,
+          interSans.className,
+          'bg-background antialiased'
+        )}
       >
         <ThemeProvider
           attribute="class"

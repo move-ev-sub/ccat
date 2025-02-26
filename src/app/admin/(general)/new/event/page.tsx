@@ -1,5 +1,6 @@
 import { BackLink } from '@/components/back-link';
 import { CreateNewEventForm } from '@/components/forms/create-new-event';
+import { PageDesc, PageTitle } from '@/components/page-header';
 import { ClipboardDocumentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as Tabs from '@radix-ui/react-tabs';
 
@@ -7,13 +8,11 @@ export default async function NewEventPage() {
   return (
     <div className="w-full">
       <BackLink href="/admin" className="mb-8" />
-      <h1 className="text-foreground text-xl font-medium">
-        Neue Veranstaltung
-      </h1>
-      <p className="text-secondary mt-2 max-w-prose text-sm">
+      <PageTitle>Neue Veranstaltung</PageTitle>
+      <PageDesc>
         Du kannst eine ganz neue Veranstaltung erstellen oder eine bestehende
         Veranstaltung kopieren.
-      </p>
+      </PageDesc>
       <Tabs.Root defaultValue="custom" className="mt-10">
         <Tabs.List className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <Tabs.Trigger

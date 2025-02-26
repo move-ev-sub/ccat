@@ -47,26 +47,15 @@ export default async function AdminEventLayout({
           events={res.data || []}
         />
       </Navbar>
-      <SubNavigation>
-        <SubNavigationItem base={`/admin/event/${eventId}`} href={`/`}>
-          Übersicht
-        </SubNavigationItem>
-        <SubNavigationItem
-          base={`/admin/event/${eventId}`}
-          href={'/sub-events'}
-        >
+      <SubNavigation base={`/admin/event/${eventId}`}>
+        <SubNavigationItem href={`/`}>Übersicht</SubNavigationItem>
+        <SubNavigationItem href={'/sub-events'}>
           Unterveranstaltungen
         </SubNavigationItem>
-        <SubNavigationItem
-          base={`/admin/event/${eventId}`}
-          href={'/applications'}
-        >
+        <SubNavigationItem href={'/applications'}>
           Bewerbungen
         </SubNavigationItem>
-
-        <SubNavigationItem base={`/admin/event/${eventId}`} href={'/settings'}>
-          Einstellungen
-        </SubNavigationItem>
+        <SubNavigationItem href={'/settings'}>Einstellungen</SubNavigationItem>
       </SubNavigation>
       {children}
     </>
