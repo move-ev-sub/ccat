@@ -8,6 +8,7 @@ import {
 } from '@/server/schemas/auth';
 import { signInWithPassword, signUpWithEmail } from '@/server/services/auth';
 import { redirect } from 'next/navigation';
+import * as authService from '../services/auth';
 import { AuthActionResponse } from '../types/action-response';
 
 export async function signup({
@@ -69,4 +70,18 @@ export async function login({
   }
 
   redirect('/');
+}
+
+export async function isAdmin(): Promise<AuthActionResponse<boolean>> {
+  const res = await authService.isAdmin();
+
+  if (res.error || !res.data) {
+    return {
+      status: 'error',
+      error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
+      data: false,
+    };
+  }
+
+  return { status: 'success', data: res.data };
 }

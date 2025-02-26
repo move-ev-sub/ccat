@@ -1,10 +1,11 @@
-export type ServiceResult<T> = { status: string; loading?: boolean } & (
+export type ServiceResult<T> =
   | {
-      data: T;
+      status: 'success';
       error?: string;
+      data: T;
     }
   | {
-      data?: T;
+      status: 'error';
       error: string;
-    }
-);
+      data?: T;
+    };
