@@ -35,7 +35,7 @@ export async function signup({
 
   const res = await signUpWithEmail(email, password);
 
-  if (res.error) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
@@ -62,7 +62,7 @@ export async function login({
 
   const res = await signInWithPassword(email, password);
 
-  if (res.error) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
@@ -75,7 +75,7 @@ export async function login({
 export async function isAdmin(): Promise<AuthActionResponse<boolean>> {
   const res = await authService.isAdmin();
 
-  if (res.error || !res.data) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
@@ -84,4 +84,10 @@ export async function isAdmin(): Promise<AuthActionResponse<boolean>> {
   }
 
   return { status: 'success', data: res.data };
+}
+
+export async function isAuthenticated(): Promise<AuthActionResponse<boolean>> {
+  const res = await authService.isAuthenticated();
+
+  return { status: 'success', data: res };
 }

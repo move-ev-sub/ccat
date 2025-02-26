@@ -158,7 +158,7 @@ export async function isAdmin(
   }
 
   // Check if user is authenticated
-  if (await isAuthenticated(client)) {
+  if (!(await isAuthenticated(client))) {
     return {
       ok: false,
       error: 'User is not authenticated.',

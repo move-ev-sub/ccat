@@ -192,7 +192,7 @@ export async function getEventById(
     .where(eq(eventsTable.id, eventId));
 
   // Check if more than one event was found
-  if (!res || res.length >= 1) {
+  if (res.length > 1) {
     return {
       ok: false,
       error: 'Failed to fetch event (More than one event was found).',
