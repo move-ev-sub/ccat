@@ -1,4 +1,5 @@
 import { PageContainer } from '@/components/page-container';
+import { PageDesc, PageTitle } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { getEvent } from '@/server/actions/event';
 import {
@@ -28,9 +29,7 @@ export default async function AdminEventOverviewPage({
   return (
     <PageContainer>
       <div className="flex flex-col-reverse items-start justify-center gap-4 sm:flex-row sm:items-center sm:justify-start">
-        <h1 className="text-foreground w-fit items-center justify-start text-2xl font-medium sm:text-xl">
-          {name}
-        </h1>
+        <PageTitle>{name}</PageTitle>
         {status == 'archived' && (
           <Badge variant={'warn'}>
             <InboxArrowDownIcon />
@@ -50,11 +49,9 @@ export default async function AdminEventOverviewPage({
           </Badge>
         )}
       </div>
-      {description && (
-        <p className="text-secondary mt-4 max-w-prose sm:mt-2 sm:text-sm">
-          {description}
-        </p>
-      )}
+
+      {description && <PageDesc>{description}</PageDesc>}
+
       <div className="mt-12 grid grid-cols-3 gap-8">
         {/* Render for divs from a loop */}
         {[1, 2, 3].map((i) => (

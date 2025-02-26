@@ -1,6 +1,7 @@
 import { EventThumbnailCard } from '@/components/event-thumbnail-card/event-thumbnail-card';
 import { NewEventCard } from '@/components/new-event-card';
 import { PageContainer } from '@/components/page-container';
+import { PageTitle } from '@/components/page-header';
 import { getAllEvents } from '@/server/actions/event';
 
 /**
@@ -16,7 +17,7 @@ export default async function AdminOverviewPage() {
 
   return (
     <PageContainer>
-      <h1 className="text-foreground text-xl font-medium">Veranstaltungen</h1>
+      <PageTitle>Veranstaltungen</PageTitle>
       <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         <NewEventCard href={'/admin/new/event'} />
         {events.data &&
