@@ -7,7 +7,6 @@ import {
   InboxArrowDownIcon,
   InboxStackIcon,
 } from '@heroicons/react/16/solid';
-import { notFound } from 'next/navigation';
 
 export default async function AdminEventOverviewPage({
   params,
@@ -21,7 +20,12 @@ export default async function AdminEventOverviewPage({
   const res = await getEvent(eventId);
 
   if (res.error || !res.data) {
-    notFound();
+    return (
+      <p>
+        Not found
+        {JSON.stringify(res.error)}
+      </p>
+    );
   }
 
   const { name, status, description } = res.data;

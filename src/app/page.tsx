@@ -1,6 +1,7 @@
+import { isAuthenticated } from '@/server/actions/auth';
 import { db } from '@/server/db';
 import { profilesTable } from '@/server/db/schema';
-import { createClient } from '@/utils/supabase/server';
+import { getUser } from '@/server/services/auth';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 
@@ -19,13 +20,14 @@ import { redirect } from 'next/navigation';
  * @returns
  */
 export default async function RedirectPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  if (!(await isAuthenticated())) {
+    redirect('/auth/login');
+  }
+
+  const user = await getUser();
 
   // If the user is not logged in, redirect them to the login page
-  if (!user) {
+  if (user === null) {
     return redirect('/auth/login');
   }
 
