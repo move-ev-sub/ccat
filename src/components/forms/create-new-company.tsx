@@ -17,10 +17,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { uploadTestFile } from '@/server/actions/company';
-import { newEventSchema } from '@/server/schemas/event';
+import {
+  ACCEPTED_FILE_TYPES,
+  MAX_FILE_COUNT,
+  MAX_FILE_SIZE,
+  newCompanySchema,
+} from '@/server/schemas/company';
 import React from 'react';
 import { toast } from 'sonner';
-import { Textarea } from '../ui/textarea';
 import { FileUpload } from '../file-upload';
 
 // // Custom file type that extends the native File type
@@ -48,25 +52,20 @@ import { FileUpload } from '../file-upload';
 //   )
 //   .max(3, 'You can upload a maximum of 3 files');
 
-const formSchema = newEventSchema.extend({
-  logo: z.array(z.instanceof(File)),
-});
-
 export function CreateNewCompanyForm() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | undefined>();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof newCompanySchema>>({
+    resolver: zodResolver(newCompanySchema),
     defaultValues: {
       name: '',
-      description: '',
-      status: 'draft',
+      email: '',
       logo: [],
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof newCompanySchema>) {
     console.log(values);
     setLoading(true);
     setError(undefined);
@@ -93,12 +92,12 @@ export function CreateNewCompanyForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Eventname</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Consulting Contact 2025" {...field} />
+                <Input placeholder="Bearing Point" {...field} />
               </FormControl>
               <FormDescription>
-                Dies ist der Name des Events, der öffentlich angezeigt wird.
+                Name des Unternehmens. Dieser ist für Nutzer sichtbar.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -106,19 +105,17 @@ export function CreateNewCompanyForm() {
         />
         <FormField
           control={form.control}
-          name="description"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Beschreibung</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Die Consulting Contact 2025 wird organisiert von move e.V. und ..."
-                  {...field}
-                />
+                <Input placeholder="mk@" {...field} />
               </FormControl>
               <FormDescription>
-                Gib eine optionale Beschreibung des Events an. Diese ist
-                öffentlich sichtbar.
+                Diese E-Mail wird ausschließlich für den Login verwendet. Hier
+                kann auch eine nicht-existierende E-Mail-Adresse eingegeben
+                werden.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -130,29 +127,24 @@ export function CreateNewCompanyForm() {
           render={({ field }) => (
             <div className="space-y-6">
               <FormItem className="w-full">
-                <FormLabel>logo</FormLabel>
+                <FormLabel>Logo</FormLabel>
                 <FormControl>
                   <FileUpload
                     value={field.value}
                     onValueChange={field.onChange}
-                    maxFileCount={4}
-                    maxSize={4 * 1024 * 1024}
-                    // progresses={progresses}
-                    // pass the onUpload function here for direct upload
-                    // onUpload={uploadFiles}
-                    // disabled={isUploading}
+                    accept={ACCEPTED_FILE_TYPES}
+                    maxFileCount={MAX_FILE_COUNT}
+                    maxSize={MAX_FILE_SIZE}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
-              {/* {uploadedFiles.length > 0 ? (
-                <UploadedFilesCard uploadedFiles={uploadedFiles} />
-              ) : null} */}
             </div>
           )}
         />
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Lädt...' : 'Veranstaltung erstellen'}
+          {loading ? 'Lädt...' : 'Unternehmen erstellen'}
         </Button>
         <FormError visible={!!error} message={error} />
       </form>
