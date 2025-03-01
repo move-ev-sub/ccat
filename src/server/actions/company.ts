@@ -1,3 +1,6 @@
+'use server';
+
+import { createClient } from '@/utils/supabase/server';
 import { companyProfilesTable } from '../db/schema';
 import { getAllCompanies } from '../services/company';
 import { ActionResponse } from '../types/action-response';
@@ -19,4 +22,19 @@ export async function getCompanies(): Promise<
     status: 'success',
     data: res.data,
   };
+}
+
+export async function uploadTestFile(file: File) {
+  const supabase = await createClient();
+
+  console.log(file);
+
+  const { data, error } = await supabase.storage
+    .from('test')
+    .upload(file.name, file, {
+      cacheControl: '3600',
+      upsert: false,
+    });
+
+  console.log(data, error);
 }
