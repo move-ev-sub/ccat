@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
+import { randomBytes } from 'crypto';
 import { eq } from 'drizzle-orm';
 import { db } from '../db';
 import { profilesTable } from '../db/schema';
@@ -28,10 +29,21 @@ export async function signUpWithEmail(
     password,
   });
 
-  if (error) {
-    console.error('Error when signing up:', error.message);
-    return { ok: false, error: error.message };
+  if (error || !data?.user) {
+    console.error(
+      'Error when signing up:',
+      error?.message || 'Ein unbekannter Fehler ist aufgetreten.'
+    );
+    return {
+      ok: false,
+      error: error?.message || 'Ein unbekannter Fehler ist aufgetreten.',
+    };
   }
+
+  const {} = await db.insert(profilesTable).values({
+    id: data.user.id,
+    profileType: 'user',
+  });
 
   return { ok: true, data };
 }
@@ -189,4 +201,23 @@ export async function isAdmin(
   }
 
   return { ok: true, data: true };
+}
+
+/**
+ * Creates a secure password. This is used for when company accounts
+ * are created.
+ *
+ * @param {number} [length=16] The length of the password in characters.
+ *
+ * @returns {string} A secure password string.
+ */
+export async function createSecurePassword(
+  length: number = 16
+): Promise<string> {
+  const pw = randomBytes(length)
+    .toString('base64')
+    .replace(/[^a-zA-Z0-9]/g, '') // Remove non-alphanumeric characters
+    .slice(0, length); // Trim to the desired length
+
+  return pw;
 }

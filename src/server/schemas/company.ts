@@ -17,6 +17,7 @@ export const newCompanySchema = z.object({
 
 export const logoSchema = z
   .array(z.instanceof(File))
+  .min(1, { message: 'Du musst eine Datei hochladen.' })
   .max(1, { message: 'Du kannst nur eine Datei hochladen.' })
   .refine((files) => files.length === MAX_FILE_COUNT, {
     message: 'Du kannst nur eine Datei hochladen.',
