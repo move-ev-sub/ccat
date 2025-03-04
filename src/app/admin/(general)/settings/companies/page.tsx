@@ -5,6 +5,10 @@ import { PlusIcon } from '@heroicons/react/16/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
+/**
+ * The admin companies settings page displays all companies and allows the
+ * user to manage them.
+ */
 export default async function AdminCompaniesSettingsPage() {
   return (
     <PageContainer>
