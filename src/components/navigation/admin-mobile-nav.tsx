@@ -7,6 +7,7 @@ import {
   UsersIcon,
 } from '@heroicons/react/16/solid';
 import { Bars3Icon } from '@heroicons/react/24/outline';
+import { ThemeSwitch } from '../theme-switch';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { MobileNavigationGroup } from './mobile-navigation-group';
 import { MobileNavigationItem } from './mobile-navigation-item';
@@ -50,7 +51,10 @@ export function AdminMobileNav({
             </MobileNavigationItem>
           </MobileNavigationGroup>
         </div>
-        <div className="mt-auto p-4">
+        <div className="mt-auto px-[1.625rem] pb-0">
+          <ThemeSwitch />
+        </div>
+        <div className="mt-0 p-4 pt-0">
           <MobileNavigationGroup>
             <MobileNavigationItem href={'#'}>
               <Cog6ToothIcon className="text-secondary size-4" />
