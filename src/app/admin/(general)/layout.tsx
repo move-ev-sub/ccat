@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/navbar';
 import { AdminMobileNav } from '@/components/navigation/admin-mobile-nav';
 import { NavigationItem } from '@/components/navigation/navigation-item';
+import { ThemeSwitch } from '@/components/theme-switch';
 import React from 'react';
 
 export default async function AdminGeneralLayout({
@@ -19,6 +20,7 @@ export default async function AdminGeneralLayout({
             Unternehmensverwaltung
           </NavigationItem>
         </div>
+        <ThemeSwitch className="ml-auto hidden lg:flex" />
       </Navbar>
       {children}
     </>
