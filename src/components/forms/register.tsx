@@ -121,19 +121,6 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Passwort bestätigen</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="**********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <Button type="submit" disabled={loading} className="w-full">
           {loading ? 'Lädt...' : 'Anmelden'}
         </Button>
