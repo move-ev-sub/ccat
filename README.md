@@ -1,36 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![GitHub deployments](https://img.shields.io/github/deployments/move-ev-sub/ccat/Production?label=Deployement)
+![GitHub Release](https://img.shields.io/github/v/release/move-ev-sub/ccat?label=CCAT%20Version)
 
-## Getting Started
+# CCAT
 
-First, run the development server:
+Das CCAT (**C**onsulting**C**ontact **A**pplication **T**ool) ist das Tool, welches genutzt wird um Bewerbungen für die jährlich stattfindenden Consulting Contact (organisiert von der studentischen Unternehmensberatung [move e.V.](https://google.com)) zu verwalten. Das Tool wird dazu genutzt, um die Bewerbungen der Teilnehmende zu sammeln und sie anschließend an die Unternehmen weiterzuleiten.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Dokumentation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Eine ausführliche Dokumentation in der swohl die technische Umsetzung als auch die Nutzung des Tools beschrieben wird, ist unter [diesem Link](https://docs.consultingcontact.de) zu finden.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Lizenz
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Dieses Projekt wird unter der Apache 2.0 Lizenz veröffentlicht. Weitere Informationen sind unter [LICENSE](LICENSE) zu finden.
 
-## Learn More
+## Mitwirken
 
-To learn more about Next.js, take a look at the following resources:
+Wir freuen uns über jede Art von Mitwirkung. Wenn du einen Fehler gefunden hast oder eine Verbesserung vorschlagen möchtest, erstelle einfach ein Issue oder einen Pull Request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Kontakt
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Bei Fragen oder Anregungen kannst du uns gerne jederzeit ein Issue erstellen oder uns eine E-Mail an [cc.tool@move-ev.de](mailto:cc.tool@move-ev.de) schreiben.
 
-## Deploy on Vercel
+### Sicherheitslücken
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Wenn du eine Sicherheitslücke gefunden hast, melde sie bitte per E-Mail an [cc.tool@move-ev.de](mailto:cc.tool@move-ev.de). Wir werden uns so schnell wie möglich darum kümmern.
