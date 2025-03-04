@@ -17,8 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { PasswordInput } from '../password-input/password-input';
-import { PasswordCriteria } from '../password-input/password-input.types';
+import { PasswordInput, type PasswordCriteria } from '../password-input';
 
 const passwordCriteria: PasswordCriteria[] = [
   {

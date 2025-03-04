@@ -1,4 +1,4 @@
-import { PasswordCriteria } from '@/components/password-input/password-input.types';
+import { PasswordCriteria } from '@/components/password-input';
 import { z } from 'zod';
 
 export const signUpPasswordCriteria: PasswordCriteria[] = [
