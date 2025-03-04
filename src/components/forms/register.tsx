@@ -17,6 +17,47 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { PasswordInput } from '../password-input/password-input';
+import { PasswordCriteria } from '../password-input/password-input.types';
+
+const passwordCriteria: PasswordCriteria[] = [
+  {
+    id: 'length',
+    label: 'Mindestens 8 Zeichen',
+    regex: /.{8,}/,
+    zodCheck: (schema: z.ZodString) => schema.min(8),
+  },
+  {
+    id: 'lowercase',
+    label: 'Mindestens ein Kleinbuchstabe',
+    regex: /[a-z]/,
+    zodCheck: (schema: z.ZodString) => schema.regex(/[a-z]/),
+  },
+  {
+    id: 'uppercase',
+    label: 'Mindestens ein Großbuchstabe',
+    regex: /[A-Z]/,
+    zodCheck: (schema: z.ZodString) => schema.regex(/[A-Z]/),
+  },
+  {
+    id: 'number',
+    label: 'Mindestens eine Zahl',
+    regex: /[0-9]/,
+    zodCheck: (schema: z.ZodString) => schema.regex(/[0-9]/),
+  },
+  {
+    id: 'special',
+    label: 'Mindestens ein Sonderzeichen',
+    regex: /[^a-zA-Z0-9]/,
+    zodCheck: (schema: z.ZodString) => schema.regex(/[^a-zA-Z0-9]/),
+  },
+  {
+    id: 'noSpaces',
+    label: 'Keine Leerzeichen',
+    regex: /^\S*$/,
+    zodCheck: (schema: z.ZodString) => schema.regex(/^\S*$/),
+  },
+];
 
 export function RegisterForm() {
   const [loading, setLoading] = React.useState(false);
@@ -27,7 +68,6 @@ export function RegisterForm() {
     defaultValues: {
       email: '',
       password: '',
-      confirmPassword: '',
     },
   });
 
@@ -71,20 +111,11 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Passwort</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="**********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Passwort bestätigen</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="**********" {...field} />
+                <PasswordInput
+                  toggalble
+                  criteria={passwordCriteria}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
