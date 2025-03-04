@@ -6,6 +6,16 @@ export type PasswordCriteria = {
   regex: RegExp;
   zodCheck: (schema: z.ZodString) => z.ZodString;
 };
-export interface PasswordInputProps extends React.ComponentProps<'input'> {
+
+export interface PasswordInputProps
+  extends Omit<React.ComponentProps<'input'>, 'value'> {
+  criteria: PasswordCriteria[];
   toggalble?: boolean;
+  value: string;
+}
+
+export interface PasswordInputCriteriaProps
+  extends React.ComponentProps<'div'> {
+  valid: boolean;
+  criterion: PasswordCriteria;
 }
