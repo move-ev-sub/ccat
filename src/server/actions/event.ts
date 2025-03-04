@@ -8,7 +8,7 @@ export async function getAllEvents(): Promise<
 > {
   const res = await eventService.getAllEvents();
 
-  if (res.error || !res.data) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
@@ -36,7 +36,7 @@ export async function createEvent(
 
   const res = await eventService.createEvent(data);
 
-  if (res.error || !res.data) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
@@ -53,9 +53,9 @@ export async function createEvent(
 export async function getEvent(
   eventId: string
 ): Promise<ActionResponse<EventSelectResult>> {
-  const res = await eventService.getEvent(eventId);
+  const res = await eventService.getEventById(eventId);
 
-  if (res.error || !res.data) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',

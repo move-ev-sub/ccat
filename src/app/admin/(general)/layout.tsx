@@ -11,9 +11,13 @@ export default async function AdminGeneralLayout({
       <Navbar className="flex items-center justify-start">
         <AdminMobileNav className="ml-auto block lg:hidden" />
         <div className="hidden gap-2.5 lg:flex">
-          <NavigationItem href={'#'}>Veranstaltungen</NavigationItem>
-          <NavigationItem href={'#'}>Nutzerverwaltung</NavigationItem>
-          <NavigationItem href={'#'}>Unternehmensverwaltung</NavigationItem>
+          <NavigationItem href={'/admin'}>Veranstaltungen</NavigationItem>
+          <NavigationItem href={'/admin/settings/users'}>
+            Nutzerverwaltung
+          </NavigationItem>
+          <NavigationItem href={'/admin/settings/companies'}>
+            Unternehmensverwaltung
+          </NavigationItem>
         </div>
       </Navbar>
       {children}

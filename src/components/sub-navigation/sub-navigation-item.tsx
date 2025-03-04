@@ -23,7 +23,7 @@ export function SubNavigationItem({
     }
 
     setActive(pathname.startsWith(base + href));
-  }, [pathname]);
+  }, [base, href, pathname]);
 
   return (
     <Link

@@ -17,6 +17,11 @@ export const profileType = pgEnum('profile_type', ['user', 'company', 'admin']);
 export const profilesTable = pgTable('profiles', {
   id: uuid().primaryKey().unique().defaultRandom(),
   profileType: profileType('profile_type').notNull().default('user'),
+  createdAt: timestamp('created_at', {
+    withTimezone: true,
+  })
+    .notNull()
+    .default(sql`now()`),
 });
 
 export const userProfilesTable = pgTable('user_profiles', {
