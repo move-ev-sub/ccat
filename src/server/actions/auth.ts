@@ -14,12 +14,10 @@ import { AuthActionResponse } from '../types/action-response';
 export async function signup({
   email,
   password,
-  confirmPassword,
 }: SignUpData): Promise<AuthActionResponse<null>> {
   const parseRes = await signUpSchema.safeParseAsync({
     email,
     password,
-    confirmPassword,
   });
 
   if (!parseRes.success) {
@@ -27,10 +25,6 @@ export async function signup({
       status: 'error',
       error: parseRes.error.message || 'Eingabe ist invalide.',
     };
-  }
-
-  if (!password || password !== confirmPassword) {
-    return { status: 'error', error: 'Passwörter stimmen nicht überein.' };
   }
 
   const res = await signUpWithEmail(email, password);
