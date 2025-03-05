@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/sidebar';
 import {
   BuildingOfficeIcon,
+  CalendarIcon,
   Cog6ToothIcon,
   HomeIcon,
   UsersIcon,
@@ -27,6 +28,10 @@ export async function AdminSidebar({}: React.ComponentProps<
           <SidebarNavItem href={'/'}>
             <HomeIcon />
             Dashboard
+          </SidebarNavItem>
+          <SidebarNavItem href={'/event'}>
+            <CalendarIcon />
+            Veranstaltungen
           </SidebarNavItem>
           <SidebarNavItem href={'/settings/users'}>
             <UsersIcon />
