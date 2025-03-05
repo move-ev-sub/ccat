@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,208 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        String   @id @unique @default(dbgenerated())
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userProfile    UserProfile?
+  adminProfile   AdminProfile?
+  companyProfile CompanyProfile?
+
+  createdEvents    Event[]
+  createdPhases    Phase[]
+  createdSubEvents SubEvent[]
+  createdSlots     Slot[]
+  ownApplications  Application[]
+}
+
+// A table that refferences the Profile table
+model UserProfile {
+  profile Profile @relation(fields: [id], references: [id])
+  id      String  @id @unique
+
+  // User Info
+  firstName String
+  lastName  String
+
+  // Notifications
+  notifyMe       Boolean @default(false)
+  emailReminders Boolean @default(false)
+}
+
+model AdminProfile {
+  profile Profile @relation(fields: [id], references: [id])
+  id      String  @id @unique
+
+  // Admin Info
+  firstName String
+  lastName  String
+}
+
+model CompanyProfile {
+  profile Profile @relation(fields: [id], references: [id])
+  id      String  @id @unique
+
+  // Company Info
+  name    String
+  logoUrl String @default("https://move-ev.de/wp-content/uploads/2018/12/Logo_hell_Text_Rehcts.svg")
+}
+
+model Event {
+  id          String      @id @unique @default(uuid())
+  name        String
+  description String?
+  status      EventStatus @default(DRAFT)
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  createdBy    Profile       @relation(fields: [createdById], references: [id])
+  createdById  String
+  phases       Phase[]
+  subEvents    SubEvent[]
+  slots        Slot[]
+  applications Application[]
+}
+
+model Phase {
+  id          String    @id @unique @default(uuid())
+  description String?
+  event       Event     @relation(fields: [eventId], references: [id])
+  eventId     String
+  type        PhaseType @default(PREP)
+  startDate   DateTime  @db.Timestamptz(3)
+  endDate     DateTime  @db.Timestamptz(3)
+  createdAt   DateTime  @default(now())
+  createdBy   Profile   @relation(fields: [createdById], references: [id])
+  createdById String
+}
+
+model SubEvent {
+  id              String           @id @unique @default(uuid())
+  event           Event            @relation(fields: [eventId], references: [id])
+  eventId         String
+  name            String
+  description     String?
+  maxParticipants Int              @default(30)
+  startDate       DateTime         @db.Timestamptz(3)
+  endDate         DateTime         @db.Timestamptz(3)
+  createdAt       DateTime         @default(now())
+  createdBy       Profile          @relation(fields: [createdById], references: [id])
+  createdById     String
+  subApplications SubApplication[]
+}
+
+model Slot {
+  id          String   @id @unique @default(uuid())
+  event       Event    @relation(fields: [eventId], references: [id])
+  eventId     String
+  startDate   DateTime @db.Timestamptz(3)
+  endDate     DateTime @db.Timestamptz(3)
+  createdAt   DateTime @default(now())
+  createdBy   Profile  @relation(fields: [createdById], references: [id])
+  createdById String
+}
+
+model Application {
+  id                     String            @id @unique @default(uuid())
+  event                  Event             @relation(fields: [eventId], references: [id])
+  eventId                String
+  user                   Profile           @relation(fields: [userId], references: [id])
+  userId                 String
+  status                 ApplicationStatus @default(SAVED)
+  firstName              String
+  lastName               String
+  birthDate              DateTime
+  gender                 Gender            @default(PREFFER_NOT_TO_SAY)
+  university             University        @relation(fields: [universityId], references: [id])
+  universityId           String
+  currentDegree          Degree
+  targetDegree           Degree
+  fieldOfStudy           String
+  semester               Int
+  expectedGraduationYear DateTime
+  currentGpa             Float
+  abiturGrade            Float
+  experienceAbroad       Int
+  experienceInternships  Int
+  experienceConsulting   Int
+  cvUrl                  String
+  subApplications        SubApplication[]
+}
+
+model SubApplication {
+  id            String                      @id @unique @default(uuid())
+  application   Application                 @relation(fields: [applicationId], references: [id])
+  applicationId String
+  subEvent      SubEvent                    @relation(fields: [subEventId], references: [id])
+  subEventId    String
+  coverLetter   String
+  prioritized   Boolean                     @default(false)
+  status        SubApplicationStatus
+  priorization  SubApplicationPrioritzation
+}
+
+model University {
+  id           String        @id @unique @default(uuid())
+  name         String
+  applications Application[]
+}
+
+enum Role {
+  ADMIN
+  USER
+  COMPANY
+}
+
+enum EventStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum PhaseType {
+  PREP
+  APPLICATION
+  SELECTION_ONE
+  SELECTION_TWO
+  EVENT
+  POST_EVENT
+}
+
+enum ApplicationStatus {
+  SAVED
+  SUBMITTED
+  CLOSED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  DIVERSE
+  PREFFER_NOT_TO_SAY
+}
+
+enum Degree {
+  HOCHSCHULREIFE
+  ABITUR
+  BACHELOR
+  MASTER
+}
+
+enum SubApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum SubApplicationPrioritzation {
+  PRIO_1
+  PRIO_2
+  PRIO_3
+  PRIO_4
+  PRIO_5
 }
