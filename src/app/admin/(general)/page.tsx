@@ -70,7 +70,7 @@ export default async function AdminOverviewPage() {
 
             {events.data &&
               events.data
-                .filter((event) => event.status === 'published')
+                .filter((event) => event.status === 'PUBLISHED')
                 .map((event) => (
                   <EventThumbnailCard
                     href={`/admin/event/${event.id}`}
@@ -87,7 +87,7 @@ export default async function AdminOverviewPage() {
 
             {events.data &&
               events.data
-                .filter((event) => event.status === 'draft')
+                .filter((event) => event.status === 'DRAFT')
                 .map((event) => (
                   <EventThumbnailCard
                     href={`/admin/event/${event.id}`}
@@ -104,7 +104,7 @@ export default async function AdminOverviewPage() {
 
             {events.data &&
               events.data
-                .filter((event) => event.status === 'archived')
+                .filter((event) => event.status === 'ARCHIVED')
                 .map((event) => (
                   <EventThumbnailCard
                     href={`/admin/event/${event.id}`}

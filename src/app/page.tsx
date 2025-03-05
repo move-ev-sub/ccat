@@ -1,8 +1,5 @@
 import { isAuthenticated } from '@/server/actions/auth';
-import { db } from '@/server/db';
-import { profilesTable } from '@/server/db/schema';
-import { getUser } from '@/server/services/auth';
-import { eq } from 'drizzle-orm';
+import { getCurrentRole, getUser } from '@/server/services/auth';
 import { redirect } from 'next/navigation';
 
 /**
@@ -32,23 +29,23 @@ export default async function RedirectPage() {
   }
 
   // Get the users role
-  const profile = await db.query.profilesTable.findFirst({
-    where: eq(profilesTable.id, user.id),
-  });
+  const res = await getCurrentRole();
 
   // If no profile is present, redirect to login page
   // TODO: Better error handling
-  if (!profile) {
+  if (!res.ok) {
     return redirect('/auth/login');
   }
 
+  const { data: role } = res;
+
   // redirect admins to `/admin`
-  if (profile.profileType == 'admin') {
+  if (role == 'ADMIN') {
     return redirect('/admin');
   }
 
   // redirect companies to `/company`
-  if (profile.profileType == 'company') {
+  if (role == 'COMPANY') {
     return redirect('/company');
   }
 

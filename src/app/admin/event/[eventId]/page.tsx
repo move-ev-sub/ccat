@@ -34,19 +34,19 @@ export default async function AdminEventOverviewPage({
     <PageContainer>
       <div className="flex flex-col-reverse items-start justify-center gap-4 sm:flex-row sm:items-center sm:justify-start">
         <PageTitle>{name}</PageTitle>
-        {status == 'archived' && (
+        {status == 'ARCHIVED' && (
           <Badge variant={'warn'}>
             <InboxArrowDownIcon />
             Archiviert
           </Badge>
         )}
-        {status == 'draft' && (
+        {status == 'DRAFT' && (
           <Badge variant={'default'}>
             <InboxStackIcon />
             Entwurf
           </Badge>
         )}
-        {status == 'published' && (
+        {status == 'PUBLISHED' && (
           <Badge variant={'success'}>
             <EyeIcon />
             Veröffentlicht

@@ -1,9 +1,8 @@
 'use server';
 
 import { createAdminClient, createClient } from '@/utils/supabase/server';
-import { eq } from 'drizzle-orm';
-import { db } from '../db';
-import { companyProfilesTable, profilesTable } from '../db/schema';
+import { prisma } from '../db';
+import { FullCompanyProfile } from '../types/profile';
 import { ServiceResult } from '../types/serviceResult';
 import { createSecurePassword, isAdmin, isAuthenticated } from './auth';
 import { existsBucket } from './storage';
@@ -15,7 +14,7 @@ import { existsBucket } from './storage';
  * @returns
  */
 export async function getAllCompanies(): Promise<
-  ServiceResult<(typeof companyProfilesTable.$inferSelect)[]>
+  ServiceResult<FullCompanyProfile[]>
 > {
   const client = await createClient();
 
@@ -26,7 +25,14 @@ export async function getAllCompanies(): Promise<
     };
   }
 
-  const res = await db.select().from(companyProfilesTable);
+  const res = await prisma.profile.findMany({
+    where: {
+      role: 'COMPANY',
+    },
+    include: {
+      companyProfile: true,
+    },
+  });
 
   // Check if any companies were found
   if (res.length === 0) {
@@ -52,7 +58,7 @@ export async function getAllCompanies(): Promise<
  */
 export async function getCompanyById(
   companyId: string
-): Promise<ServiceResult<typeof companyProfilesTable.$inferSelect>> {
+): Promise<ServiceResult<FullCompanyProfile>> {
   const client = await createClient();
 
   if (!(await isAuthenticated(client))) {
@@ -63,22 +69,33 @@ export async function getCompanyById(
   }
 
   // Get the company from the database
-  const res = await db
-    .select()
-    .from(companyProfilesTable)
-    .where(eq(companyProfilesTable.id, companyId));
+  const res: FullCompanyProfile | null = await prisma.profile.findFirst({
+    where: {
+      AND: [
+        {
+          id: companyId,
+        },
+        {
+          role: 'COMPANY',
+        },
+      ],
+    },
+    include: {
+      companyProfile: true,
+    },
+  });
 
   // If more than one company was found return an error
-  if (!res || res.length >= 1) {
+  if (res === null) {
     return {
       ok: false,
-      error: 'Failed to fetch company (More than one company was found).',
+      error: 'Failed to fetch company profile.',
     };
   }
 
   return {
     ok: true,
-    data: res[0],
+    data: res,
   };
 }
 
@@ -119,6 +136,13 @@ export async function createCompany(
     };
   }
 
+  if (!logo.name.includes('.')) {
+    return {
+      ok: false,
+      error: 'Invalid file name.',
+    };
+  }
+
   const password = await createSecurePassword();
 
   // The admin client is ONLY used to create a new user
@@ -149,9 +173,17 @@ export async function createCompany(
   } = data;
 
   // Create a new profile
-  const profileRes = await db.insert(profilesTable).values({
-    id: userId,
-    profileType: 'company',
+
+  const profileRes = await prisma.profile.create({
+    data: {
+      id: userId,
+      role: 'COMPANY',
+      companyProfile: {
+        create: {
+          name,
+        },
+      },
+    },
   });
 
   if (!profileRes) {
@@ -165,35 +197,7 @@ export async function createCompany(
     };
   }
 
-  // Create a new company profile
-  const companyProfileRes = await db
-    .insert(companyProfilesTable)
-    .values({
-      id: userId,
-      name,
-    })
-    .returning();
-
-  if (!companyProfileRes || companyProfileRes.length === 0) {
-    const err =
-      '[High Severity] Failed to create company profile. This needs manual intervention since there now exists a user account and a user profile without a company profile!';
-    console.error(err);
-    return {
-      ok: false,
-      error: err,
-    };
-  }
-
   // Split the file name at every . and get the last element as the file ending
-
-  // TODO: Move upwards
-  if (!logo.name.includes('.')) {
-    return {
-      ok: false,
-      error: 'Invalid file name.',
-    };
-  }
-
   const fileEnding = logo.name.split('.').pop();
 
   // Check if the bucket exists
