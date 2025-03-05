@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
+import { Role } from '@prisma/client';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import { prisma } from '../db';
@@ -239,4 +240,48 @@ export async function createSecurePassword(
     .slice(0, length); // Trim to the desired length
 
   return pw;
+}
+
+/**
+ * Returns the Role of the current user. If no user is found, an error
+ * is returned.
+ *
+ * @returns {ServiceResult<Role>} The Role of the current user.
+ */
+export async function getCurrentRole(): Promise<ServiceResult<Role>> {
+  const client = await createClient();
+
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  const user = await getUser(client);
+
+  if (!user) {
+    return {
+      ok: false,
+      error: 'No user object found.',
+    };
+  }
+
+  const profile = await prisma.profile.findFirst({
+    where: {
+      id: user.id,
+    },
+  });
+
+  if (!profile) {
+    return {
+      ok: false,
+      error: `No profile found for user with id ${user.id}`,
+    };
+  }
+
+  return {
+    ok: true,
+    data: profile.role,
+  };
 }
