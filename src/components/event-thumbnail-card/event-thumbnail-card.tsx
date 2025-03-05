@@ -1,13 +1,9 @@
 import { cn } from '@/utils';
-import {
-  ArchiveBoxIcon,
-  CheckIcon,
-  InboxIcon,
-} from '@heroicons/react/16/solid';
 import { FolderIcon } from '@heroicons/react/24/outline';
 import { Event } from '@prisma/client';
 import Link from 'next/link';
 import React from 'react';
+import { EventStatusToIcon } from '../event-status-to-icon';
 import { Badge } from '../ui/badge';
 
 interface EventThumbnailCardProps extends React.ComponentProps<typeof Link> {
@@ -31,19 +27,19 @@ export async function EventThumbnailCard({
         <FolderIcon className="text-secondary mr-auto mb-8 size-6" />
         {event.status == 'PUBLISHED' && (
           <Badge variant="success">
-            <CheckIcon />
+            <EventStatusToIcon status={event.status} />
             Veröffentlicht
           </Badge>
         )}
         {event.status == 'DRAFT' && (
           <Badge variant="default">
-            <InboxIcon />
+            <EventStatusToIcon status={event.status} />
             Entwurf
           </Badge>
         )}
         {event.status == 'ARCHIVED' && (
           <Badge variant="warn">
-            <ArchiveBoxIcon />
+            <EventStatusToIcon status={event.status} />
             Archiviert
           </Badge>
         )}
