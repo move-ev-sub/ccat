@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Profile {
-  id        String   @id @unique @default(dbgenerated())
+  id        String   @id @unique @default(dbgenerated()) @db.Uuid
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -22,12 +22,14 @@ model Profile {
   createdSubEvents SubEvent[]
   createdSlots     Slot[]
   ownApplications  Application[]
+
+  @@map("profiles")
 }
 
 // A table that refferences the Profile table
 model UserProfile {
   profile Profile @relation(fields: [id], references: [id])
-  id      String  @id @unique
+  id      String  @id @unique @db.Uuid
 
   // User Info
   firstName String
@@ -36,28 +38,34 @@ model UserProfile {
   // Notifications
   notifyMe       Boolean @default(false)
   emailReminders Boolean @default(false)
+
+  @@map("user_profiles")
 }
 
 model AdminProfile {
   profile Profile @relation(fields: [id], references: [id])
-  id      String  @id @unique
+  id      String  @id @unique @db.Uuid
 
   // Admin Info
   firstName String
   lastName  String
+
+  @@map("admin_profiles")
 }
 
 model CompanyProfile {
   profile Profile @relation(fields: [id], references: [id])
-  id      String  @id @unique
+  id      String  @id @unique @db.Uuid
 
   // Company Info
   name    String
   logoUrl String @default("https://move-ev.de/wp-content/uploads/2018/12/Logo_hell_Text_Rehcts.svg")
+
+  @@map("company_profiles")
 }
 
 model Event {
-  id          String      @id @unique @default(uuid())
+  id          String      @id @unique @default(uuid()) @db.Uuid
   name        String
   description String?
   status      EventStatus @default(DRAFT)
@@ -65,30 +73,34 @@ model Event {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   createdBy    Profile       @relation(fields: [createdById], references: [id])
-  createdById  String
+  createdById  String        @db.Uuid
   phases       Phase[]
   subEvents    SubEvent[]
   slots        Slot[]
   applications Application[]
+
+  @@map("events")
 }
 
 model Phase {
-  id          String    @id @unique @default(uuid())
+  id          String    @id @unique @default(uuid()) @db.Uuid
   description String?
   event       Event     @relation(fields: [eventId], references: [id])
-  eventId     String
+  eventId     String    @db.Uuid
   type        PhaseType @default(PREP)
   startDate   DateTime  @db.Timestamptz(3)
   endDate     DateTime  @db.Timestamptz(3)
   createdAt   DateTime  @default(now())
   createdBy   Profile   @relation(fields: [createdById], references: [id])
-  createdById String
+  createdById String    @db.Uuid
+
+  @@map("phases")
 }
 
 model SubEvent {
-  id              String           @id @unique @default(uuid())
+  id              String           @id @unique @default(uuid()) @db.Uuid
   event           Event            @relation(fields: [eventId], references: [id])
-  eventId         String
+  eventId         String           @db.Uuid
   name            String
   description     String?
   maxParticipants Int              @default(30)
@@ -96,34 +108,38 @@ model SubEvent {
   endDate         DateTime         @db.Timestamptz(3)
   createdAt       DateTime         @default(now())
   createdBy       Profile          @relation(fields: [createdById], references: [id])
-  createdById     String
+  createdById     String           @db.Uuid
   subApplications SubApplication[]
+
+  @@map("sub_events")
 }
 
 model Slot {
-  id          String   @id @unique @default(uuid())
+  id          String   @id @unique @default(uuid()) @db.Uuid
   event       Event    @relation(fields: [eventId], references: [id])
-  eventId     String
+  eventId     String   @db.Uuid
   startDate   DateTime @db.Timestamptz(3)
   endDate     DateTime @db.Timestamptz(3)
   createdAt   DateTime @default(now())
   createdBy   Profile  @relation(fields: [createdById], references: [id])
-  createdById String
+  createdById String   @db.Uuid
+
+  @@map("slots")
 }
 
 model Application {
-  id                     String            @id @unique @default(uuid())
+  id                     String            @id @unique @default(uuid()) @db.Uuid
   event                  Event             @relation(fields: [eventId], references: [id])
-  eventId                String
+  eventId                String            @db.Uuid
   user                   Profile           @relation(fields: [userId], references: [id])
-  userId                 String
+  userId                 String            @db.Uuid
   status                 ApplicationStatus @default(SAVED)
   firstName              String
   lastName               String
   birthDate              DateTime
   gender                 Gender            @default(PREFFER_NOT_TO_SAY)
   university             University        @relation(fields: [universityId], references: [id])
-  universityId           String
+  universityId           String            @db.Uuid
   currentDegree          Degree
   targetDegree           Degree
   fieldOfStudy           String
@@ -136,24 +152,30 @@ model Application {
   experienceConsulting   Int
   cvUrl                  String
   subApplications        SubApplication[]
+
+  @@map("applications")
 }
 
 model SubApplication {
-  id            String                      @id @unique @default(uuid())
+  id            String                      @id @unique @default(uuid()) @db.Uuid
   application   Application                 @relation(fields: [applicationId], references: [id])
-  applicationId String
+  applicationId String                      @db.Uuid
   subEvent      SubEvent                    @relation(fields: [subEventId], references: [id])
-  subEventId    String
+  subEventId    String                      @db.Uuid
   coverLetter   String
   prioritized   Boolean                     @default(false)
   status        SubApplicationStatus
   priorization  SubApplicationPrioritzation
+
+  @@map("sub_applications")
 }
 
 model University {
-  id           String        @id @unique @default(uuid())
+  id           String        @id @unique @default(uuid()) @db.Uuid
   name         String
   applications Application[]
+
+  @@map("universities")
 }
 
 enum Role {
