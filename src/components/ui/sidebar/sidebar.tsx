@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Sidebar({ ...props }: React.ComponentProps<'aside'>) {
+export async function Sidebar({ ...props }: React.ComponentProps<'aside'>) {
   return (
     <aside
       data-slot="sidebar"

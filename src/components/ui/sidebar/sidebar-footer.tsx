@@ -1,6 +1,6 @@
 import { cn } from '@/utils';
 
-export function SidebarFooter({
+export async function SidebarFooter({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
