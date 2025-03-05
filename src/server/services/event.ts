@@ -2,7 +2,6 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { eq } from 'drizzle-orm';
-import { db } from '../db';
 import { eventsTable } from '../db/schema';
 import { NewEventData } from '../schemas/event';
 import { EventInsertData, EventSelectResult } from '../types/event';

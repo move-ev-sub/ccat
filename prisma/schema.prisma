@@ -164,7 +164,7 @@ enum Role {
 
 enum EventStatus {
   DRAFT
-  ACTIVE
+  PUBLISHED
   ARCHIVED
 }
 
