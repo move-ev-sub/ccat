@@ -1,7 +1,3 @@
-import { Navbar } from '@/components/navbar';
-import { AdminMobileNav } from '@/components/navigation/admin-mobile-nav';
-import { NavigationItem } from '@/components/navigation/navigation-item';
-import { ThemeSwitch } from '@/components/theme-switch';
 import React from 'react';
 
 export default async function AdminGeneralLayout({
@@ -9,7 +5,7 @@ export default async function AdminGeneralLayout({
 }: React.PropsWithChildren) {
   return (
     <>
-      <Navbar className="flex items-center justify-start">
+      {/* <Navbar className="flex items-center justify-start">
         <AdminMobileNav className="ml-auto block lg:hidden" />
         <div className="hidden gap-2.5 lg:flex">
           <NavigationItem href={'/admin'}>Veranstaltungen</NavigationItem>
@@ -21,7 +17,7 @@ export default async function AdminGeneralLayout({
           </NavigationItem>
         </div>
         <ThemeSwitch className="ml-auto hidden lg:flex" />
-      </Navbar>
+      </Navbar> */}
       {children}
     </>
   );

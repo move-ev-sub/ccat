@@ -13,7 +13,7 @@ export function PageContainer({
   return (
     <div
       data-slot={'page-container'}
-      className={cn('container py-12 sm:py-20', className)}
+      className={cn('container py-10 sm:py-12', className)}
       {...props}
     />
   );

@@ -36,7 +36,7 @@ export async function AdminSidebar({}: React.ComponentProps<
             <BuildingOfficeIcon />
             Unternehmen
           </SidebarNavItem>
-          <SidebarNavItem href={'/settings/companies'}>
+          <SidebarNavItem href={'/settings/general'}>
             <Cog6ToothIcon />
             Einstellungen
           </SidebarNavItem>

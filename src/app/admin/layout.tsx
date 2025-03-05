@@ -1,3 +1,4 @@
+import { AdminSidebar } from '@/components/sidebars/admin-sidebar';
 import { isAdmin } from '@/server/actions/auth';
 import { redirect } from 'next/navigation';
 import React from 'react';
@@ -13,5 +14,13 @@ export default async function AdminLayout({
     redirect('/');
   }
 
-  return <main>{children}</main>;
+  return (
+    <main className="flex h-screen w-screen items-start justify-start">
+      <AdminSidebar />
+
+      <section className="h-full w-full grow overflow-y-auto" tabIndex={-1}>
+        {children}
+      </section>
+    </main>
+  );
 }
