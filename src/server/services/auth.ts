@@ -1,9 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
-import { eq } from 'drizzle-orm';
-import { db } from '../db';
-import { profilesTable } from '../db/schema';
+import { prisma } from '../db';
 import { ServiceResult } from '../types/serviceResult';
 
 /**
@@ -40,10 +38,29 @@ export async function signUpWithEmail(
     };
   }
 
-  const {} = await db.insert(profilesTable).values({
-    id: data.user.id,
-    profileType: 'user',
+  // Create a profile for the user
+  const res = await prisma.profile.create({
+    data: {
+      id: data.user.id,
+      role: 'USER',
+      userProfile: {
+        create: {
+          firstName: '',
+          lastName: '',
+          emailReminders: false,
+          notifyMe: false,
+        },
+      },
+    },
   });
+
+  if (!res) {
+    return {
+      ok: false,
+      error:
+        'Ein unbekannter Fehler ist aufgetreten. Es konnte kein Profil für den Benutzer erstellt werden.',
+    };
+  }
 
   return { ok: true, data };
 }
@@ -188,12 +205,14 @@ export async function isAdmin(
 
   const { id: userId } = user;
 
-  // Check if user is an admin
-  const profile = await db.query.profilesTable.findFirst({
-    where: eq(profilesTable.id, userId),
+  const profile = await prisma.profile.findFirst({
+    where: {
+      id: userId,
+    },
   });
 
-  if (!profile || profile.profileType !== 'admin') {
+  // Check if user is an admin
+  if (!profile || profile.role !== 'ADMIN') {
     return {
       ok: false,
       error: 'User is not authorized.',
