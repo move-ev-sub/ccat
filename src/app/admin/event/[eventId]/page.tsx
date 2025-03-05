@@ -1,12 +1,8 @@
+import { EventStatusToIcon } from '@/components/event-status-to-icon';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageTitle } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { getEvent } from '@/server/actions/event';
-import {
-  EyeIcon,
-  InboxArrowDownIcon,
-  InboxStackIcon,
-} from '@heroicons/react/16/solid';
 
 export default async function AdminEventOverviewPage({
   params,
@@ -36,19 +32,19 @@ export default async function AdminEventOverviewPage({
         <PageTitle>{name}</PageTitle>
         {status == 'ARCHIVED' && (
           <Badge variant={'warn'}>
-            <InboxArrowDownIcon />
+            <EventStatusToIcon status={status} />
             Archiviert
           </Badge>
         )}
         {status == 'DRAFT' && (
           <Badge variant={'default'}>
-            <InboxStackIcon />
+            <EventStatusToIcon status={status} />
             Entwurf
           </Badge>
         )}
         {status == 'PUBLISHED' && (
           <Badge variant={'success'}>
-            <EyeIcon />
+            <EventStatusToIcon status={status} />
             Veröffentlicht
           </Badge>
         )}
