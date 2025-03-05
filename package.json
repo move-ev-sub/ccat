@@ -15,7 +15,8 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:migrate": "drizzle-kit push",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
