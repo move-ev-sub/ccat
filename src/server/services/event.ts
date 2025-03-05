@@ -1,10 +1,9 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { eq } from 'drizzle-orm';
-import { eventsTable } from '../db/schema';
+import { Event } from '@prisma/client';
+import { prisma } from '../db';
 import { NewEventData } from '../schemas/event';
-import { EventInsertData, EventSelectResult } from '../types/event';
 import { ServiceResult } from '../types/serviceResult';
 import { getUser, isAdmin, isAuthenticated } from './auth';
 
@@ -14,9 +13,7 @@ import { getUser, isAdmin, isAuthenticated } from './auth';
  *
  * @returns A promise with all published events.
  */
-export async function getPublishedEvents(): Promise<
-  ServiceResult<EventSelectResult[]>
-> {
+export async function getPublishedEvents(): Promise<ServiceResult<Event[]>> {
   const client = await createClient();
 
   // Only authenticated users can fetch see
@@ -28,14 +25,23 @@ export async function getPublishedEvents(): Promise<
   }
 
   // Fetch all events where status is published
-  const data = await db
-    .select()
-    .from(eventsTable)
-    .where(eq(eventsTable.status, 'published'));
+
+  const res = await prisma.event.findMany({
+    where: {
+      status: 'PUBLISHED',
+    },
+  });
+
+  if (!res || res.length === 0) {
+    return {
+      ok: false,
+      error: 'Failed to fetch events. No events found.',
+    };
+  }
 
   return {
     ok: true,
-    data,
+    data: res,
   };
 }
 
@@ -44,9 +50,7 @@ export async function getPublishedEvents(): Promise<
  *
  * @returns A promise with all events.
  */
-export async function getAllEvents(): Promise<
-  ServiceResult<EventSelectResult[]>
-> {
+export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
   const client = await createClient();
 
   if (!(await isAuthenticated(client))) {
@@ -73,18 +77,21 @@ export async function getAllEvents(): Promise<
     };
   }
 
-  const data = await db.select().from(eventsTable);
+  // TODO: This needs to be optimized
+  // When at scale, we should not fetch all events at once
+  // but rather paginate the results
+  const res = await prisma.event.findMany();
 
-  if (!data) {
+  if (!res || res.length === 0) {
     return {
       ok: false,
-      error: 'Failed to fetch events.',
+      error: 'Failed to fetch events. No events found.',
     };
   }
 
   return {
     ok: true,
-    data,
+    data: res,
   };
 }
 
@@ -100,8 +107,7 @@ export async function getAllEvents(): Promise<
 export async function createEvent({
   name,
   description,
-  status,
-}: NewEventData): Promise<ServiceResult<EventSelectResult[]>> {
+}: NewEventData): Promise<ServiceResult<Event>> {
   const client = await createClient();
 
   if (!(await isAuthenticated(client))) {
@@ -128,30 +134,20 @@ export async function createEvent({
     };
   }
 
-  const defaultValues: Partial<EventInsertData> = {
-    createdBy: user.id,
-    lastUpdated: new Date(Date.now()),
-  };
-
-  const res = await db
-    .insert(eventsTable)
-    .values({
+  const res = await prisma.event.create({
+    data: {
       name,
-      status,
       description,
-      ...defaultValues,
-    })
-    .returning();
+      status: 'DRAFT',
+      createdById: user.id,
+    },
+  });
 
-  if (!res || res.length === 0) {
+  if (res === null) {
     return {
       ok: false,
       error: 'Failed to create event in the database.',
     };
-  }
-
-  if (res.length > 1) {
-    console.warn('More than one event was created.');
   }
 
   return {
@@ -173,7 +169,7 @@ export async function createEvent({
  */
 export async function getEventById(
   eventId: string
-): Promise<ServiceResult<EventSelectResult>> {
+): Promise<ServiceResult<Event>> {
   const client = await createClient();
 
   // Only authenticated users can fetch events
@@ -185,23 +181,23 @@ export async function getEventById(
   }
 
   // Get the event from the database
-  const res = await db
-    .select()
-    .from(eventsTable)
-    .where(eq(eventsTable.id, eventId));
+
+  const res = await prisma.event.findFirst({
+    where: {
+      id: eventId,
+    },
+  });
 
   // Check if more than one event was found
-  if (res.length > 1) {
+  if (res === null) {
     return {
       ok: false,
-      error: 'Failed to fetch event (More than one event was found).',
+      error: `Event with ID ${eventId} not found in the database.`,
     };
   }
 
-  const event = res[0];
-
   // Only admins can fetch unpublished events
-  if (event.status !== 'published' && !(await isAdmin(client))) {
+  if (res.status !== 'PUBLISHED' && !(await isAdmin(client))) {
     return {
       ok: false,
       error: 'User is not authorized to fetch this event.',
@@ -210,6 +206,6 @@ export async function getEventById(
 
   return {
     ok: true,
-    data: event,
+    data: res,
   };
 }
