@@ -1,15 +1,14 @@
 'use server';
 
 import * as companyService from '@/server/services/company';
-import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
-import { companyProfilesTable } from '../db/schema';
 import { newCompanySchema } from '../schemas/company';
 import { getAllCompanies } from '../services/company';
 import { ActionResponse } from '../types/action-response';
+import { FullCompanyProfile } from '../types/profile';
 
 export async function getCompanies(): Promise<
-  ActionResponse<(typeof companyProfilesTable.$inferSelect)[]>
+  ActionResponse<FullCompanyProfile[]>
 > {
   const res = await getAllCompanies();
 
@@ -59,19 +58,4 @@ export async function createCompany(
       password: res.data.password,
     },
   };
-}
-
-export async function uploadTestFile(file: File) {
-  const supabase = await createClient();
-
-  console.log(file);
-
-  const { data, error } = await supabase.storage
-    .from('test')
-    .upload(file.name, file, {
-      cacheControl: '3600',
-      upsert: false,
-    });
-
-  console.log(data, error);
 }
