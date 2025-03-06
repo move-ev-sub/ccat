@@ -4,6 +4,8 @@ import { cn } from '@/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import { SheetClose } from '../sheet';
+import { useSidebarContext } from './sidebar-context';
 import { useSidebarNavContext } from './sidebar-nav.context';
 
 export function SidebarNavItem({
@@ -13,6 +15,7 @@ export function SidebarNavItem({
 }: React.ComponentProps<typeof Link>) {
   const pathname = usePathname();
   const { base } = useSidebarNavContext();
+  const { mobile } = useSidebarContext();
 
   const actualHref = base ? (base + href).toString() : href;
 
@@ -22,10 +25,10 @@ export function SidebarNavItem({
     } else {
       return pathname.startsWith(actualHref.toString());
     }
-  }, [pathname, base]);
+  }, [actualHref, href, pathname]);
 
   return (
-    <li>
+    <ItemWrapper mobile={mobile}>
       <Link
         data-slot="sidebar-nav-item"
         data-state={active ? 'active' : 'inactive'}
@@ -41,6 +44,22 @@ export function SidebarNavItem({
         href={actualHref}
         {...props}
       />
+    </ItemWrapper>
+  );
+}
+
+function ItemWrapper({
+  mobile,
+  children,
+  ...props
+}: React.ComponentProps<'li'> & {
+  mobile?: boolean;
+}) {
+  return mobile ? (
+    <li {...props}>
+      <SheetClose asChild>{children}</SheetClose>
     </li>
+  ) : (
+    <li {...props}>{children}</li>
   );
 }

@@ -15,7 +15,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <main className="flex h-screen w-screen items-start justify-start">
+    <main className="flex w-screen flex-col items-start justify-start md:h-screen md:flex-row">
       <AdminSidebar />
 
       <section className="h-full w-full grow overflow-y-auto" tabIndex={-1}>
