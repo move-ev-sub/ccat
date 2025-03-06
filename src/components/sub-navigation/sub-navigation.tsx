@@ -21,7 +21,7 @@ export function SubNavigation({
     <div
       data-slot="sub-navigation"
       className={cn(
-        'border-border flex max-w-screen items-center justify-start overflow-x-auto border-b px-8',
+        'border-border flex max-w-screen items-center justify-start gap-6 overflow-x-auto border-b px-8 py-4',
         className
       )}
       {...props}

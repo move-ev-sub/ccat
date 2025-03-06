@@ -1,3 +1,5 @@
+'use server';
+
 import { env } from '@/env';
 import { createServerClient } from '@supabase/ssr';
 import {
