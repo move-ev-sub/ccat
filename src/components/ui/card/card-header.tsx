@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from '@/utils';
+import React from 'react';
 
 export function CardHeader({
   className,
@@ -9,7 +8,10 @@ export function CardHeader({
   return (
     <div
       data-slot="card-header"
-      className={cn('flex flex-col gap-1.5 px-6', className)}
+      className={cn(
+        'bg-background-muted text-foreground border-border rounded-t-md border-b px-6 py-4',
+        className
+      )}
       {...props}
     />
   );
