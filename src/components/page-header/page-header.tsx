@@ -1,10 +1,19 @@
+import { Separator } from '@/components/ui/separator';
 import { cn } from '@/utils';
 
 export function PageHeader({
   className,
+  children,
   ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<'header'>) {
   return (
-    <div data-slot="page-header" className={cn('', className)} {...props} />
+    <header
+      data-slot="page-header"
+      className={cn('container', className)}
+      {...props}
+    >
+      {children}
+      <Separator className="mt-6 sm:mt-4" orientation="horizontal" />
+    </header>
   );
 }
