@@ -15,7 +15,7 @@ export function TabsList({
   return (
     <TabsPrimtiive.List
       data-slot={'tabs-list'}
-      className={cn(tabsListVariants({}), className)}
+      className={cn(tabsListVariants({ className }), className)}
       style={{
         scrollbarWidth: 'thin',
       }}
