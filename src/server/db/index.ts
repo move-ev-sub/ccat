@@ -4,7 +4,10 @@ import { PrismaClient } from '@prisma/client';
 /**
  * ---------------------------------- PRISMA ----------------------------------
  */
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ['error', 'warn', 'info', 'query'],
+  errorFormat: 'pretty',
+});
 
 /**
  * Cache the database connection in development. This avoids creating a new connection on every HMR
@@ -16,4 +19,4 @@ const globalForPrisma = globalThis as unknown as {
 
 if (env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-export { prisma };
+export default prisma;

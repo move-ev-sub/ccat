@@ -1,8 +1,10 @@
+'use server';
+
 import { createClient } from '@/utils/supabase/server';
 import { Role } from '@prisma/client';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
-import { prisma } from '../db';
+import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
 
 /**
@@ -31,11 +33,11 @@ export async function signUpWithEmail(
   if (error || !data?.user) {
     console.error(
       'Error when signing up:',
-      error?.message || 'Ein unbekannter Fehler ist aufgetreten.'
+      error?.stack || 'Ein unbekannter Fehler ist aufgetreten.'
     );
     return {
       ok: false,
-      error: error?.message || 'Ein unbekannter Fehler ist aufgetreten.',
+      error: error?.stack || 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
 
@@ -183,19 +185,26 @@ export async function isAuthenticated(
 export async function isAdmin(
   client?: SupabaseClient
 ): Promise<ServiceResult<boolean>> {
+  console.debug('[isAdmin] Checking if user is an admin!');
+
   if (!client) {
     client = await createClient();
+    console.debug('[isAdmin] Supabase Client created');
   }
 
   // Check if user is authenticated
   if (!(await isAuthenticated(client))) {
+    console.debug('[isAdmin] User is not authenticated');
     return {
       ok: false,
       error: 'User is not authenticated.',
     };
   }
 
+  console.debug('[isAdmin] User is authenticated');
+  console.debug('[isAdmin] Getting user object');
   const user = await getUser(client);
+  console.debug('[isAdmin] User object:', user);
 
   if (!user) {
     return {
@@ -206,21 +215,34 @@ export async function isAdmin(
 
   const { id: userId } = user;
 
-  const profile = await prisma.profile.findFirst({
-    where: {
-      id: userId,
-    },
-  });
+  try {
+    console.debug('[isAdmin] Getting profile for user', userId);
+    const profile = await prisma.profile.findFirstOrThrow({
+      where: {
+        id: userId,
+      },
+    });
+    console.debug('[isAdmin] Profile:', profile);
 
-  // Check if user is an admin
-  if (!profile || profile.role !== 'ADMIN') {
+    console.debug('[isAdmin] Checking User Role: ', profile.role);
+    // Check if user is an admin
+    if (!profile || profile.role !== 'ADMIN') {
+      return {
+        ok: false,
+        error: 'User is not authorized.',
+      };
+    }
+
+    console.debug('[isAdmin] User is an admin');
+
+    return { ok: true, data: true };
+  } catch (error) {
+    console.error('Error when checking if user is an admin:', error);
     return {
       ok: false,
-      error: 'User is not authorized.',
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
-
-  return { ok: true, data: true };
 }
 
 /**
@@ -267,21 +289,29 @@ export async function getCurrentRole(): Promise<ServiceResult<Role>> {
     };
   }
 
-  const profile = await prisma.profile.findFirst({
-    where: {
-      id: user.id,
-    },
-  });
+  try {
+    const profile = await prisma.profile.findFirstOrThrow({
+      where: {
+        id: user.id,
+      },
+    });
 
-  if (!profile) {
+    if (!profile) {
+      return {
+        ok: false,
+        error: `No profile found for user with id ${user.id}`,
+      };
+    }
+
+    return {
+      ok: true,
+      data: profile.role,
+    };
+  } catch (error) {
+    console.error('Error when getting the current role:', error);
     return {
       ok: false,
-      error: `No profile found for user with id ${user.id}`,
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
-
-  return {
-    ok: true,
-    data: profile.role,
-  };
 }

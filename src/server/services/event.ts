@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { Event } from '@prisma/client';
-import { prisma } from '../db';
+import prisma from '../db';
 import { NewEventData } from '../schemas/event';
 import { ServiceResult } from '../types/serviceResult';
 import { getUser, isAdmin, isAuthenticated } from './auth';
@@ -201,6 +201,46 @@ export async function getEventById(
     return {
       ok: false,
       error: 'User is not authorized to fetch this event.',
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
+  };
+}
+
+export async function getAllNonArchivedEvents(): Promise<
+  ServiceResult<Event[]>
+> {
+  const client = await createClient();
+
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  if (!(await isAdmin(client))) {
+    return {
+      ok: false,
+      error: 'User is not authorized.',
+    };
+  }
+
+  const res = await prisma.event.findMany({
+    where: {
+      NOT: {
+        status: 'ARCHIVED',
+      },
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: false,
+      error: 'Failed to fetch events. Something went wrong.',
     };
   }
 
