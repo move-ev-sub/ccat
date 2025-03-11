@@ -1,54 +1,79 @@
 import { cn } from '@/utils';
-import { FolderIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon } from '@heroicons/react/16/solid';
 import { Event } from '@prisma/client';
-import Link from 'next/link';
+import { format } from 'date-fns';
 import React from 'react';
-import { EventStatusToIcon } from '../event-status-to-icon';
+import { Pinger } from '../pinger';
 import { Badge } from '../ui/badge';
+import { Card, CardContent, CardFooter, CardLink } from '../ui/card';
 
-interface EventThumbnailCardProps extends React.ComponentProps<typeof Link> {
-  event: Event;
-}
-
+/**
+ * The EventThumbnailCard component displays a preview of an event which
+ * is used in the admin dashboard to give a quick overview of all the events.
+ *
+ * @todo TODO: The CardFooter currently displays a static number of applications.
+ *             This should be replaced with the actual number of applications.
+ */
 export async function EventThumbnailCard({
   className,
   event,
   ...props
-}: EventThumbnailCardProps) {
+}: React.ComponentProps<typeof Card> & {
+  /**
+   * The event from which the thumbnail should be generated.
+   */
+  event: Event;
+}) {
+  const formattedDate = format(event.createdAt, 'dd.MM.yyyy');
+  const eventPath = `/admin/event/${event.id}`;
+
   return (
-    <Link
-      className={cn(
-        'border-border bg-background flex flex-col rounded-xl border p-6 shadow-xs',
-        className
-      )}
+    <Card
+      data-slot={'event-thumbnail-card'}
+      className={cn('h-fit', className)}
       {...props}
     >
-      <div className="flex items-start justify-start">
-        <FolderIcon className="text-secondary mr-auto mb-8 size-6" />
-        {event.status == 'PUBLISHED' && (
-          <Badge variant="success">
-            <EventStatusToIcon status={event.status} />
-            Veröffentlicht
-          </Badge>
-        )}
-        {event.status == 'DRAFT' && (
-          <Badge variant="default">
-            <EventStatusToIcon status={event.status} />
-            Entwurf
-          </Badge>
-        )}
-        {event.status == 'ARCHIVED' && (
-          <Badge variant="warn">
-            <EventStatusToIcon status={event.status} />
-            Archiviert
-          </Badge>
-        )}
-      </div>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-start">
+          <div className="border-border relative rounded-sm border p-2">
+            <CalendarIcon className="text-foreground size-5" />
 
-      <p className="text-foreground mt-auto text-sm font-medium">
-        {event.name}
-      </p>
-      <p className="text-secondary mt-1 text-sm">Dezember 2025</p>
-    </Link>
+            {/* When the Event is active (published) display a Pinger */}
+            {event.status === 'PUBLISHED' && (
+              <Pinger
+                variant={'success'}
+                size={'md'}
+                className="absolute -top-1.5 -right-1.5"
+              />
+            )}
+          </div>
+          {event.status === 'PUBLISHED' && (
+            <Badge className="ml-auto" variant={'success'}>
+              Veröffentlicht
+            </Badge>
+          )}
+          {event.status === 'ARCHIVED' && (
+            <Badge className="ml-auto" variant={'warn'}>
+              Archiviert
+            </Badge>
+          )}
+          {event.status === 'DRAFT' && (
+            <Badge className="ml-auto">Entwurf</Badge>
+          )}
+        </div>
+
+        <CardLink href={eventPath} className="mt-6">
+          {event.name}
+        </CardLink>
+
+        {/* Description */}
+        <p className="text-secondary mt-1 text-sm">
+          Erstellt am {formattedDate}
+        </p>
+      </CardContent>
+      <CardFooter>
+        <small className="text-xs">352 Bewerbungen</small>
+      </CardFooter>
+    </Card>
   );
 }
