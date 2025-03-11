@@ -57,11 +57,8 @@ const mockSubEvents: SubEvent[] = [
 ];
 
 export default async function AdminEventSubeventsPage() {
-  // a boolean with a 50% chance of being true
-  const hasError = Math.random() < 0.5;
-
   const subEvents = mockSubEvents;
-  if (hasError || subEvents.length === 0) {
+  if (subEvents.length === 0) {
     return <NoSubEvents />;
   }
 
