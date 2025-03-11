@@ -20,7 +20,7 @@ import { Card, CardContent, CardHeader, CardLink } from './ui/card';
  * @todo TODO: The Card Icon should be replaced with the actual sub-event type icon.
  *             Currently, the ChatBubbleLeftRightIcon is used as a placeholder.
  */
-export async function SubEventThumbnailCard({
+export function SubEventThumbnailCard({
   className,
   subEvent,
   ...props
@@ -86,7 +86,10 @@ export async function SubEventThumbnailCard({
         <dl>
           {sameDay ? (
             <>
-              <SubEventThumbnailCardListItem label="Datum" value="11.12.2025" />
+              <SubEventThumbnailCardListItem
+                label="Datum"
+                value={formattedStart}
+              />
               <SubEventThumbnailCardListItem
                 label="Uhrzeit"
                 value={timeBetween}
@@ -117,9 +120,6 @@ export async function SubEventThumbnailCard({
 /**
  * The SubEventThumbnailCardListItem serves as a small helper component to
  * keep the styles in sync for the desc items in the SubEventThumbnailCard.
- *
- * @todo TODO: The values should be replaced with the actual values from the
- * sub-event but this is done in the SubEventThumbnailCard component.
  */
 function SubEventThumbnailCardListItem({
   className,
