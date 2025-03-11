@@ -1,46 +1,113 @@
 'use client';
 
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Bars3Icon } from '@heroicons/react/24/outline';
-import React from 'react';
-import { Sheet, SheetContent, SheetPortal, SheetTrigger } from '../sheet';
-import { SidebarProvider } from './sidebar-context';
+import * as React from 'react';
 
-export function Sidebar({ children, ...props }: React.ComponentProps<'aside'>) {
-  const [open, setIsOpen] = React.useState(false);
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import { cn } from '@/utils';
+import { SIDEBAR_WIDTH_MOBILE } from './sidebar.consts';
+import { useSidebar } from './sidebar.context';
 
-  const mobile = useIsMobile();
+export function Sidebar({
+  side = 'left',
+  variant = 'sidebar',
+  collapsible = 'offcanvas',
+  className,
+  children,
+  ...props
+}: React.ComponentProps<'div'> & {
+  side?: 'left' | 'right';
+  variant?: 'sidebar' | 'floating' | 'inset';
+  collapsible?: 'offcanvas' | 'icon' | 'none';
+}) {
+  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+
+  if (collapsible === 'none') {
+    return (
+      <div
+        data-slot="sidebar"
+        className={cn(
+          'bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  if (isMobile) {
+    return (
+      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+        <SheetContent
+          data-sidebar="sidebar"
+          data-slot="sidebar"
+          data-mobile="true"
+          className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
+          style={
+            {
+              '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
+            } as React.CSSProperties
+          }
+          side={side}
+        >
+          <SheetHeader className="sr-only">
+            <SheetTitle>Sidebar</SheetTitle>
+            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+          </SheetHeader>
+          <div className="flex h-full w-full flex-col">{children}</div>
+        </SheetContent>
+      </Sheet>
+    );
+  }
 
   return (
-    <SidebarProvider value={{ mobile }}>
-      {mobile ? (
-        <div className="border-border w-full px-8 py-2 pl-6">
-          <Sheet open={open} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <button className="focus-visible:ring-ring focus-visible:ring-offset-background active:bg-background-muted rounded-lg p-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
-                <Bars3Icon className="size-6" />
-              </button>
-            </SheetTrigger>
-            <SheetPortal>
-              <SheetContent
-                sheetTitle="Menu"
-                side="left"
-                className="[--sidebar-item-padding:0.625rem] [--sidebar-padding:1rem]"
-              >
-                {children}
-              </SheetContent>
-            </SheetPortal>
-          </Sheet>
-        </div>
-      ) : (
-        <aside
-          data-slot="sidebar"
-          className="border-border bg-background-muted flex h-full w-64 shrink-0 flex-col border-r [--sidebar-item-padding:0.625rem] [--sidebar-padding:1rem]"
-          {...props}
+    <div
+      className="group peer text-sidebar-foreground hidden md:block"
+      data-state={state}
+      data-collapsible={state === 'collapsed' ? collapsible : ''}
+      data-variant={variant}
+      data-side={side}
+      data-slot="sidebar"
+    >
+      {/* This is what handles the sidebar gap on desktop */}
+      <div
+        className={cn(
+          'relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear',
+          'group-data-[collapsible=offcanvas]:w-0',
+          'group-data-[side=right]:rotate-180',
+          variant === 'floating' || variant === 'inset'
+            ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)'
+        )}
+      />
+      <div
+        className={cn(
+          'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex',
+          side === 'left'
+            ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
+            : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
+          // Adjust the padding for floating and inset variants.
+          variant === 'floating' || variant === 'inset'
+            ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
+          className
+        )}
+        {...props}
+      >
+        <div
+          data-sidebar="sidebar"
+          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
         >
           {children}
-        </aside>
-      )}
-    </SidebarProvider>
+        </div>
+      </div>
+    </div>
   );
 }

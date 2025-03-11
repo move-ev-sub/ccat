@@ -1,13 +1,14 @@
 import { cn } from '@/utils';
 
-export async function SidebarFooter({
+export function SidebarFooter({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="sidebar-footer"
-      className={cn('mt-auto shrink-0 p-(--sidebar-padding)', className)}
+      data-sidebar="footer"
+      className={cn('flex flex-col gap-2 p-2', className)}
       {...props}
     />
   );
