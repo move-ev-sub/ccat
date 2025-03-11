@@ -1,1 +1,9 @@
-export default async function AdminEventSettingsPage() {}
+import { PageTitle } from '@/components/page-header';
+
+export default async function AdmineEventGeneralSettings() {
+  return (
+    <div className="">
+      <PageTitle>General Einstellungen</PageTitle>
+    </div>
+  );
+}
