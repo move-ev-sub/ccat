@@ -59,6 +59,25 @@ export async function createSlot(
     };
   }
 
+  // areSameDay checks if two dates are on the same calendar day.
+  //
+  // TODO: move this to a shared utility function since this is
+  // also used in other places.
+  const areSameDay = (date1: Date, date2: Date): boolean => {
+    return (
+      date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getFullYear() === date2.getFullYear()
+    );
+  };
+
+  if (!areSameDay(startDate, endDate)) {
+    return {
+      ok: false,
+      error: 'Start and end date must be on the same day.',
+    };
+  }
+
   const user = await getUser();
 
   if (!user) {
@@ -80,7 +99,39 @@ export async function createSlot(
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to create slot.',
+      error: 'Failed to create slot. Unknown error.',
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
+  };
+}
+
+/**
+ * Gets all slots for a given event.
+ */
+export async function fetchSlotsForEvent(
+  eventId: string
+): Promise<ServiceResult<Slot[]>> {
+  if (!(await isAuthenticated())) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  const res = await prisma.slot.findMany({
+    where: {
+      eventId: eventId,
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: false,
+      error: 'Failed to get slots for event.',
     };
   }
 
