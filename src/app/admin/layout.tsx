@@ -1,4 +1,5 @@
 import { AdminSidebar } from '@/components/sidebars/admin-sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import React from 'react';
 
 // Wrap all admin routes in this layout to ensure only admins can access them
@@ -13,12 +14,14 @@ export default async function AdminLayout({
   // }
 
   return (
-    <main className="flex w-screen flex-col items-start justify-start md:h-screen md:flex-row">
+    <SidebarProvider>
       <AdminSidebar />
-
-      <section className="h-full w-full grow overflow-y-auto" tabIndex={-1}>
+      <main className="w-full">
+        <div className="border-border border-b px-8 py-2">
+          <SidebarTrigger />
+        </div>
         {children}
-      </section>
-    </main>
+      </main>
+    </SidebarProvider>
   );
 }
