@@ -2,18 +2,27 @@
 
 import { createClient } from '@/utils/supabase/client';
 import {
-  ArrowRightStartOnRectangleIcon,
+  ArrowUpRightIcon,
+  CheckIcon,
   ChevronUpDownIcon,
-  Cog6ToothIcon,
+  ComputerDesktopIcon,
+  MoonIcon,
+  SunIcon,
 } from '@heroicons/react/16/solid';
 import { User } from '@supabase/supabase-js';
+import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 
@@ -25,6 +34,7 @@ export function SidebarProfileMenu({
 }) {
   const supabase = createClient();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
 
   const onSettings = () => {
     // TODO: Redirect users to their settings page (paralell routes)
@@ -35,6 +45,12 @@ export function SidebarProfileMenu({
     supabase.auth.signOut();
     router.push('/auth/login');
   };
+
+  const onSetTheme = async (theme: 'light' | 'dark' | 'system') => {
+    setTheme(theme);
+  };
+
+  const onDocumentation = () => {};
 
   return (
     <DropdownMenu {...props}>
@@ -50,12 +66,59 @@ export function SidebarProfileMenu({
       <DropdownMenuPortal>
         <DropdownMenuContent className="w-56">
           <DropdownMenuGroup>
+            <DropdownMenuLabel className="truncate">
+              christoph.langer100@gmail.com
+            </DropdownMenuLabel>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem
+                  className="group"
+                  onSelect={() => onSetTheme('light')}
+                  data-active={theme === 'light'}
+                >
+                  <SunIcon />
+                  Light
+                  <CheckIcon className="ml-auto hidden group-data-[active=true]:block" />
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="group"
+                  onSelect={() => onSetTheme('dark')}
+                  data-active={theme === 'dark'}
+                >
+                  <MoonIcon />
+                  Dark
+                  <CheckIcon className="ml-auto hidden group-data-[active=true]:block" />
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="group"
+                  onSelect={() => onSetTheme('system')}
+                  data-active={theme === 'system'}
+                >
+                  <ComputerDesktopIcon />
+                  System
+                  <CheckIcon className="ml-auto hidden group-data-[active=true]:block" />
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem onSelect={onDocumentation}>
+              Dokumentation
+              <ArrowUpRightIcon className="ml-auto" />
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => alert('Not set')}>
+              Changelog
+              <ArrowUpRightIcon className="ml-auto" />
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
             <DropdownMenuItem onSelect={onSettings}>
-              <Cog6ToothIcon />
               Einstellungen
             </DropdownMenuItem>
             <DropdownMenuItem variant="destructive" onSelect={onLogout}>
-              <ArrowRightStartOnRectangleIcon />
               Abmelden
             </DropdownMenuItem>
           </DropdownMenuGroup>

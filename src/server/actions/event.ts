@@ -1,3 +1,5 @@
+'use server';
+
 import * as eventService from '@/server/services/event';
 import { Event } from '@prisma/client';
 import { NewEventData, newEventSchema } from '../schemas/event';

@@ -2,7 +2,7 @@ import { cva, VariantProps } from 'class-variance-authority';
 
 export const buttonVariants = cva(
   // base
-  'text-sm font-semibold rounded-lg transition-colors cursor-pointer ' +
+  'text-sm font-medium rounded-lg transition-colors cursor-pointer h-fit ' +
     // alignment
     'flex items-center justify-center gap-2.5 ' +
     // focus

@@ -1,12 +1,12 @@
 import { cn } from '@/utils';
 import React from 'react';
 
-export function PageDesc({ className, ...props }: React.ComponentProps<'p'>) {
+export function PageDesc({ className, ...props }: React.ComponentProps<'h2'>) {
   return (
-    <p
+    <h2
       data-slot="page-description"
       className={cn(
-        'text-secondary mt-4 max-w-prose sm:mt-2 sm:text-sm',
+        'text-secondary mt-2 max-w-prose text-base sm:text-sm',
         className
       )}
       {...props}

@@ -1,15 +1,11 @@
-import * as React from 'react';
-
 import { cn } from '@/utils';
+import React from 'react';
 
-export function CardTitle({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+export function CardTitle({ className, ...props }: React.ComponentProps<'h4'>) {
   return (
-    <div
-      data-slot="card-title"
-      className={cn('leading-none font-semibold', className)}
+    <h4
+      data-slot={'card-title'}
+      className={cn('text-foreground block rounded-md font-medium', className)}
       {...props}
     />
   );

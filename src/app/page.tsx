@@ -1,6 +1,5 @@
-import { isAuthenticated } from '@/server/actions/auth';
-import { getCurrentRole, getUser } from '@/server/services/auth';
-import { redirect } from 'next/navigation';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { EyeIcon } from '@heroicons/react/16/solid';
 
 /**
  * Redirecting users to the correct page would traditionally be done in a
@@ -17,38 +16,53 @@ import { redirect } from 'next/navigation';
  * @returns
  */
 export default async function RedirectPage() {
-  if (!(await isAuthenticated())) {
-    redirect('/auth/login');
-  }
-
-  const user = await getUser();
-
+  // if (!(await isAuthenticated())) {
+  //   redirect('/auth/login');
+  // }
+  // const user = await getUser();
   // If the user is not logged in, redirect them to the login page
-  if (user === null) {
-    return redirect('/auth/login');
-  }
-
+  // if (user === null) {
+  //   return redirect('/auth/login');
+  // }
   // Get the users role
-  const res = await getCurrentRole();
-
+  // const res = await getCurrentRole();
   // If no profile is present, redirect to login page
   // TODO: Better error handling
-  if (!res.ok) {
-    return redirect('/auth/login');
-  }
-
-  const { data: role } = res;
-
-  // redirect admins to `/admin`
-  if (role == 'ADMIN') {
-    return redirect('/admin');
-  }
-
-  // redirect companies to `/company`
-  if (role == 'COMPANY') {
-    return redirect('/company');
-  }
-
-  // Return all other users to `/user`
-  return redirect('/user');
+  // if (!res.ok) {
+  //   return redirect('/auth/login');
+  // }
+  // const { data: role } = res;
+  // // redirect admins to `/admin`
+  // if (role == 'ADMIN') {
+  //   return redirect('/admin');
+  // }
+  // // redirect companies to `/company`
+  // if (role == 'COMPANY') {
+  //   return redirect('/company');
+  // }
+  // // Return all other users to `/user`
+  // return redirect('/user');
+  return (
+    <div className="py-32">
+      <div className="md:px-8">
+        <Tabs defaultValue="tab1">
+          <TabsList
+            className="pl-8 md:px-0"
+            style={{
+              scrollbarWidth: 'thin',
+            }}
+          >
+            <TabsTrigger value="tab1">Alle Veranstaltungen</TabsTrigger>
+            <TabsTrigger value="tab2">
+              <EyeIcon />
+              Veröffentlichte Veranstaltungen
+            </TabsTrigger>
+            <TabsTrigger value="tab3">Entwürfe</TabsTrigger>
+            <TabsTrigger value="tab4">Einladungen</TabsTrigger>
+            <TabsTrigger value="tab5">Abgelehnte Veranstaltungen</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+    </div>
+  );
 }

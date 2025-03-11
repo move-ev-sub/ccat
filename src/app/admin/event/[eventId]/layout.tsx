@@ -1,5 +1,6 @@
 import { SubNavigation, SubNavigationItem } from '@/components/navigation';
-import { getAllEvents } from '@/server/actions/event';
+import { BreadCrumbs } from '@/components/ui/breadcrumbs/breadcrumbs';
+import { Crumb } from '@/components/ui/breadcrumbs/crumb';
 import React from 'react';
 
 export default async function AdminEventLayout({
@@ -12,15 +13,15 @@ export default async function AdminEventLayout({
 }) {
   const eventId = (await params).eventId;
 
-  const res = await getAllEvents();
-
-  if (res.error) {
-    console.error(res.error);
-  }
-
   return (
     <>
-      <SubNavigation base={`/admin/event/${eventId}`}>
+      <div className="border-border border-b px-8 py-4">
+        <BreadCrumbs>
+          <Crumb href={'/admin/event'}>Veranstaltungen</Crumb>
+          <Crumb href={'/admin/event'}>Consulting Contact</Crumb>
+        </BreadCrumbs>
+      </div>
+      <SubNavigation base={`/admin/event/${eventId}`} className="pl-8">
         <SubNavigationItem href={`/`}>Übersicht</SubNavigationItem>
         <SubNavigationItem href={'/sub-events'}>
           Unterveranstaltungen

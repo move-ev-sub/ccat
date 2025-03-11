@@ -30,7 +30,20 @@ export async function updateSession(request: NextRequest) {
   );
 
   // refreshing the auth token
-  await supabase.auth.getUser();
+  const user = await supabase.auth.getUser();
+
+  // When the user is not authenticated, redirect to the login page
+  if (
+    user.data.user === null &&
+    !request.nextUrl.pathname.startsWith('/auth')
+  ) {
+    return NextResponse.redirect(new URL('/auth/login', request.url));
+  }
+
+  // When the user is logged in and navigates to any auth route, redirect to the home page
+  if (user.data.user !== null && request.nextUrl.pathname.startsWith('/auth')) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
   return supabaseResponse;
 }

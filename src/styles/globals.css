@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './dark-mode.css';
 @import './colors.css';
+@import './spacing.css';
 
 @utility container {
   margin-inline: auto;

@@ -4,6 +4,7 @@ import { cn } from '@/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import { tabsTriggerVariants } from '../ui/tabs/tabs-trigger';
 import { useSubNavContext } from './sub-navigation.context';
 
 export function SubNavigationItem({
@@ -27,13 +28,9 @@ export function SubNavigationItem({
   return (
     <Link
       data-slot={'sub-navigation-item'}
-      data-active={active}
+      data-state={active ? 'active' : 'inactive'}
       href={`${base}${href}`}
-      className={cn(
-        'text-foreground data-[active=true]:text-accent relative w-fit rounded-md text-sm font-medium',
-        'focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline',
-        className
-      )}
+      className={cn(tabsTriggerVariants({}), 'py-3', className)}
       {...props}
     />
   );

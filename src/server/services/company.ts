@@ -1,7 +1,7 @@
 'use server';
 
 import { createAdminClient, createClient } from '@/utils/supabase/server';
-import { prisma } from '../db';
+import prisma from '../db';
 import { FullCompanyProfile } from '../types/profile';
 import { ServiceResult } from '../types/serviceResult';
 import { createSecurePassword, isAdmin, isAuthenticated } from './auth';
@@ -226,7 +226,7 @@ export async function createCompany(
     });
 
   if (logoRes.error || logoRes.data == null) {
-    console.error(logoRes.error);
+    console.error(logoRes.error.stack);
     return {
       ok: false,
       error: logoRes.error.message || 'Failed to upload logo.',
