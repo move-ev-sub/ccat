@@ -178,6 +178,7 @@ export async function createCompany(
     data: {
       id: userId,
       role: 'COMPANY',
+      email,
       companyProfile: {
         create: {
           name,

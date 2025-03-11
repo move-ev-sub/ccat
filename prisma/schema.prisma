@@ -11,6 +11,7 @@ datasource db {
 model Profile {
   id        String   @id @unique @default(dbgenerated()) @db.Uuid
   role      Role     @default(USER)
+  email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

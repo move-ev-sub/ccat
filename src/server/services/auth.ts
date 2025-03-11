@@ -46,6 +46,7 @@ export async function signUpWithEmail(
     data: {
       id: data.user.id,
       role: 'USER',
+      email: email,
       userProfile: {
         create: {
           firstName: '',
