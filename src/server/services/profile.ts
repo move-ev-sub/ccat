@@ -1,4 +1,6 @@
-import { Profile, Role } from '@prisma/client';
+'use server';
+
+import { Prisma, Profile, Role } from '@prisma/client';
 import prisma from '../db';
 import {
   FullAdminProfile,
@@ -30,7 +32,8 @@ import { isAuthenticated } from './auth';
 async function fetchPaginatedProfilesForRole<T extends Profile>(
   page: number,
   limit: number,
-  role: Role | 'ALL'
+  role: Role | 'ALL',
+  filter?: Prisma.ProfileWhereInput
 ): Promise<
   ServiceResult<{
     page: number;
@@ -46,12 +49,16 @@ async function fetchPaginatedProfilesForRole<T extends Profile>(
   }
 
   const res = await prisma.profile.findMany({
-    skip: (page - 1) * limit,
+    skip: 0 * limit,
     take: limit,
+    where: {
+      ...filter,
+    },
     // Only set a WHERE clause if the role is not 'ALL'
     ...(role !== 'ALL' && {
       where: {
-        role: role,
+        ...filter,
+        AND: { role: role },
       },
     }),
     // include the sub-profiles based on the role
@@ -93,9 +100,10 @@ async function fetchPaginatedProfilesForRole<T extends Profile>(
  */
 export async function fetchPaginatedProfiles(
   page: number,
-  limit: number
+  limit: number,
+  filter?: Prisma.ProfileWhereInput
 ): ReturnType<typeof fetchPaginatedProfilesForRole<Profile>> {
-  return fetchPaginatedProfilesForRole<Profile>(page, limit, 'ALL');
+  return fetchPaginatedProfilesForRole<Profile>(page, limit, 'ALL', filter);
 }
 
 /**
@@ -110,9 +118,15 @@ export async function fetchPaginatedProfiles(
  */
 export async function fetchPaginatedAdminProfiles(
   page: number,
-  limit: number
+  limit: number,
+  filter?: Prisma.ProfileWhereInput
 ): ReturnType<typeof fetchPaginatedProfilesForRole<FullAdminProfile>> {
-  return fetchPaginatedProfilesForRole<FullAdminProfile>(page, limit, 'ADMIN');
+  return fetchPaginatedProfilesForRole<FullAdminProfile>(
+    page,
+    limit,
+    'ADMIN',
+    filter
+  );
 }
 
 /**
@@ -127,9 +141,15 @@ export async function fetchPaginatedAdminProfiles(
  */
 export async function fetchPaginatedUserProfiles(
   page: number,
-  limit: number
+  limit: number,
+  filter?: Prisma.ProfileWhereInput
 ): ReturnType<typeof fetchPaginatedProfilesForRole<FullUserProfile>> {
-  return fetchPaginatedProfilesForRole<FullUserProfile>(page, limit, 'USER');
+  return fetchPaginatedProfilesForRole<FullUserProfile>(
+    page,
+    limit,
+    'USER',
+    filter
+  );
 }
 
 /**
