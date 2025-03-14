@@ -7,9 +7,9 @@ export function Table({ className, ...props }: React.ComponentProps<'table'>) {
       data-slot="table"
       className={cn(
         // base
-        'w-full caption-bottom border-b',
+        'w-full caption-bottom',
         // border color
-        'border-gray-200 dark:border-gray-800',
+        'border-border',
         className
       )}
       {...props}
