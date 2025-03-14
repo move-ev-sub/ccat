@@ -155,7 +155,7 @@ export async function fetchUserProfiles(
  *             and should be moved to its own logic, as the Row Count only changes when the
  *             filters change.
  */
-async function fetchPaginatedProfilesForRole<T extends Profile>({
+async function fetchProfilesForRolePaginated<T extends Profile>({
   filter: { role, filters },
   pagination: { page, pageSize },
 }: FetchPaginatedProfileArgs): Promise<
@@ -239,10 +239,10 @@ async function fetchPaginatedProfilesForRole<T extends Profile>({
  *
  * @returns A paginated list of profiles.
  */
-export async function fetchPaginatedProfiles(
+export async function fetchProfilesPaginated(
   args: FetchPaginatedSpecificProfileArgs
-): ReturnType<typeof fetchPaginatedProfilesForRole<Profile>> {
-  return fetchPaginatedProfilesForRole<Profile>({
+): ReturnType<typeof fetchProfilesForRolePaginated<Profile>> {
+  return fetchProfilesForRolePaginated<Profile>({
     ...args,
     filter: {
       ...args.filter,
@@ -261,10 +261,10 @@ export async function fetchPaginatedProfiles(
  *
  * @returns A paginated list of admin profiles.
  */
-export async function fetchPaginatedAdminProfiles(
+export async function fetchAdminProfilesPaginated(
   args: FetchPaginatedSpecificProfileArgs
-): ReturnType<typeof fetchPaginatedProfilesForRole<FullAdminProfile>> {
-  return fetchPaginatedProfilesForRole<FullAdminProfile>({
+): ReturnType<typeof fetchProfilesForRolePaginated<FullAdminProfile>> {
+  return fetchProfilesForRolePaginated<FullAdminProfile>({
     ...args,
     filter: {
       ...args.filter,
@@ -283,10 +283,10 @@ export async function fetchPaginatedAdminProfiles(
  *
  * @returns A paginated list of user profiles.
  */
-export async function fetchPaginatedUserProfiles(
+export async function fetchUserProfilesPaginated(
   args: FetchPaginatedSpecificProfileArgs
-): ReturnType<typeof fetchPaginatedProfilesForRole<FullUserProfile>> {
-  return fetchPaginatedProfilesForRole<FullUserProfile>({
+): ReturnType<typeof fetchProfilesForRolePaginated<FullUserProfile>> {
+  return fetchProfilesForRolePaginated<FullUserProfile>({
     ...args,
     filter: {
       ...args.filter,
@@ -305,10 +305,10 @@ export async function fetchPaginatedUserProfiles(
  *
  * @returns A paginated list of company profiles.
  */
-export async function fetchPaginatedCompanyProfiles(
+export async function fetchCompanyProfilesPaginated(
   args: FetchPaginatedSpecificProfileArgs
-): ReturnType<typeof fetchPaginatedProfilesForRole<FullCompanyProfile>> {
-  return fetchPaginatedProfilesForRole<FullCompanyProfile>({
+): ReturnType<typeof fetchProfilesForRolePaginated<FullCompanyProfile>> {
+  return fetchProfilesForRolePaginated<FullCompanyProfile>({
     ...args,
     filter: {
       ...args.filter,
