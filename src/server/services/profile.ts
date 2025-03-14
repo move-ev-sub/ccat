@@ -8,8 +8,9 @@ import {
   FullUserProfile,
 } from '../types/profile';
 import { ServiceResult } from '../types/serviceResult';
-import { isAuthenticated } from './auth';
+import { isAdmin, isAuthenticated } from './auth';
 
+// ---------------------------------- TYPES ----------------------------------
 interface PaginationArgs {
   page: number;
   pageSize: number;
@@ -24,12 +25,19 @@ interface SortArgs {
   sorts?: Prisma.ProfileOrderByWithRelationInput;
 }
 
-interface FetchPaginatedProfileArgs {
-  pagination: PaginationArgs;
+interface FetchProfileArgs {
   filter: Partial<Omit<FilterArgs, 'role'>> & {
     role: FilterArgs['role'];
   };
   sort?: SortArgs;
+}
+
+interface FetchSpecificProfileArgs extends Omit<FetchProfileArgs, 'filter'> {
+  filter?: Omit<FilterArgs, 'role'>;
+}
+
+interface FetchPaginatedProfileArgs extends FetchProfileArgs {
+  pagination: PaginationArgs;
 }
 
 interface FetchPaginatedSpecificProfileArgs
@@ -48,12 +56,89 @@ interface FetchSpecificProfileCountArgs
   filter?: Omit<FilterArgs, 'role'>;
 }
 
+// --------------------------------- METHODS ---------------------------------
+
 /**
- * Fetches all profiles for a given role from the database. Only authenticated users can
- * fetch ALL profiles. Profiles are fetched in a paginated manner. This means that only a
- * subset of profiles are fetched at a time. The `page` parameter specifies which page of
- * profiles to fetch, and the `limit` parameter specifies how many profiles to fetch per
- * page.
+ * Fetches ALL profiles from the database for a given role. This function should only
+ * be used, when the advantage of client-side pagination outweighs the disadvantage of
+ * fetching all profiles at once.
+ *
+ *
+ */
+async function fetchProfilesForRole<T extends Profile>({
+  filter: { role, filters },
+}: FetchProfileArgs): Promise<ServiceResult<T[]>> {
+  // Only authenticated users can fetch ALL profiles
+  if (!(await isAuthenticated())) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  if (!(await isAdmin())) {
+    return {
+      ok: false,
+      error: 'User is not an admin.',
+    };
+  }
+
+  const res = await prisma.profile.findMany({
+    where: {
+      ...filters,
+      ...(role !== 'ALL' && {
+        role: role,
+      }),
+    },
+    // include the sub-profiles based on the role
+    ...(role === 'ADMIN' && {
+      include: {
+        adminProfile: true,
+      },
+    }),
+    ...(role === 'COMPANY' && {
+      include: {
+        companyProfile: true,
+      },
+    }),
+    ...(role === 'USER' && {
+      include: {
+        userProfile: true,
+      },
+    }),
+  });
+
+  return {
+    ok: true,
+    data: res as T[],
+  };
+}
+
+/**
+ * Fetches ALL User profiles from the database.
+ *
+ * @see fetchProfilesForRole<Profile>
+ *
+ * @returns A list of profiles.
+ */
+export async function fetchUserProfiles(
+  args?: FetchSpecificProfileArgs
+): ReturnType<typeof fetchProfilesForRole<FullUserProfile>> {
+  return fetchProfilesForRole<FullUserProfile>({
+    ...args,
+    filter: {
+      ...args?.filter,
+      role: 'USER',
+    },
+  });
+}
+
+/**
+ * Fetches profiles for a given role from the database in a paginated manner. Only
+ * authenticated users can fetch ALL profiles. Profiles are fetched in a paginated manner.
+ * This means that only a subset of profiles are fetched at a time. The `page` parameter
+ * specifies which page of profiles to fetch, and the `limit` parameter specifies how many
+ * profiles to fetch per page.
  *
  * When the Role is set to a specific role, only profiles with that role are fetched. This
  * also means, that the role specific profile is included in the response. If no role is
