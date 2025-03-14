@@ -10,6 +10,44 @@ import {
 import { ServiceResult } from '../types/serviceResult';
 import { isAuthenticated } from './auth';
 
+interface PaginationArgs {
+  page: number;
+  pageSize: number;
+}
+
+interface FilterArgs {
+  role: Role | 'ALL';
+  filters: Prisma.ProfileWhereInput;
+}
+
+interface SortArgs {
+  sorts?: Prisma.ProfileOrderByWithRelationInput;
+}
+
+interface FetchPaginatedProfileArgs {
+  pagination: PaginationArgs;
+  filter: Partial<Omit<FilterArgs, 'role'>> & {
+    role: FilterArgs['role'];
+  };
+  sort?: SortArgs;
+}
+
+interface FetchPaginatedSpecificProfileArgs
+  extends Omit<FetchPaginatedProfileArgs, 'filter'> {
+  filter?: Omit<FilterArgs, 'role'>;
+}
+
+interface FetchProfileCountArgs {
+  filter: Partial<Omit<FilterArgs, 'role'>> & {
+    role: FilterArgs['role'];
+  };
+}
+
+interface FetchSpecificProfileCountArgs
+  extends Omit<FetchProfileCountArgs, 'filter'> {
+  filter?: Omit<FilterArgs, 'role'>;
+}
+
 /**
  * Fetches all profiles for a given role from the database. Only authenticated users can
  * fetch ALL profiles. Profiles are fetched in a paginated manner. This means that only a
@@ -28,16 +66,18 @@ import { isAuthenticated } from './auth';
  * @returns A paginated list of profiles of the specified role.
  *
  * @todo TODO: Implement caching for profiles.
+ * @todo TODO: The Row Count is currently returned with each response. This is not necessary
+ *             and should be moved to its own logic, as the Row Count only changes when the
+ *             filters change.
  */
-async function fetchPaginatedProfilesForRole<T extends Profile>(
-  page: number,
-  limit: number,
-  role: Role | 'ALL',
-  filter?: Prisma.ProfileWhereInput
-): Promise<
+async function fetchPaginatedProfilesForRole<T extends Profile>({
+  filter: { role, filters },
+  pagination: { page, pageSize },
+}: FetchPaginatedProfileArgs): Promise<
   ServiceResult<{
     page: number;
     profiles: T[];
+    count: number;
   }>
 > {
   // Only authenticated users can fetch ALL profiles
@@ -49,15 +89,15 @@ async function fetchPaginatedProfilesForRole<T extends Profile>(
   }
 
   const res = await prisma.profile.findMany({
-    skip: 0 * limit,
-    take: limit,
+    skip: page * pageSize,
+    take: pageSize,
     where: {
-      ...filter,
+      ...filters,
     },
     // Only set a WHERE clause if the role is not 'ALL'
     ...(role !== 'ALL' && {
       where: {
-        ...filter,
+        ...filters,
         AND: { role: role },
       },
     }),
@@ -79,11 +119,27 @@ async function fetchPaginatedProfilesForRole<T extends Profile>(
     }),
   });
 
+  const count = await fetchProfilesCount({
+    ...(filters && {
+      filter: {
+        filters: filters,
+      },
+    }),
+  });
+
+  if (!count.ok) {
+    return {
+      ok: false,
+      error: count.error,
+    };
+  }
+
   return {
     ok: true,
     data: {
       page: page,
       profiles: res as T[],
+      count: count.data,
     },
   };
 }
@@ -99,11 +155,15 @@ async function fetchPaginatedProfilesForRole<T extends Profile>(
  * @returns A paginated list of profiles.
  */
 export async function fetchPaginatedProfiles(
-  page: number,
-  limit: number,
-  filter?: Prisma.ProfileWhereInput
+  args: FetchPaginatedSpecificProfileArgs
 ): ReturnType<typeof fetchPaginatedProfilesForRole<Profile>> {
-  return fetchPaginatedProfilesForRole<Profile>(page, limit, 'ALL', filter);
+  return fetchPaginatedProfilesForRole<Profile>({
+    ...args,
+    filter: {
+      ...args.filter,
+      role: 'ALL',
+    },
+  });
 }
 
 /**
@@ -117,16 +177,15 @@ export async function fetchPaginatedProfiles(
  * @returns A paginated list of admin profiles.
  */
 export async function fetchPaginatedAdminProfiles(
-  page: number,
-  limit: number,
-  filter?: Prisma.ProfileWhereInput
+  args: FetchPaginatedSpecificProfileArgs
 ): ReturnType<typeof fetchPaginatedProfilesForRole<FullAdminProfile>> {
-  return fetchPaginatedProfilesForRole<FullAdminProfile>(
-    page,
-    limit,
-    'ADMIN',
-    filter
-  );
+  return fetchPaginatedProfilesForRole<FullAdminProfile>({
+    ...args,
+    filter: {
+      ...args.filter,
+      role: 'ADMIN',
+    },
+  });
 }
 
 /**
@@ -140,22 +199,21 @@ export async function fetchPaginatedAdminProfiles(
  * @returns A paginated list of user profiles.
  */
 export async function fetchPaginatedUserProfiles(
-  page: number,
-  limit: number,
-  filter?: Prisma.ProfileWhereInput
+  args: FetchPaginatedSpecificProfileArgs
 ): ReturnType<typeof fetchPaginatedProfilesForRole<FullUserProfile>> {
-  return fetchPaginatedProfilesForRole<FullUserProfile>(
-    page,
-    limit,
-    'USER',
-    filter
-  );
+  return fetchPaginatedProfilesForRole<FullUserProfile>({
+    ...args,
+    filter: {
+      ...args.filter,
+      role: 'USER',
+    },
+  });
 }
 
 /**
  * Fetches all company profiles from the database in a paginated manner.
  *
- * @see fetchPaginatedProfilesForRole<FullAdminProfile>
+ * @see fetchPaginatedProfilesForRole<FullCompanyProfile>
  *
  * @param page Number of the page to fetch.
  * @param limit Number of profiles to fetch per page.
@@ -163,14 +221,15 @@ export async function fetchPaginatedUserProfiles(
  * @returns A paginated list of company profiles.
  */
 export async function fetchPaginatedCompanyProfiles(
-  page: number,
-  limit: number
+  args: FetchPaginatedSpecificProfileArgs
 ): ReturnType<typeof fetchPaginatedProfilesForRole<FullCompanyProfile>> {
-  return fetchPaginatedProfilesForRole<FullCompanyProfile>(
-    page,
-    limit,
-    'COMPANY'
-  );
+  return fetchPaginatedProfilesForRole<FullCompanyProfile>({
+    ...args,
+    filter: {
+      ...args.filter,
+      role: 'COMPANY',
+    },
+  });
 }
 
 /**
@@ -179,9 +238,9 @@ export async function fetchPaginatedCompanyProfiles(
  * @param {Role | 'ALL'} role The role to filter by.
  * @returns {Promise<ServiceResult<number>>} The total number of profiles.
  */
-async function fetchProfilesCountForRole(
-  role: Role | 'ALL'
-): Promise<ServiceResult<number>> {
+async function fetchProfilesCountForRole({
+  filter: { role, filters },
+}: FetchProfileCountArgs): Promise<ServiceResult<number>> {
   // Only authenticated users can fetch ALL profiles
   if (!(await isAuthenticated())) {
     return {
@@ -190,15 +249,14 @@ async function fetchProfilesCountForRole(
     };
   }
 
-  const count = await prisma.profile.count(
-    role !== 'ALL'
-      ? {
-          where: {
-            role: role,
-          },
-        }
-      : undefined
-  );
+  const count = await prisma.profile.count({
+    where: {
+      ...filters,
+      ...(role !== 'ALL' && {
+        role: role,
+      }),
+    },
+  });
 
   return {
     ok: true,
@@ -211,10 +269,15 @@ async function fetchProfilesCountForRole(
  *
  * @returns {Promise<ServiceResult<number>>} The total number of profiles.
  */
-export async function fetchProfilesCount(): ReturnType<
-  typeof fetchProfilesCountForRole
-> {
-  return fetchProfilesCountForRole('ALL');
+export async function fetchProfilesCount(
+  args?: FetchSpecificProfileCountArgs
+): ReturnType<typeof fetchProfilesCountForRole> {
+  return fetchProfilesCountForRole({
+    filter: {
+      ...args?.filter,
+      role: 'ALL',
+    },
+  });
 }
 
 /**
@@ -222,10 +285,15 @@ export async function fetchProfilesCount(): ReturnType<
  *
  * @returns {Promise<ServiceResult<number>>} The total number of user profiles.
  */
-export async function fetchUserProfilesCount(): ReturnType<
-  typeof fetchProfilesCountForRole
-> {
-  return fetchProfilesCountForRole('USER');
+export async function fetchUserProfilesCount(
+  args?: FetchSpecificProfileCountArgs
+): ReturnType<typeof fetchProfilesCountForRole> {
+  return fetchProfilesCountForRole({
+    filter: {
+      ...args?.filter,
+      role: 'USER',
+    },
+  });
 }
 
 /**
@@ -233,16 +301,28 @@ export async function fetchUserProfilesCount(): ReturnType<
  *
  * @returns {Promise<ServiceResult<number>>} The total number of company profiles.
  */
-export async function fetchCompanyProfilesCount(): ReturnType<
-  typeof fetchProfilesCountForRole
-> {
-  return fetchProfilesCountForRole('COMPANY');
+export async function fetchCompanyProfilesCount(
+  args?: FetchSpecificProfileCountArgs
+): ReturnType<typeof fetchProfilesCountForRole> {
+  return fetchProfilesCountForRole({
+    filter: {
+      ...args?.filter,
+      role: 'COMPANY',
+    },
+  });
 }
 
 /**
  * Fetches the total number of admin profiles in the database.
  * @returns {Promise<ServiceResult<number>>} The total number of admin profiles.
  */
-export async function fetchAdminProfilesCount() {
-  return fetchProfilesCountForRole('ADMIN');
+export async function fetchAdminProfilesCount(
+  args?: FetchSpecificProfileCountArgs
+) {
+  return fetchProfilesCountForRole({
+    filter: {
+      ...args?.filter,
+      role: 'ADMIN',
+    },
+  });
 }
