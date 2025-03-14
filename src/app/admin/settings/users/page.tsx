@@ -35,6 +35,9 @@ import { DataTable } from './_components/data-table';
  * This would require us to fetch only the profiles that are needed for the
  * current page and to implement the pagination logic on the client side
  * (e.g. by using the `swr` library).
+ *
+ * NOTE: The DataTable component was tested with >10.000 profiles and
+ * performed well.
  */
 export default async function AdminUserSettingsPage() {
   const res = await fetchUserProfiles();
