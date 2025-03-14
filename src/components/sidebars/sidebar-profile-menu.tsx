@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/16/solid';
 import { User } from '@supabase/supabase-js';
 import { useTheme } from 'next-themes';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
@@ -36,11 +37,6 @@ export function SidebarProfileMenu({
   const router = useRouter();
   const { theme, setTheme } = useTheme();
 
-  const onSettings = () => {
-    // TODO: Redirect users to their settings page (paralell routes)
-    router.push('/settings');
-  };
-
   const onLogout = async () => {
     supabase.auth.signOut();
     router.push('/auth/login');
@@ -50,16 +46,13 @@ export function SidebarProfileMenu({
     setTheme(theme);
   };
 
-  const onDocumentation = () => {};
-
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger asChild>
-        <button className="border-border bg-background focus-visible:ring-ring focus-visible:ring-offset-background-muted flex w-full items-center justify-start gap-2.5 rounded-lg border px-(--sidebar-item-padding) py-1.5 hover:bg-zinc-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
+        <button className="border-border bg-background focus-visible:ring-ring focus-visible:ring-offset-background-muted hover:bg-background-muted flex w-full items-center justify-start gap-2.5 rounded-lg border px-2.5 py-1.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
           <span className="text-foreground truncate text-sm font-medium">
             {user.email ?? 'Unbekannt'}
           </span>
-
           <ChevronUpDownIcon className="text-secondary ml-auto size-4 shrink-0" />
         </button>
       </DropdownMenuTrigger>
@@ -104,19 +97,27 @@ export function SidebarProfileMenu({
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem onSelect={onDocumentation}>
-              Dokumentation
-              <ArrowUpRightIcon className="ml-auto" />
+            <DropdownMenuItem asChild>
+              <Link href={'https://docs.consultingcontact.de'} target="_blank">
+                Dokumentation
+                <ArrowUpRightIcon className="ml-auto" />
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => alert('Not set')}>
-              Changelog
-              <ArrowUpRightIcon className="ml-auto" />
+            <DropdownMenuItem asChild>
+              <Link
+                href={'https://github.com/move-ev-sub/ccat/releases'}
+                target="_blank"
+              >
+                Changelog
+                <ArrowUpRightIcon className="ml-auto" />
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem onSelect={onSettings}>
-              Einstellungen
+            <DropdownMenuItem asChild>
+              {/* TODO: Redirect users to their own settings page */}
+              <Link href={'/settings'}>Einstellungen</Link>
             </DropdownMenuItem>
             <DropdownMenuItem variant="destructive" onSelect={onLogout}>
               Abmelden
