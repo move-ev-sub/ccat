@@ -49,7 +49,7 @@ export function ConfirmDestructive({
   description = 'Diese Aktion ist final und kann nicht rückgängig gemacht werden.',
   children,
   ...props
-}: Omit<React.ComponentProps<typeof AlertDialog>, 'open' | 'onOpenChange'> & {
+}: React.ComponentProps<typeof AlertDialog> & {
   /**
    * Callback for when the action is confirmed. This can only be called
    * when the user has entered the correct audit text.
@@ -118,11 +118,11 @@ export function ConfirmDestructive({
                 render={({ field }) => (
                   <FormItem>
                     <FormDescription className="text-secondary mb-2 text-sm">
-                      Bestätige diese Aktion, indem du &qout;
+                      Bestätige diese Aktion, indem du &quot;
                       <span className="text-foreground font-medium">
                         {auditText}
                       </span>
-                      &qout; in das Feld unten eingibst (ohne
+                      &quot; in das Feld unten eingibst (ohne
                       Anführungszeichen).
                     </FormDescription>
                     <FormControl>
