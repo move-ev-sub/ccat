@@ -11,7 +11,7 @@ export function DialogHeader({
     <div
       data-slot="dialog-header"
       className={cn(
-        'text-foreground flex flex-col gap-2 sm:text-left',
+        'text-foreground flex flex-col gap-2 text-center sm:text-left',
         className
       )}
       {...props}
