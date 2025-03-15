@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@/components/theme-provider';
+import { Providers } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
 import '@/styles/globals.css';
 import { cn } from '@/utils';
@@ -30,15 +30,10 @@ export default function RootLayout({
           'bg-background antialiased'
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <Toaster />
           {children}
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

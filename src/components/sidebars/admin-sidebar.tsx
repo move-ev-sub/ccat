@@ -3,51 +3,95 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarNav,
-  SidebarNavItem,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuLink,
 } from '@/components/ui/sidebar';
 import {
   BuildingOfficeIcon,
   CalendarIcon,
   Cog6ToothIcon,
+  DocumentCheckIcon,
   HomeIcon,
   UsersIcon,
 } from '@heroicons/react/16/solid';
 import React from 'react';
-import { DefaultSidebarFooter } from './default-sidebar-footer';
-import { DefaultSidebarHeader } from './default-sidebar-header';
+import { SidebarProfileMenu } from './sidebar-profile-menu';
+
+// Menu items.
+const items = [
+  {
+    title: 'Dashboard',
+    url: '/',
+    icon: HomeIcon,
+  },
+  {
+    title: 'Veranstaltungen',
+    url: '/event',
+    icon: CalendarIcon,
+  },
+  {
+    title: 'Nutzer',
+    url: '/settings/users',
+    icon: UsersIcon,
+  },
+  {
+    title: 'Unternehmen',
+    url: '/settings/companies',
+    icon: BuildingOfficeIcon,
+  },
+  {
+    title: 'Settings',
+    url: '/settings/general',
+    icon: Cog6ToothIcon,
+  },
+];
 
 export async function AdminSidebar({}: React.ComponentProps<
   typeof Sidebar
 > & {}) {
   return (
     <Sidebar>
-      <DefaultSidebarHeader />
       <SidebarContent>
-        <SidebarNav base="/admin">
-          <SidebarNavItem href={'/'}>
-            <HomeIcon />
-            Dashboard
-          </SidebarNavItem>
-          <SidebarNavItem href={'/event'}>
-            <CalendarIcon />
-            Veranstaltungen
-          </SidebarNavItem>
-          <SidebarNavItem href={'/settings/users'}>
-            <UsersIcon />
-            Nutzer
-          </SidebarNavItem>
-          <SidebarNavItem href={'/settings/companies'}>
-            <BuildingOfficeIcon />
-            Unternehmen
-          </SidebarNavItem>
-          <SidebarNavItem href={'/settings/general'}>
-            <Cog6ToothIcon />
-            Einstellungen
-          </SidebarNavItem>
-        </SidebarNav>
+        <SidebarHeader>
+          <div className="flex items-center justify-start gap-4 p-2">
+            <div className="bg-background border-border-secondary rounded-md border p-2">
+              <DocumentCheckIcon className="text-accent size-4" />
+            </div>
+            <p className="text-foreground font-medium">CCAT</p>
+          </div>
+        </SidebarHeader>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu base="/admin">
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuLink href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </SidebarMenuLink>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
-      <DefaultSidebarFooter />
+      <SidebarFooter>
+        <SidebarProfileMenu
+          user={{
+            id: '',
+            email: 'christoph.langer100@gmail.com',
+            app_metadata: {},
+            user_metadata: {},
+            aud: '',
+            created_at: 'new Date(),',
+          }}
+        />
+      </SidebarFooter>
     </Sidebar>
   );
 }

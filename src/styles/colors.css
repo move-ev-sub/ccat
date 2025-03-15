@@ -273,6 +273,37 @@
 }
 
 /**
+ * Sidebar
+ *
+ * Colors used the Sidebar component.
+ * -------------------------------------------------------------------------- */
+@layer base {
+  :root {
+    --sidebar: var(--primary-100);
+    --sidebar-background: #ffffff;
+    --sidebar-foreground: var(--primary-800);
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: var(--primary-200);
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: var(--border-secondary);
+    --sidebar-ring: var(--ring);
+  }
+
+  .dark {
+    --sidebar: var(--primary-800);
+    --sidebar-background: var(--primary-800);
+    --sidebar-foreground: var(--color-white);
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: var(--primary-900);
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: var(--border-secondary);
+    --sidebar-ring: var(--ring);
+  }
+}
+
+/**
  * Composition
  *
  * After defining the colors for each palette, they now have to be integrated into 
@@ -341,4 +372,16 @@
   --color-warning-background: var(--warning-background);
   --color-warning-foreground: var(--warning-foreground);
   --color-warning-border: var(--warning-border);
+
+  /**
+    * Sidebar
+    */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }

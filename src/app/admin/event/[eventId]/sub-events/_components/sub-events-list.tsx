@@ -40,7 +40,9 @@ export function SubEventsList({ subEvents }: { subEvents: SubEvent[] }) {
   React.useEffect(() => {
     setFilteredSubEvents(
       subEvents.filter((subEvent) =>
-        subEvent.name.toLocaleLowerCase().includes(searchTerm)
+        subEvent.name
+          .toLocaleLowerCase()
+          .includes(searchTerm.toLocaleLowerCase())
       )
     );
   }, [subEvents, setFilteredSubEvents, searchTerm]);
