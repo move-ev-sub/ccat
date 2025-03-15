@@ -5,6 +5,8 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 
 import { cn } from '@/utils';
 
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+
 export function AccordionTrigger({
   className,
   children,
@@ -21,7 +23,9 @@ export function AccordionTrigger({
         {...props}
       >
         {children}
-        {/* <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200" /> */}
+        {/* <ChevronDownIcon className="h-6 w-6 text-gray-500" /> */}
+
+        <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200" />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );
