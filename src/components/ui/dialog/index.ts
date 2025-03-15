@@ -1,0 +1,10 @@
+export { Dialog } from './dialog';
+export { DialogPortal } from './dialog-portal';
+export { DialogOverlay } from './dialog-overlay';
+export { DialogTrigger } from './dialog-trigger';
+export { DialogClose } from './dialog-close';
+export { DialogContent } from './dialog-content';
+export { DialogHeader } from './dialog-header';
+export { DialogFooter } from './dialog-footer';
+export { DialogTitle } from './dialog-title';
+export { DialogDescription } from './dialog-description';
