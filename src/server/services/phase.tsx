@@ -1,3 +1,5 @@
+'use server';
+
 import { toEndOfDay, toStartOfDay } from '@/utils/date';
 import { createClient } from '@/utils/supabase/server';
 import { Phase, PhaseType } from '@prisma/client';
