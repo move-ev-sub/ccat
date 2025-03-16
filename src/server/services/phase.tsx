@@ -5,7 +5,97 @@ import { createClient } from '@/utils/supabase/server';
 import { Phase, PhaseType } from '@prisma/client';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
-import { isAdmin, isAuthenticated } from './auth';
+import { getUser, isAdmin, isAuthenticated } from './auth';
+
+/**
+ * Upadtes a phase for an event. If the phase does not exist, a new phase will
+ *
+ * The start and end date of the phase will be formatted to start at 00:00:00
+ * and end at 23:59:59 respectively.
+ *
+ * @returns The created or updated phase.
+ */
+export async function updatePhase({
+  id,
+  from,
+  to,
+}: {
+  /**
+   * The id of the phase. If the id is not provided, a new phase will be created.
+   */
+  id?: string;
+
+  /**
+   * The start date of the phase. This should be in the future. Start dates will
+   * always be formatted to start at 00:00:00.
+   */
+  from: Date;
+
+  /**
+   * The end date of the phase. This should be in the future. End dates will always
+   * be formatted to end at 23:59:59.
+   */
+  to: Date;
+}): Promise<ServiceResult<Phase>> {
+  const client = await createClient();
+
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated to perform this action.',
+    };
+  }
+
+  if (!(await isAdmin(client))) {
+    return {
+      ok: false,
+      error:
+        'User is not an admin therefore not authorized to perform this action.',
+    };
+  }
+
+  // All event phases must start in the future when editing them.
+  if (from < new Date()) {
+    return {
+      ok: false,
+      error: 'Start date must be in the future.',
+    };
+  }
+
+  const startDate = toStartOfDay(from);
+  const endDate = toEndOfDay(to);
+
+  // The start date must be before the end date. We check this after formatting
+  // the dates since some phases might start at 00:00:00 and end at 23:59:59.
+  if (startDate > endDate) {
+    return {
+      ok: false,
+      error: 'Start date must be before end date.',
+    };
+  }
+
+  const res = await prisma.phase.update({
+    where: {
+      id: id,
+    },
+    data: {
+      startDate,
+      endDate,
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: false,
+      error: 'Failed to update phase.',
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
+  };
+}
 
 /**
  * Creates or updates a phase for an event. If the phase already exists, it
@@ -19,18 +109,12 @@ import { isAdmin, isAuthenticated } from './auth';
  *
  * @returns The created or updated phase.
  */
-export async function upsertPhase({
-  id,
+export async function createPhase({
   eventId,
   from,
   to,
   type,
 }: {
-  /**
-   * The id of the phase. If the id is not provided, a new phase will be created.
-   */
-  id?: string;
-
   /**
    * The id of the event the phase belongs to.
    */
@@ -107,27 +191,29 @@ export async function upsertPhase({
     };
   }
 
-  const res = await prisma.phase.upsert({
-    where: {
-      id: id,
-    },
-    create: {
+  const user = await getUser(client);
+
+  if (!user || !user.id) {
+    return {
+      ok: false,
+      error: 'Failed to get user object.',
+    };
+  }
+
+  const res = await prisma.phase.create({
+    data: {
       startDate,
       endDate,
       eventId,
       type,
-      createdById: '1',
-    },
-    update: {
-      startDate,
-      endDate,
+      createdById: user.id,
     },
   });
 
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to create or update phase.',
+      error: 'Failed to create phase.',
     };
   }
 
@@ -174,13 +260,6 @@ export async function existsPhase({
     },
   });
 
-  if (!res) {
-    return {
-      ok: false,
-      error: 'Failed to check if phase exists.',
-    };
-  }
-
   return {
     ok: true,
     data: !!res,
@@ -210,6 +289,109 @@ export async function fetchPhasesForEvent({
     return {
       ok: false,
       error: 'Failed to fetch phases for event.',
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
+  };
+}
+
+/**
+ * Checks if all phases for an event have been set up. This is used to determine
+ * if the event is ready to be published. The user must be an admin to perform
+ * this action as it requires access to all phases of the event.
+ */
+export async function isPhasesSetupCompleted({
+  eventId,
+}: {
+  eventId: string;
+}): Promise<ServiceResult<boolean>> {
+  if (!(await isAdmin())) {
+    return {
+      ok: false,
+      error:
+        'User is not an admin therefore not authorized to perform this action.',
+    };
+  }
+
+  const res = await prisma.phase.findMany({
+    where: {
+      eventId,
+    },
+    select: {
+      id: true,
+      type: true,
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: false,
+      error: 'Failed to fetch phases for event.',
+    };
+  }
+
+  let completed = true;
+
+  for (const type of Object.values(PhaseType)) {
+    if (!(await containsPhaseType(res, type))) {
+      completed = false;
+      break;
+    }
+  }
+
+  return {
+    ok: true,
+    data: completed,
+  };
+}
+
+/**
+ * Checks if a list of phases contains a phase of a specific type.
+ *
+ * @returns True if the list contains a phase of the specified type, false otherwise.
+ */
+async function containsPhaseType(
+  phases: Partial<Phase>[],
+  type: PhaseType
+): Promise<boolean> {
+  return phases.some((phase) => phase.type === type);
+}
+
+/**
+ * Fetches the current phase for an event. The current phase is the phase that
+ * is currently active. The user must be authenticated to perform this action.
+ */
+export async function getCurrentPhase({
+  eventId,
+}: {
+  eventId: string;
+}): Promise<ServiceResult<Phase | null>> {
+  if (!(await isAuthenticated())) {
+    return {
+      ok: false,
+      error: 'User is not authenticated to perform this action.',
+    };
+  }
+
+  const res = await prisma.phase.findFirst({
+    where: {
+      eventId,
+      startDate: {
+        lte: new Date(),
+      },
+      endDate: {
+        gte: new Date(),
+      },
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: true,
+      data: null,
     };
   }
 
