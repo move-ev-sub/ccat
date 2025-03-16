@@ -1,11 +1,9 @@
-export type ServiceResult<T> =
+export type ServiceResult<T = object> =
   | {
-      status: 'success';
-      error?: string;
-      data: T;
+      ok: false;
+      error: string;
     }
   | {
-      status: 'error';
-      error: string;
-      data?: T;
+      ok: true;
+      data: T;
     };

@@ -1,160 +1,251 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { eq } from 'drizzle-orm';
-import { db } from '../db';
-import { eventsTable, profilesTable } from '../db/schema';
+import { Event } from '@prisma/client';
+import prisma from '../db';
 import { NewEventData } from '../schemas/event';
-import { EventInsertData, EventSelectResult } from '../types/event';
 import { ServiceResult } from '../types/serviceResult';
+import { getUser, isAdmin, isAuthenticated } from './auth';
 
-export async function getAllEvents(): Promise<
-  ServiceResult<EventSelectResult[]>
-> {
+/**
+ * Returns all published events from the database. Only accessible for
+ * authenticated users.
+ *
+ * @returns A promise with all published events.
+ */
+export async function getPublishedEvents(): Promise<ServiceResult<Event[]>> {
   const client = await createClient();
 
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
-  // Only authenticated users can fetch all events
-  if (!user || user.id === null) {
+  // Only authenticated users can fetch see
+  if (!isAuthenticated(client)) {
     return {
-      status: 'error',
+      ok: false,
       error: 'User is not authenticated.',
-      data: [],
     };
   }
 
-  // Only admins can fetch ALL events
-  const profile = await db.query.profilesTable.findFirst({
-    where: eq(profilesTable.id, user.id),
+  // Fetch all events where status is published
+
+  const res = await prisma.event.findMany({
+    where: {
+      status: 'PUBLISHED',
+    },
   });
-
-  if (!profile || profile.profileType !== 'admin') {
-    return {
-      status: 'error',
-      error: 'User is not authorized.',
-      data: [],
-    };
-  }
-
-  const res = await db.select().from(eventsTable);
-
-  if (!res) {
-    return {
-      status: 'error',
-      error: 'Failed to fetch events.',
-      data: [],
-    };
-  }
-
-  return {
-    status: 'success',
-    data: [...res],
-  };
-}
-
-export async function createEvent({
-  name,
-  status,
-  description,
-}: NewEventData): Promise<ServiceResult<EventSelectResult[]>> {
-  const client = await createClient();
-
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
-  // Only authenticated users can create events
-  if (!user || user.id === null) {
-    return {
-      status: 'error',
-      error: 'User is not authenticated.',
-      data: [],
-    };
-  }
-
-  // Only admins can create new events
-  const profile = await db.query.profilesTable.findFirst({
-    where: eq(profilesTable.id, user.id),
-  });
-
-  if (!profile || profile.profileType !== 'admin') {
-    return {
-      status: 'error',
-      error: 'User is not authorized.',
-      data: [],
-    };
-  }
-
-  const defaultValues: Partial<EventInsertData> = {
-    createdBy: user.id,
-    lastUpdated: new Date(Date.now()),
-  };
-
-  const res = await db
-    .insert(eventsTable)
-    .values({
-      name,
-      status,
-      description,
-      ...defaultValues,
-    })
-    .returning();
 
   if (!res || res.length === 0) {
     return {
-      status: 'error',
-      error: 'Failed to create event.',
+      ok: false,
+      error: 'Failed to fetch events. No events found.',
     };
   }
 
-  if (res.length > 1) {
-    console.warn('More than one event was created.');
-  }
-
   return {
-    status: 'success',
+    ok: true,
     data: res,
   };
 }
 
-export async function getEvent(
-  eventId: string
-): Promise<ServiceResult<EventSelectResult>> {
+/**
+ * Returns all events from the database. Only admins can fetch all events.
+ *
+ * @returns A promise with all events.
+ */
+export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
   const client = await createClient();
 
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
-  // Only authenticated users can read events
-  if (!user || user.id === null) {
+  if (!(await isAuthenticated(client))) {
     return {
-      status: 'error',
+      ok: false,
       error: 'User is not authenticated.',
     };
   }
 
-  const res = await db
-    .select()
-    .from(eventsTable)
-    .where(eq(eventsTable.id, eventId));
+  const user = await getUser(client);
 
-  if (!res || res.length === 0) {
+  if (user === null) {
     return {
-      status: 'error',
-      error: 'Failed to fetch event.',
+      ok: false,
+      error: 'Could not fetch the user object.',
     };
   }
 
-  if (res.length > 1) {
-    console.warn('More than one event was found.');
+  // Only admins can fetch ALL events
+  if (!(await isAdmin(client))) {
+    return {
+      ok: false,
+      error: 'User is not authorized.',
+    };
+  }
+
+  // TODO: This needs to be optimized
+  // When at scale, we should not fetch all events at once
+  // but rather paginate the results
+  const res = await prisma.event.findMany();
+
+  if (!res || res.length === 0) {
+    return {
+      ok: false,
+      error: 'Failed to fetch events. No events found.',
+    };
   }
 
   return {
-    status: 'success',
-    data: res[0],
+    ok: true,
+    data: res,
+  };
+}
+
+/**
+ * Creates a new event in the database. Only admins can create new events.
+ *
+ * @param name The name of the event.
+ * @param description The description of the event.
+ * @param status The status of the event.
+ *
+ * @returns A promise with the created event.
+ */
+export async function createEvent({
+  name,
+  description,
+}: NewEventData): Promise<ServiceResult<Event>> {
+  const client = await createClient();
+
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  // Only admins can create new events
+  if (!(await isAdmin(client))) {
+    return {
+      ok: false,
+      error: 'User is not authorized.',
+    };
+  }
+
+  const user = await getUser(client);
+
+  if (user === null) {
+    return {
+      ok: false,
+      error: 'Could not fetch the user object.',
+    };
+  }
+
+  const res = await prisma.event.create({
+    data: {
+      name,
+      description,
+      status: 'DRAFT',
+      createdById: user.id,
+    },
+  });
+
+  if (res === null) {
+    return {
+      ok: false,
+      error: 'Failed to create event in the database.',
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
+  };
+}
+
+/**
+ * Returns a single event from the database by its ID. If multiple events
+ * are found, a warning is logged and no event is returned.
+ *
+ * If the event is not published and the user is not an admin, the event
+ * will not be returned.
+ *
+ * @param eventId - The ID of the event to fetch.
+ *
+ * @returns A promise with the event.
+ */
+export async function getEventById(
+  eventId: string
+): Promise<ServiceResult<Event>> {
+  const client = await createClient();
+
+  // Only authenticated users can fetch events
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  // Get the event from the database
+
+  const res = await prisma.event.findFirst({
+    where: {
+      id: eventId,
+    },
+  });
+
+  // Check if more than one event was found
+  if (res === null) {
+    return {
+      ok: false,
+      error: `Event with ID ${eventId} not found in the database.`,
+    };
+  }
+
+  // Only admins can fetch unpublished events
+  if (res.status !== 'PUBLISHED' && !(await isAdmin(client))) {
+    return {
+      ok: false,
+      error: 'User is not authorized to fetch this event.',
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
+  };
+}
+
+export async function getAllNonArchivedEvents(): Promise<
+  ServiceResult<Event[]>
+> {
+  const client = await createClient();
+
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  if (!(await isAdmin(client))) {
+    return {
+      ok: false,
+      error: 'User is not authorized.',
+    };
+  }
+
+  const res = await prisma.event.findMany({
+    where: {
+      NOT: {
+        status: 'ARCHIVED',
+      },
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: false,
+      error: 'Failed to fetch events. Something went wrong.',
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
   };
 }

@@ -1,14 +1,14 @@
+'use server';
+
 import * as eventService from '@/server/services/event';
+import { Event } from '@prisma/client';
 import { NewEventData, newEventSchema } from '../schemas/event';
 import { ActionResponse } from '../types/action-response';
-import { EventInsertData, EventSelectResult } from '../types/event';
 
-export async function getAllEvents(): Promise<
-  ActionResponse<EventSelectResult[]>
-> {
+export async function getAllEvents(): Promise<ActionResponse<Event[]>> {
   const res = await eventService.getAllEvents();
 
-  if (res.error || !res.data) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
@@ -24,7 +24,7 @@ export async function getAllEvents(): Promise<
 
 export async function createEvent(
   data: NewEventData
-): Promise<ActionResponse<EventInsertData>> {
+): Promise<ActionResponse<Event>> {
   const parseResult = await newEventSchema.safeParseAsync(data);
 
   if (!parseResult.success) {
@@ -36,7 +36,7 @@ export async function createEvent(
 
   const res = await eventService.createEvent(data);
 
-  if (res.error || !res.data) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
@@ -46,16 +46,16 @@ export async function createEvent(
   return {
     status: 'success',
     // createEvent service returns an array of the created event
-    data: res.data[0],
+    data: res.data,
   };
 }
 
 export async function getEvent(
   eventId: string
-): Promise<ActionResponse<EventSelectResult>> {
-  const res = await eventService.getEvent(eventId);
+): Promise<ActionResponse<Event>> {
+  const res = await eventService.getEventById(eventId);
 
-  if (res.error || !res.data) {
+  if (!res.ok) {
     return {
       status: 'error',
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',

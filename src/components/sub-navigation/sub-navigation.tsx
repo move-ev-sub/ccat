@@ -2,6 +2,7 @@
 
 import { cn } from '@/utils';
 import React from 'react';
+import { tabsListVariants } from '../ui/tabs/tabs-list';
 import { SubNavProvider } from './sub-navigation.context';
 
 export function SubNavigation({
@@ -20,10 +21,7 @@ export function SubNavigation({
   return (
     <div
       data-slot="sub-navigation"
-      className={cn(
-        'border-border flex max-w-screen items-center justify-start overflow-x-auto border-b px-8',
-        className
-      )}
+      className={cn(tabsListVariants({}), className)}
       {...props}
     >
       <SubNavProvider

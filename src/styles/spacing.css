@@ -1,0 +1,3 @@
+@theme {
+  --spacing-to-header: calc(var(--spacing) * 10);
+}

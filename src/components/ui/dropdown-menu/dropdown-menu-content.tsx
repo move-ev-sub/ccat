@@ -16,7 +16,7 @@ export function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          'bg-background text-foreground z-50 min-w-[8rem] overflow-hidden rounded-xl border p-1 shadow-md',
+          'bg-background text-foreground z-50 min-w-[8rem] overflow-hidden rounded-md border p-1 shadow-md',
           className
         )}
         {...props}
