@@ -1,0 +1,30 @@
+.prose {
+  max-width: 65ch;
+  @apply text-primary-700 dark:text-primary-400 text-base/7;
+
+  h1 {
+    @apply text-foreground scroll-mt-12 text-3xl font-medium;
+  }
+
+  h2 {
+    @apply text-foreground mt-12 scroll-mt-12 text-xl font-medium;
+  }
+
+  h3 {
+    @apply text-foreground mt-8 scroll-mt-12 text-lg font-medium;
+  }
+
+  h4 {
+    @apply text-foreground mt-6 scroll-mt-12 text-base font-medium;
+  }
+
+  ul {
+    @apply decoration-accent list-inside list-disc;
+  }
+
+  p {
+    @apply mt-4;
+  }
+
+  /* Dark mode */
+}
