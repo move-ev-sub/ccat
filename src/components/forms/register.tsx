@@ -138,14 +138,14 @@ export function RegisterForm() {
                     Ich bestätige, dass ich die{' '}
                     <Link
                       href="/legal/terms-of-use"
-                      className="text-accent font-medium"
+                      className="text-foreground hover:text-accent font-medium transition-colors"
                     >
                       Nutzungsbedingungen
                     </Link>{' '}
                     und{' '}
                     <Link
                       href="/legal/privacy-policy"
-                      className="text-accent font-medium"
+                      className="text-foreground hover:text-accent font-medium transition-colors"
                     >
                       Datenschutzbestimmungen
                     </Link>
