@@ -51,10 +51,15 @@ const generatePasswordSchema = (): z.ZodObject<{ password: z.ZodString }> => {
 export const signUpSchema = z
   .object({
     email: z.string().email('Ungültige E-Mail-Adresse'),
-    acceptLegal: z.boolean({
-      message:
-        'Bitte akzeptiere die Nutzungsbedingungen und Datenschutzbestimmungen.',
-    }),
+    acceptLegal: z
+      .boolean({
+        message:
+          'Bitte akzeptiere die Nutzungsbedingungen und Datenschutzbestimmungen.',
+      })
+      .refine((value) => value, {
+        message:
+          'Bitte akzeptiere die Nutzungsbedingungen und Datenschutzbestimmungen.',
+      }),
   })
   .and(generatePasswordSchema());
 
