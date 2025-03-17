@@ -4,7 +4,7 @@ import { SubEvent } from '@prisma/client';
 import { validate as uuidValidate } from 'uuid';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
-import { getUser, isAdmin } from './auth';
+import { getUser, isAdmin, isAuthenticated } from './auth';
 
 /**
  * The parameters for creating a sub-event.
@@ -202,6 +202,59 @@ export async function createSubEvent({
     return {
       ok: false,
       error: `Failed to create sub event: ${error}`,
+    };
+  }
+}
+
+export async function getSubEventsForEvent({
+  eventId,
+}: {
+  eventId: string;
+}): Promise<ServiceResult<SubEvent[]>> {
+  // Only authenticated users can get sub events
+  if (!(await isAuthenticated())) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  // Check if event ID is valid
+  if (!uuidValidate(eventId)) {
+    return {
+      ok: false,
+      error: 'Invalid event ID.',
+    };
+  }
+
+  try {
+    const res = await prisma.subEvent.findMany({
+      where: {
+        eventId,
+      },
+    });
+
+    if (!res) {
+      return {
+        ok: false,
+        error: 'Failed to get sub events.',
+      };
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: `Failed to get sub events: ${error.message}`,
+      };
+    }
+    return {
+      ok: false,
+      error: `Failed to get sub events: ${error}`,
     };
   }
 }
