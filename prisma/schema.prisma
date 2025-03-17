@@ -60,8 +60,9 @@ model CompanyProfile {
   id      String  @id @unique @db.Uuid
 
   // Company Info
-  name    String
-  logoUrl String @default("https://move-ev.de/wp-content/uploads/2018/12/Logo_hell_Text_Rehcts.svg")
+  name     String
+  logoUrl  String     @default("https://move-ev.de/wp-content/uploads/2018/12/Logo_hell_Text_Rehcts.svg")
+  SubEvent SubEvent[]
 
   @@map("company_profiles")
 }
@@ -108,6 +109,10 @@ model SubEvent {
   maxParticipants Int              @default(30)
   startDate       DateTime         @db.Timestamptz(3)
   endDate         DateTime         @db.Timestamptz(3)
+  host            CompanyProfile   @relation(fields: [hostId], references: [id])
+  hostId          String           @db.Uuid
+  slot            Slot             @relation(fields: [slotId], references: [id])
+  slotId          String           @db.Uuid
   createdAt       DateTime         @default(now())
   createdBy       Profile          @relation(fields: [createdById], references: [id])
   createdById     String           @db.Uuid
@@ -117,14 +122,15 @@ model SubEvent {
 }
 
 model Slot {
-  id          String   @id @unique @default(uuid()) @db.Uuid
-  event       Event    @relation(fields: [eventId], references: [id])
-  eventId     String   @db.Uuid
-  startDate   DateTime @db.Timestamptz(3)
-  endDate     DateTime @db.Timestamptz(3)
-  createdAt   DateTime @default(now())
-  createdBy   Profile  @relation(fields: [createdById], references: [id])
-  createdById String   @db.Uuid
+  id          String     @id @unique @default(uuid()) @db.Uuid
+  event       Event      @relation(fields: [eventId], references: [id])
+  eventId     String     @db.Uuid
+  startDate   DateTime   @db.Timestamptz(3)
+  endDate     DateTime   @db.Timestamptz(3)
+  createdAt   DateTime   @default(now())
+  createdBy   Profile    @relation(fields: [createdById], references: [id])
+  createdById String     @db.Uuid
+  SubEvent    SubEvent[]
 
   @@map("slots")
 }
