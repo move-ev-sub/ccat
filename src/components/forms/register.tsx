@@ -14,10 +14,12 @@ import { Input } from '@/components/ui/input';
 import { signup } from '@/server/actions/auth';
 import { signUpSchema } from '@/server/schemas/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { PasswordInput, type PasswordCriteria } from '../password-input';
+import { Checkbox } from '../ui/checkbox';
 
 const passwordCriteria: PasswordCriteria[] = [
   {
@@ -120,8 +122,43 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="acceptLegal"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className="flex items-start justify-start gap-2.5">
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="mt-0.5"
+                  />
+                  <p className="text-secondary grow text-sm">
+                    Ich bestätige, dass ich die{' '}
+                    <Link
+                      href="/legal/terms-of-use"
+                      className="text-foreground hover:text-accent font-medium transition-colors"
+                    >
+                      Nutzungsbedingungen
+                    </Link>{' '}
+                    und{' '}
+                    <Link
+                      href="/legal/privacy-policy"
+                      className="text-foreground hover:text-accent font-medium transition-colors"
+                    >
+                      Datenschutzbestimmungen
+                    </Link>{' '}
+                    gelesen habe und akzeptiere.
+                  </p>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Lädt...' : 'Anmelden'}
+          {loading ? 'Lädt...' : 'Registrieren'}
         </Button>
         <FormError visible={!!error} message={error} />
       </form>

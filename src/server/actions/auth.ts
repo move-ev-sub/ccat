@@ -14,10 +14,12 @@ import { AuthActionResponse } from '../types/action-response';
 export async function signup({
   email,
   password,
+  acceptLegal,
 }: SignUpData): Promise<AuthActionResponse<null>> {
   const parseRes = await signUpSchema.safeParseAsync({
     email,
     password,
+    acceptLegal,
   });
 
   if (!parseRes.success) {
