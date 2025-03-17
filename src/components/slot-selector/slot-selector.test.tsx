@@ -56,8 +56,8 @@ describe('SlotSelector', () => {
     // Check if time slot for the second date is displayed
     expect(screen.getByText('09:00 - 10:00')).toBeInTheDocument();
 
-    // Check if "Nichts Ausgewählt" is displayed initially
-    expect(screen.getByText('Nichts Ausgewählt')).toBeInTheDocument();
+    // Check if "Kein Slot ausgewählt" is displayed initially
+    expect(screen.getByText('Kein Slot ausgewählt')).toBeInTheDocument();
   });
 
   it('selects a slot and displays its details', async () => {
@@ -84,7 +84,7 @@ describe('SlotSelector', () => {
     );
 
     // Initially no slot should be selected
-    expect(screen.getByText('Nichts Ausgewählt')).toBeInTheDocument();
+    expect(screen.getByText('Kein Slot ausgewählt')).toBeInTheDocument();
 
     // Update the value prop to select a slot
     rerender(<SlotSelector slots={mockSlots} value="1" onChange={() => {}} />);
