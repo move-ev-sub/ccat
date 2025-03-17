@@ -25,7 +25,7 @@ export function Calendar({
         nav: 'flex items-center gap-1',
         nav_button: cn(
           buttonVariants({ variant: 'outline' }),
-          'size-7 bg-transparent p-0 opacity-50 hover:opacity-100'
+          'size-7 bg-transparent p-0 opacity-80 hover:opacity-100'
         ),
         nav_button_previous: 'absolute left-1',
         nav_button_next: 'absolute right-1',
@@ -48,8 +48,8 @@ export function Calendar({
         day_range_end:
           'day-range-end aria-selected:bg-accent aria-selected:text-white',
         day_selected:
-          'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
-        day_today: 'bg-accent text-accent-foreground',
+          'bg-accent text-white hover:bg-primary hover:bg-accent/70',
+        day_today: 'bg-background-muted text-accent',
         day_outside:
           'day-outside text-secondary aria-selected:text-muted-foreground',
         day_disabled: 'text-muted-foreground opacity-50',
