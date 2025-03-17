@@ -134,6 +134,25 @@ export async function fetchUserProfiles(
 }
 
 /**
+ * Fetches ALL Company profiles from the database.
+ *
+ * @see fetchProfilesForRole<FullCompanyProfile>
+ *
+ * @returns A list of profiles.
+ */
+export async function fetchCompanyProfiles(
+  args?: FetchSpecificProfileArgs
+): ReturnType<typeof fetchProfilesForRole<FullCompanyProfile>> {
+  return fetchProfilesForRole<FullCompanyProfile>({
+    ...args,
+    filter: {
+      ...args?.filter,
+      role: 'COMPANY',
+    },
+  });
+}
+
+/**
  * Fetches profiles for a given role from the database in a paginated manner. Only
  * authenticated users can fetch ALL profiles. Profiles are fetched in a paginated manner.
  * This means that only a subset of profiles are fetched at a time. The `page` parameter
