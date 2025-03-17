@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { Slot } from '@prisma/client';
+import { validate } from 'uuid';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
 import { getUser, isAdmin, isAuthenticated } from './auth';
@@ -115,6 +116,13 @@ export async function createSlot(
 export async function fetchSlotsForEvent(
   eventId: string
 ): Promise<ServiceResult<Slot[]>> {
+  if (!validate(eventId)) {
+    return {
+      ok: false,
+      error: 'Event ID is an invalid UUID.',
+    };
+  }
+
   if (!(await isAuthenticated())) {
     return {
       ok: false,
