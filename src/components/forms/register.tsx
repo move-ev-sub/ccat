@@ -148,7 +148,7 @@ export function RegisterForm() {
                       className="text-foreground hover:text-accent font-medium transition-colors"
                     >
                       Datenschutzbestimmungen
-                    </Link>
+                    </Link>{' '}
                     gelesen habe und akzeptiere.
                   </p>
                 </div>
@@ -158,7 +158,7 @@ export function RegisterForm() {
           )}
         />
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Lädt...' : 'Anmelden'}
+          {loading ? 'Lädt...' : 'Registrieren'}
         </Button>
         <FormError visible={!!error} message={error} />
       </form>
