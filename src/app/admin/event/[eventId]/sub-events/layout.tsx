@@ -1,11 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { PlusIcon } from '@heroicons/react/16/solid';
+import Link from 'next/link';
 import React from 'react';
 
 export default async function AdminEventSubeventsLayout({
   children,
-}: React.PropsWithChildren) {
+  params: paramsPromise,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ eventId: string }>;
+}) {
+  const { eventId } = await paramsPromise;
+
   return (
     //  Content Container
     <div className="py-12">
@@ -22,8 +29,10 @@ export default async function AdminEventSubeventsLayout({
               neue erstellen.
             </p>
           </div>
-          <Button variant={'accent'} className="shrink-0">
-            Neu erstellen <PlusIcon />
+          <Button variant={'accent'} className="shrink-0" asChild>
+            <Link href={`/admin/new/sub-event?eventId=${eventId}`}>
+              Neu erstellen <PlusIcon />
+            </Link>
           </Button>
         </div>
         <Separator className="mt-8" orientation="horizontal" />
