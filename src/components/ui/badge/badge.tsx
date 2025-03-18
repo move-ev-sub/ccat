@@ -5,6 +5,7 @@ export function Badge({ className, variant, ...props }: BadgeProps) {
   return (
     <span
       data-slot={'badge'}
+      role="status"
       className={cn(badgeVariants({ variant, className }))}
       {...props}
     />
