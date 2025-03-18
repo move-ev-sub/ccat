@@ -2,7 +2,7 @@
 
 import { toEndOfDay, toStartOfDay } from '@/utils/date';
 import { createClient } from '@/utils/supabase/server';
-import { Phase, PhaseType } from '@prisma/client';
+import { Phase, PhaseType, Prisma } from '@prisma/client';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
 import { getUser, isAdmin, isAuthenticated } from './auth';
@@ -270,11 +270,19 @@ export async function existsPhase({
  * Fetches all phases for an event. The user must be authenticated to perform
  * this action. For security reasons, the createdById field is not returned in
  * the response.
+ *
+ * @param sort The sort order of the phases.
+ * @param eventId The id of the event the phases belong to.
+ * @returns The phases for the event.
  */
 export async function fetchPhasesForEvent({
   eventId,
+  sort = {
+    startDate: 'asc',
+  },
 }: {
   eventId: string;
+  sort?: Prisma.PhaseFindManyArgs['orderBy'];
 }): Promise<ServiceResult<Omit<Phase, 'createdById'>[]>> {
   const res = await prisma.phase.findMany({
     where: {
@@ -283,6 +291,7 @@ export async function fetchPhasesForEvent({
     omit: {
       createdById: true,
     },
+    orderBy: sort,
   });
 
   if (!res) {
