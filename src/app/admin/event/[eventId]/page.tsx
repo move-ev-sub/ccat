@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { getEvent } from '@/server/actions/event';
 import { PlusIcon } from '@heroicons/react/16/solid';
+import { PhasesCard } from './_components/phases-card';
 
 export default async function AdminEventOverviewPage({
   params,
@@ -58,15 +59,7 @@ export default async function AdminEventOverviewPage({
               <div className="border-border bg-background-muted mt-4 h-24 rounded-sm border"></div>
             </CardContent>
           </Card>
-          <Card className="relative">
-            <CardContent>
-              <p className="text-foreground text-base font-medium">
-                Derzeitige Phase
-              </p>
-              <p className="text-secondary mt-1 text-sm">Seit Beginn</p>
-              <div className="border-border bg-background-muted mt-4 h-24 rounded-sm border"></div>
-            </CardContent>
-          </Card>
+          <PhasesCard eventId={eventId} />
         </div>
       </div>
     </div>

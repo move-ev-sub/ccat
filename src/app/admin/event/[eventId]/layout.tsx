@@ -21,6 +21,7 @@ export default async function AdminEventLayout({
         <SubNavigationItem href={'/applications'}>
           Bewerbungen
         </SubNavigationItem>
+        <SubNavigationItem href={'/phases'}>Phasen</SubNavigationItem>
         <SubNavigationItem href={'/settings'}>Einstellungen</SubNavigationItem>
       </SubNavigation>
       {children}
