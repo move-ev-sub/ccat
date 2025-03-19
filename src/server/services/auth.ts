@@ -10,17 +10,24 @@ import { ServiceResult } from '../types/serviceResult';
 /**
  * Signs up a new user with email and password.
  *
+ * @param firstName - The first name of the user.
+ * @param lastName - The last name of the user.
  * @param email - The email of the user.
  * @param password - The password of the user.
  *
  * @returns A promise with the status of the sign up.
  */
 export async function signUpWithEmail(
+  firstName: string,
+  lastName: string,
   email: string,
   password: string
 ): Promise<ServiceResult<{ user: User | null; session: Session | null }>> {
-  if (!email || !password) {
-    return { ok: false, error: 'Email and password are required for singup.' };
+  if (!firstName || !lastName || !email || !password) {
+    return {
+      ok: false,
+      error: 'Your full Name, email and password are required for singup.',
+    };
   }
 
   const client = await createClient();
@@ -28,6 +35,13 @@ export async function signUpWithEmail(
   const { error, data } = await client.auth.signUp({
     email,
     password,
+    // Is adding the data object necessary, since we create the user profile with prisma?
+    options: {
+      data: {
+        firstName,
+        lastName,
+      },
+    },
   });
 
   if (error || !data?.user) {
