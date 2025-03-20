@@ -33,7 +33,7 @@ export async function signup({
     };
   }
 
-  const res = await signUpWithEmail(firstName, lastName, email, password);
+  const res = await signUpWithEmail({ firstName, lastName, email, password });
 
   if (!res.ok) {
     return {
