@@ -63,8 +63,8 @@ export async function signUpWithEmail(
       email: email,
       userProfile: {
         create: {
-          firstName: '',
-          lastName: '',
+          firstName: firstName,
+          lastName: lastName,
           emailReminders: false,
           notifyMe: false,
         },
