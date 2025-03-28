@@ -6,6 +6,7 @@ import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
+import { SignUpData } from '../schemas/auth';
 
 /**
  * Signs up a new user with email and password.
@@ -18,40 +19,23 @@ import { ServiceResult } from '../types/serviceResult';
  * @returns A promise with the status of the sign up.
  */
 
-interface UserRegistration {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
-
 export async function signUpWithEmail(
-  userReg: UserRegistration
+  signUpData: SignUpData
 ): Promise<ServiceResult<{ user: User | null; session: Session | null }>> {
-  if (
-    !userReg.firstName ||
-    !userReg.lastName ||
-    !userReg.email ||
-    !userReg.password
-  ) {
+  const { firstName, lastName, email, password } = signUpData;
+
+  if (!firstName || !lastName || !email || !password) {
     return {
       ok: false,
-      error: 'Your full Name, email and password are required for singup.',
+      error: 'Your full Name, email and password are required for signup.',
     };
   }
 
   const client = await createClient();
 
   const { error, data } = await client.auth.signUp({
-    email: userReg.email,
-    password: userReg.password,
-    // Is adding the data object necessary, since we create the user profile with prisma?
-    options: {
-      data: {
-        firstName: userReg.firstName,
-        lastName: userReg.lastName,
-      },
-    },
+    email: email,
+    password: password,
   });
 
   if (error || !data?.user) {
@@ -70,11 +54,11 @@ export async function signUpWithEmail(
     data: {
       id: data.user.id,
       role: 'USER',
-      email: userReg.email,
+      email: email,
       userProfile: {
         create: {
-          firstName: userReg.firstName,
-          lastName: userReg.lastName,
+          firstName: firstName,
+          lastName: lastName,
           emailReminders: false,
           notifyMe: false,
         },

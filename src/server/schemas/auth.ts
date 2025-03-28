@@ -51,8 +51,8 @@ const generatePasswordSchema = (): z.ZodObject<{ password: z.ZodString }> => {
 export const signUpSchema = z
   .object({
     // Should names be limited to ASCII characters?
-    firstName: z.string({ message: 'Vorname darf nur Buchstaben enthalten' }),
-    lastName: z.string({ message: 'Nachname darf nur Buchstaben enthalten' }),
+    firstName: z.string().min(1, 'Der Vorname wird benötigt'),
+    lastName: z.string().min(1, 'Der Vorname wird benötigt'),
     email: z.string().email('Ungültige E-Mail-Adresse'),
     acceptLegal: z
       .boolean({
