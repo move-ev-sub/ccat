@@ -6,28 +6,36 @@ import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
+import { SignUpData } from '../schemas/auth';
 
 /**
  * Signs up a new user with email and password.
  *
+ * @param firstName - The first name of the user.
+ * @param lastName - The last name of the user.
  * @param email - The email of the user.
  * @param password - The password of the user.
  *
  * @returns A promise with the status of the sign up.
  */
+
 export async function signUpWithEmail(
-  email: string,
-  password: string
+  signUpData: SignUpData
 ): Promise<ServiceResult<{ user: User | null; session: Session | null }>> {
-  if (!email || !password) {
-    return { ok: false, error: 'Email and password are required for singup.' };
+  const { firstName, lastName, email, password } = signUpData;
+
+  if (!firstName || !lastName || !email || !password) {
+    return {
+      ok: false,
+      error: 'Your full Name, email and password are required for signup.',
+    };
   }
 
   const client = await createClient();
 
   const { error, data } = await client.auth.signUp({
-    email,
-    password,
+    email: email,
+    password: password,
   });
 
   if (error || !data?.user) {
@@ -49,8 +57,8 @@ export async function signUpWithEmail(
       email: email,
       userProfile: {
         create: {
-          firstName: '',
-          lastName: '',
+          firstName: firstName,
+          lastName: lastName,
           emailReminders: false,
           notifyMe: false,
         },

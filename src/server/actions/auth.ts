@@ -11,16 +11,10 @@ import { redirect } from 'next/navigation';
 import * as authService from '../services/auth';
 import { AuthActionResponse } from '../types/action-response';
 
-export async function signup({
-  email,
-  password,
-  acceptLegal,
-}: SignUpData): Promise<AuthActionResponse<null>> {
-  const parseRes = await signUpSchema.safeParseAsync({
-    email,
-    password,
-    acceptLegal,
-  });
+export async function signup(
+  signUpData: SignUpData
+): Promise<AuthActionResponse<null>> {
+  const parseRes = await signUpSchema.safeParseAsync(signUpData);
 
   if (!parseRes.success) {
     return {
@@ -29,7 +23,7 @@ export async function signup({
     };
   }
 
-  const res = await signUpWithEmail(email, password);
+  const res = await signUpWithEmail(signUpData);
 
   if (!res.ok) {
     return {
