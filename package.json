@@ -51,7 +51,7 @@
     "class-variance-authority": "^0.7.1",
     "date-fns": "^4.1.0",
     "mdast-util-toc": "^7.1.0",
-    "next": "15.1.7",
+    "next": "15.2.4",
     "next-themes": "^0.4.4",
     "postgres": "^3.4.5",
     "react": "^19.0.0",
@@ -68,9 +68,9 @@
     "remark-rehype": "^11.1.1",
     "sonner": "^2.0.1",
     "swr": "^2.3.3",
-    "uuid": "^11.1.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
+    "uuid": "^11.1.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -91,7 +91,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "clsx": "^2.1.1",
     "eslint": "^9",
-    "eslint-config-next": "15.1.7",
+    "eslint-config-next": "15.2.4",
     "husky": "^9.1.7",
     "jsdom": "^26.0.0",
     "postcss": "^8",
