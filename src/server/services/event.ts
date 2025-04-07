@@ -1,7 +1,8 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { Event } from '@prisma/client';
+import { Event, Phase, Prisma } from '@prisma/client';
+import { validate } from 'uuid';
 import prisma from '../db';
 import { NewEventData } from '../schemas/event';
 import { ServiceResult } from '../types/serviceResult';
@@ -13,7 +14,9 @@ import { getUser, isAdmin, isAuthenticated } from './auth';
  *
  * @returns A promise with all published events.
  */
-export async function getPublishedEvents(): Promise<ServiceResult<Event[]>> {
+export async function getPublishedEvents(): Promise<
+  ServiceResult<(Event & { phases: Phase[] })[]>
+> {
   const client = await createClient();
 
   // Only authenticated users can fetch see
@@ -24,15 +27,17 @@ export async function getPublishedEvents(): Promise<ServiceResult<Event[]>> {
     };
   }
 
-  // Fetch all events where status is published
-
+  // Fetch all events where status is published and include the phases
   const res = await prisma.event.findMany({
     where: {
       status: 'PUBLISHED',
     },
+    include: {
+      phases: true,
+    },
   });
 
-  if (!res || res.length === 0) {
+  if (!res) {
     return {
       ok: false,
       error: 'Failed to fetch events. No events found.',
@@ -248,4 +253,76 @@ export async function getAllNonArchivedEvents(): Promise<
     ok: true,
     data: res,
   };
+}
+
+interface EventWithPhases extends Event {
+  phases: Phase[];
+}
+
+export async function getPublishedEventById({
+  eventId,
+}: {
+  eventId: string;
+}): Promise<ServiceResult<EventWithPhases>> {
+  if (!validate(eventId)) {
+    return {
+      ok: false,
+      error: 'Invalid event ID.',
+    };
+  }
+
+  const client = await createClient();
+
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  try {
+    const res = await prisma.event.findFirstOrThrow({
+      where: {
+        AND: [
+          {
+            id: eventId,
+          },
+          {
+            status: 'PUBLISHED',
+          },
+        ],
+      },
+      include: {
+        phases: {
+          where: {
+            type: 'APPLICATION',
+          },
+        },
+      },
+    });
+
+    if (res.phases.length === 0) {
+      return {
+        ok: false,
+        error: 'Event has no application phase.',
+      };
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: 'Failed to fetch event. Something went wrong.',
+    };
+  }
 }

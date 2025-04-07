@@ -3,6 +3,7 @@
 import { toEndOfDay, toStartOfDay } from '@/utils/date';
 import { createClient } from '@/utils/supabase/server';
 import { Phase, PhaseType, Prisma } from '@prisma/client';
+import { validate } from 'uuid';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
 import { getUser, isAdmin, isAuthenticated } from './auth';
@@ -378,6 +379,13 @@ export async function getCurrentPhase({
 }: {
   eventId: string;
 }): Promise<ServiceResult<Phase | null>> {
+  if (!validate(eventId)) {
+    return {
+      ok: false,
+      error: 'Invalid event ID.',
+    };
+  }
+
   if (!(await isAuthenticated())) {
     return {
       ok: false,
