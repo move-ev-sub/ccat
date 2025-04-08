@@ -25,5 +25,32 @@ export const messages = {
     userNotFound: (email: string) => {
       return `Kein Benutzer mit der E-Mail ${email} gefunden.`;
     },
+
+    notAuthenticated: () => {
+      return `Der Nutzer ist nicht angemeldet.`;
+    },
+
+    /**
+     * Error message to throw when the user is not an admin
+     * @param type Type of the object which could not be fetched
+     */
+    failedToFetch: (type: string) => {
+      return `Fehler beim Abrufen von ${type}.`;
+    },
+    notAnAdmin: () => {
+      return `Der Nutzer ist kein Administrator.`;
+    },
+    invalidFileName: () => {
+      return `Der Dateiname ist ungültig.`;
+    },
+    logoUploadFailed: () => {
+      return `Das Hochladen des Logos ist fehlgeschlagen.`;
+    },
+    bucketNotFound: (type: string) => {
+      return `Der Bucket "${type}" wurde nicht gefunden.`;
+    },
+    noUserCreated: () => {
+      return `Es wurde kein Benutzer erstellt.`;
+    },
   },
 };
