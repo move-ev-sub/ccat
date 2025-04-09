@@ -96,5 +96,11 @@ export const messages = {
     invalidUUID: (eventId: string) => {
       return `Die Event ID ${eventId} ist eine ungültige UUID.`;
     },
+    bucketDoesNotExist: (name: string) => {
+      return `Der Bucket "${name}" existiert nicht.`;
+    },
+    uploadToBucketFailed: (name: string, fileName: string) => {
+      return `Das Hochladen der Datei "${fileName} in den Bucket "${name}" ist fehlgeschlagen.`;
+    },
   },
 };
