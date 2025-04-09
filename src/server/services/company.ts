@@ -133,7 +133,7 @@ export async function createCompany(
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: t.errors.notAnAdmin(),
+      error: t.errors.notAuthorized(),
     };
   }
 

@@ -37,8 +37,8 @@ export const messages = {
     failedToFetch: (type: string) => {
       return `Fehler beim Abrufen von ${type}.`;
     },
-    notAnAdmin: () => {
-      return `Der Nutzer ist kein Administrator.`;
+    notAuthorized: () => {
+      return `Der Nutzer ist nicht autorisiert.`;
     },
     invalidFileName: () => {
       return `Der Dateiname ist ungültig.`;
