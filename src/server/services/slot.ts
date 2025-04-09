@@ -1,5 +1,6 @@
 'use server';
 
+import { messages as t } from '@/i18n';
 import { createClient } from '@/utils/supabase/server';
 import { Slot } from '@prisma/client';
 import { validate } from 'uuid';
@@ -25,14 +26,14 @@ export async function createSlot(
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: 'User is not authorized to create a slot.',
+      error: t.errors.noAdmin(),
     };
   }
 
@@ -48,7 +49,7 @@ export async function createSlot(
   if (!existsEvent) {
     return {
       ok: false,
-      error: 'Event not found.',
+      error: t.errors.eventNotFound(eventId),
     };
   }
 
@@ -56,7 +57,7 @@ export async function createSlot(
   if (startDate >= endDate) {
     return {
       ok: false,
-      error: 'Start date must be before end date.',
+      error: t.errors.dateBeforeEnddate(),
     };
   }
 
@@ -75,7 +76,7 @@ export async function createSlot(
   if (!areSameDay(startDate, endDate)) {
     return {
       ok: false,
-      error: 'Start and end date must be on the same day.',
+      error: t.errors.notSameDay(),
     };
   }
 
@@ -84,7 +85,7 @@ export async function createSlot(
   if (!user) {
     return {
       ok: false,
-      error: 'User not found.',
+      error: t.errors.userNotFoundGeneric(),
     };
   }
 
@@ -100,7 +101,7 @@ export async function createSlot(
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to create slot. Unknown error.',
+      error: t.errors.failedToCreateSlot(),
     };
   }
 
@@ -119,14 +120,14 @@ export async function fetchSlotsForEvent(
   if (!validate(eventId)) {
     return {
       ok: false,
-      error: 'Event ID is an invalid UUID.',
+      error: t.errors.invalidUUID(eventId),
     };
   }
 
   if (!(await isAuthenticated())) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -139,7 +140,7 @@ export async function fetchSlotsForEvent(
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to get slots for event.',
+      error: t.errors.failedToGetSlot(),
     };
   }
 

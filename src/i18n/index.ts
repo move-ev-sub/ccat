@@ -25,7 +25,9 @@ export const messages = {
     userNotFound: (email: string) => {
       return `Kein Benutzer mit der E-Mail ${email} gefunden.`;
     },
-
+    userNotFoundGeneric: () => {
+      return `Kein Benutzer gefunden.`;
+    },
     notAuthenticated: () => {
       return `Der Nutzer ist nicht angemeldet.`;
     },
@@ -39,6 +41,9 @@ export const messages = {
     },
     notAuthorized: () => {
       return `Der Nutzer ist nicht autorisiert.`;
+    },
+    noAdmin: () => {
+      return `Der Nutzer ist kein Admin.`;
     },
     invalidFileName: () => {
       return `Der Dateiname ist ungültig.`;
@@ -64,6 +69,9 @@ export const messages = {
     dateBeforeEnddate: () => {
       return `Das Startdatum muss vor dem Enddatum liegen.`;
     },
+    notSameDay: () => {
+      return `Das Startdatum und das Enddatum müssen am selben Tag liegen.`;
+    },
     updateFailed: (type: string) => {
       return `Das Aktualisieren des ${type} ist fehlgeschlagen.`;
     },
@@ -78,6 +86,15 @@ export const messages = {
     },
     failedToGetUser: () => {
       return `Fehler beim Abrufen des Benutzers.`;
+    },
+    failedToCreateSlot: () => {
+      return `Fehler beim Erstellen des Slots.`;
+    },
+    failedToGetSlot: () => {
+      return `Fehler beim Abrufen des Slots.`;
+    },
+    invalidUUID: (eventId: string) => {
+      return `Die Event ID ${eventId} ist eine ungültige UUID.`;
     },
   },
 };

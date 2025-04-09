@@ -50,9 +50,7 @@ export async function updatePhase({
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error:
-        t.errors.notAuthorized() +
-        ' You need to be an admin to perform this action.',
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -151,9 +149,7 @@ export async function createPhase({
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error:
-        t.errors.notAuthorized() +
-        ' You need to be an admin to perform this action.',
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -323,9 +319,7 @@ export async function isPhasesSetupCompleted({
   if (!(await isAdmin())) {
     return {
       ok: false,
-      error:
-        t.errors.notAuthorized() +
-        ' You need to be an admin to perform this action.',
+      error: t.errors.notAuthorized(),
     };
   }
 

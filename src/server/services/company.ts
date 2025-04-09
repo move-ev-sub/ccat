@@ -133,9 +133,7 @@ export async function createCompany(
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error:
-        t.errors.notAuthorized() +
-        ' You need to be an admin to perform this action.',
+      error: t.errors.notAuthorized(),
     };
   }
 
