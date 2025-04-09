@@ -35,7 +35,7 @@ export function SlotItem({
           <button
             className={cn(
               'border-border bg-background-muted h-9 cursor-pointer rounded-r-md border px-2.5 py-1.5',
-              'focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
+              'focus-indicator'
             )}
           >
             <EllipsisVerticalIcon className="text-foreground size-4" />

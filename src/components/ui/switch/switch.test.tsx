@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Switch } from './switch';
 
 describe('Switch', () => {
@@ -95,9 +95,7 @@ describe('Switch', () => {
     await user.tab();
 
     // Check focus styles
-    expect(switchElement).toHaveClass('focus-visible:ring-ring');
-    expect(switchElement).toHaveClass('focus-visible:ring-2');
-    expect(switchElement).toHaveClass('focus-visible:ring-offset-2');
+    expect(switchElement).toHaveClass('focus-indicator');
   });
 
   it('has correct ARIA attributes', () => {

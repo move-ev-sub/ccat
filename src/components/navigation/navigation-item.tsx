@@ -9,7 +9,8 @@ export function NavigationItem({
     <Link
       data-slot="navigation-item"
       className={cn(
-        'focus-visible:ring-ring focus-visible:ring-offset-background-muted text-foreground hover:bg-background rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'text-foreground hover:bg-background rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
+        'focus-indicator focus-visible:ring-offset-background-muted',
         className
       )}
       {...props}

@@ -51,10 +51,7 @@ export function UserProfileMenu({
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger
-        className={cn(
-          'focus-visible:ring-ring focus-visible:ring-offset-background rounded-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
-          className
-        )}
+        className={cn('focus-indicator rounded-full', className)}
       >
         <Avatar>
           <AvatarFallback className="text-xs">

@@ -49,7 +49,7 @@ export function SidebarProfileMenu({
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger asChild>
-        <button className="border-border bg-background focus-visible:ring-ring focus-visible:ring-offset-background-muted hover:bg-background-muted flex w-full items-center justify-start gap-2.5 rounded-lg border px-2.5 py-1.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
+        <button className="border-border bg-background focus-indicator focus-visible:ring-offset-background-muted hover:bg-background-muted flex w-full items-center justify-start gap-2.5 rounded-lg border px-2.5 py-1.5">
           <span className="text-foreground truncate text-sm font-medium">
             {user.email ?? 'Unbekannt'}
           </span>

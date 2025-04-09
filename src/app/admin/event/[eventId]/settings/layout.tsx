@@ -82,7 +82,7 @@ function TabsTrigger({
         // active
         'data-[state=active]:text-accent hover:data-[state=active]:text-accent/80',
         // focus
-        'focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'focus-indicator',
         className
       )}
       {...props}
