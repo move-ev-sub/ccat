@@ -17,6 +17,11 @@ export function CardLink({
       )}
       {...props}
     >
+      {/**
+       * Instead of making the entire card a link, we make the link a span
+       * and add a pseudo element to the card. This makes it easier for screen
+       * readers to understand the link.
+       */}
       <span className="absolute inset-0 z-10" />
       {children}
     </Link>
