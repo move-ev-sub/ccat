@@ -22,14 +22,16 @@ export const buttonVariants = cva(
           'border border-border bg-background hover:bg-background-muted [&_svg]:text-accent',
         ghost: 'hover:bg-background-muted [&_svg]:fill-accent',
         success:
-          'bg-success-background border-success-border border text-success-foreground hover:bg-success-background/90 shadow-sm shadow-success/40 focus-visible:ring-success',
+          'bg-success-background border-success-border border text-success-foreground hover:bg-success-background/90 shadow-sm shadow-success/40 focus-visible:!ring-success',
         destructive:
-          'bg-destructive-background border-destructive-border border text-destructive-foreground hover:bg-destructive-background/90 shadow-sm shadow-destructive/40 focus-visible:ring-destructive',
+          'bg-destructive-background border-destructive-border border text-destructive-foreground hover:bg-destructive-background/90 shadow-sm shadow-destructive/40 focus-visible:!ring-destructive',
         warning:
-          'bg-warning-background border-warning-border border text-warning-foreground hover:bg-warning-background/90 shadow-sm shadow-warning/40 focus-visible:ring-warning',
+          'bg-warning-background border-warning-border border text-warning-foreground hover:bg-warning-background/90 shadow-sm shadow-warning/40 focus-visible:!ring-warning',
       },
       size: {
+        sm: 'text-xs px-2 py-1 [&_svg]:size-3',
         default: 'text-sm px-3 py-1.5 [&_svg]:size-4',
+        lg: 'text-base px-3 py-1.5 [&_svg]:size-5',
       },
     },
     defaultVariants: {
