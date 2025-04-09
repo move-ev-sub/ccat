@@ -11,7 +11,8 @@ export function BackLink({
     <Link
       data-slot={'back-link'}
       className={cn(
-        'text-foreground hover:text-accent focus-visible:ring-ring focus-visible:ring-offset-background flex w-fit items-center justify-start gap-1 rounded-md text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'text-foreground hover:text-accent flex w-fit items-center justify-start gap-1 rounded-md text-sm font-medium transition-colors',
+        'focus-indicator',
         className
       )}
       {...props}
