@@ -75,8 +75,7 @@ describe('Textarea', () => {
     const textarea = screen.getByRole('textbox');
 
     await user.tab();
-    expect(textarea).toHaveClass('focus-visible:ring-1');
-    expect(textarea).toHaveClass('focus-visible:border-ring');
+    expect(textarea).toHaveClass('focus-indicator');
   });
 
   // Placeholder
