@@ -1,7 +1,6 @@
 'use server';
 
 import { messages as t } from '@/i18n';
-import { Prisma, Profile, Role } from '@prisma/client';
 import { createClient } from '@/utils/supabase/server';
 import {
   AdminProfile,
