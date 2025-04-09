@@ -61,8 +61,7 @@ describe('Checkbox', () => {
     render(<Checkbox />);
     const checkbox = screen.getByRole('checkbox');
     await user.tab();
-    expect(checkbox).toHaveClass('focus-visible:ring-2');
-    expect(checkbox).toHaveClass('focus-visible:ring-ring');
+    expect(checkbox).toHaveClass('focus-indicator');
   });
 
   // Custom className
