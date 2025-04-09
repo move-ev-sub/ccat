@@ -82,7 +82,8 @@ function TOCItem({
           href={`#${node.id}`}
           data-active={activeId === `#${node.id}`}
           className={cn(
-            'focus-visible:ring-ring focus-visible:ring-offset-background rounded-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+            'rounded-md',
+            'focus-indicator',
             'data-[active=true]:text-accent data-[active=true]:font-medium',
             className
           )}
