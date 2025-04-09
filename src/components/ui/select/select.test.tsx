@@ -174,7 +174,8 @@ describe('Select', () => {
       'text-sm',
       'shadow-xs',
       'transition-[color,box-shadow]',
-      'focus-indicator',
+      'outline-none',
+      'focus-visible:ring-[3px]',
       'disabled:cursor-not-allowed',
       'disabled:opacity-50'
     );
