@@ -12,7 +12,7 @@ export function CardLink({
       data-slot={'card-link'}
       className={cn(
         'text-foreground block rounded-md font-medium',
-        'focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'focus-indicator',
         className
       )}
       {...props}
