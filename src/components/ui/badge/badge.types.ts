@@ -11,6 +11,7 @@ export const badgeVariants = cva(
           'border-red-300 bg-red-100 text-red-800 dark:text-red-50 dark:bg-red-950 dark:border-red-700',
         success:
           'border-green-300 bg-green-100 text-green-800 dark:text-green-50 dark:bg-green-950 dark:border-green-700',
+        accent: 'border-accent bg-accent/10 text-accent',
       },
     },
     defaultVariants: {

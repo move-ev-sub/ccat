@@ -17,7 +17,7 @@ export const buttonVariants = cva(
         default:
           'bg-foreground text-background border border-primary-950 dark:border-primary-100 shadow-[inset_0px_2px_0px_rgba(255,255,255,0.25)] dark:shadow-[inset_0px_2px_0px_rgba(0,0,0,0.15)] hover:bg-foreground/90',
         accent:
-          'bg-accent text-white border border-accent-600 shadow-[inset_0px_2px_0px_rgba(255,255,255,0.25)] hover:bg-accent-600 shadow-sm shadow-accent/40',
+          'bg-accent text-white border border-accent shadow-[inset_0px_2px_0px_rgba(255,255,255,0.25)] hover:bg-accent-600 shadow-sm ',
         outline:
           'border border-border bg-background hover:bg-background-muted [&_svg]:text-accent',
         ghost: 'hover:bg-background-muted [&_svg]:fill-accent',

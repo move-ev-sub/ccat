@@ -1,6 +1,7 @@
 import { BackLink } from '@/components/back-link';
 import { CreateNewEventForm } from '@/components/forms/create-new-event';
 import { PageDesc, PageTitle } from '@/components/page-header';
+import { messages as t } from '@/i18n';
 import { ClipboardDocumentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as Tabs from '@radix-ui/react-tabs';
 
@@ -8,11 +9,8 @@ export default async function NewEventPage() {
   return (
     <div className="w-full">
       <BackLink href="/admin" className="mb-8" />
-      <PageTitle>Neue Veranstaltung</PageTitle>
-      <PageDesc>
-        Du kannst eine ganz neue Veranstaltung erstellen oder eine bestehende
-        Veranstaltung kopieren.
-      </PageDesc>
+      <PageTitle>{t.pages.newEvent.title()}</PageTitle>
+      <PageDesc>{t.pages.newEvent.describtion()}</PageDesc>
       <Tabs.Root defaultValue="custom" className="mt-10">
         <Tabs.List className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <Tabs.Trigger
@@ -21,10 +19,10 @@ export default async function NewEventPage() {
           >
             <PlusIcon className="text-secondary group-data-[state=active]:text-accent size-6" />
             <p className="text-foreground mt-8 text-sm font-medium">
-              Neue Veranstaltung
+              {t.pages.newEvent.createNew()}
             </p>
             <p className="text-secondary mt-1 text-xs">
-              Erstelle eine neue Veranstaltung von Grund auf.
+              {t.pages.newEvent.createNewDescribtion()}
             </p>
           </Tabs.Trigger>
           <Tabs.Trigger
@@ -34,10 +32,10 @@ export default async function NewEventPage() {
           >
             <ClipboardDocumentIcon className="text-secondary group-data-[state=active]:text-accent size-6" />
             <p className="text-foreground mt-8 text-sm font-medium">
-              Veranstaltung kopieren
+              {t.pages.newEvent.copy()}
             </p>
             <p className="text-secondary mt-1 text-xs">
-              Starte mit einer bestehenden Veranstaltung als Vorlage.
+              {t.pages.newEvent.copyDescribtion()}
             </p>
           </Tabs.Trigger>
         </Tabs.List>

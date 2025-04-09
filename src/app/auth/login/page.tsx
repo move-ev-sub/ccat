@@ -1,4 +1,5 @@
 import { LoginForm } from '@/components/forms/login';
+import { messages as t } from '@/i18n';
 import Link from 'next/link';
 
 export default async function LoginPage() {
@@ -7,9 +8,11 @@ export default async function LoginPage() {
       <div className="flex flex-col items-center justify-center px-8 py-12">
         <div className="w-full max-w-sm">
           <div>
-            <h1 className="text-foreground text-xl font-medium">Anmeldung</h1>
+            <h1 className="text-foreground text-xl font-medium">
+              {t.pages.login.title()}
+            </h1>
             <p className="text-secondary mt-2 text-sm">
-              Melde dich an um auf das CCAT zuzugreifen.
+              {t.pages.login.description()}
             </p>
           </div>
           <div className="mt-10">
@@ -17,12 +20,12 @@ export default async function LoginPage() {
           </div>
           <div className="mt-10">
             <p className="text-secondary text-sm">
-              Du hast noch keinen Account?{' '}
+              {t.pages.login.noAccount()}{' '}
               <Link
                 href="/auth/register"
                 className="text-foreground hover:text-accent font-medium transition-colors"
               >
-                Registrieren
+                {t.pages.login.register()}
               </Link>
             </p>
           </div>
