@@ -195,7 +195,7 @@ export async function createPhase({
   if (!user || !user.id) {
     return {
       ok: false,
-      error: t.errors.failedToGetUser(),
+      error: t.errors.failedToGet('user'),
     };
   }
 
@@ -212,7 +212,7 @@ export async function createPhase({
   if (!res) {
     return {
       ok: false,
-      error: t.errors.noEventCreated(),
+      error: t.errors.notCreated('Event'),
     };
   }
 

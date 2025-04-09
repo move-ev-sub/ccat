@@ -101,7 +101,7 @@ export async function createSlot(
   if (!res) {
     return {
       ok: false,
-      error: t.errors.failedToCreateSlot(),
+      error: t.errors.failedToCreate('Slots'),
     };
   }
 
@@ -140,7 +140,7 @@ export async function fetchSlotsForEvent(
   if (!res) {
     return {
       ok: false,
-      error: t.errors.failedToGetSlot(),
+      error: t.errors.failedToGet('Slots'),
     };
   }
 

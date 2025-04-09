@@ -165,7 +165,7 @@ export async function createCompany(
   if (!data.user) {
     return {
       ok: false,
-      error: error?.message || t.errors.noUserCreated(),
+      error: error?.message || t.errors.notCreated('User'),
     };
   }
 

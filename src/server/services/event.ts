@@ -147,7 +147,7 @@ export async function createEvent({
   if (res === null) {
     return {
       ok: false,
-      error: t.errors.noCompanyCreated(),
+      error: t.errors.notCreated('Unternehmen'),
     };
   }
 
