@@ -35,3 +35,14 @@
     border-color: var(--color-border, currentColor);
   }
 }
+
+/**
+ * Focus indicator
+
+ @see https://github.com/move-ev-sub/ccat/issues/125
+ * -------------------------------------------------------------------------- */
+.focus-indicator {
+  &:focus-visible {
+    @apply ring-ring ring-offset-background ring-2 ring-offset-2 outline-none;
+  }
+}
