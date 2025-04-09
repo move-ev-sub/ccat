@@ -1,5 +1,6 @@
 'use server';
 
+import { messages as t } from '@/i18n';
 import { toEndOfDay, toStartOfDay } from '@/utils/date';
 import { createClient } from '@/utils/supabase/server';
 import { Phase, PhaseType, Prisma } from '@prisma/client';
@@ -42,7 +43,7 @@ export async function updatePhase({
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated to perform this action.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -50,7 +51,8 @@ export async function updatePhase({
     return {
       ok: false,
       error:
-        'User is not an admin therefore not authorized to perform this action.',
+        t.errors.notAuthorized() +
+        ' You need to be an admin to perform this action.',
     };
   }
 
@@ -58,7 +60,7 @@ export async function updatePhase({
   if (from < new Date()) {
     return {
       ok: false,
-      error: 'Start date must be in the future.',
+      error: t.errors.dateNotInFuture(),
     };
   }
 
@@ -70,7 +72,7 @@ export async function updatePhase({
   if (startDate > endDate) {
     return {
       ok: false,
-      error: 'Start date must be before end date.',
+      error: t.errors.dateBeforeEnddate(),
     };
   }
 
@@ -87,7 +89,7 @@ export async function updatePhase({
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to update phase.',
+      error: t.errors.updateFailed('phase'),
     };
   }
 
@@ -142,7 +144,7 @@ export async function createPhase({
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated to perform this action.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -150,7 +152,8 @@ export async function createPhase({
     return {
       ok: false,
       error:
-        'User is not an admin therefore not authorized to perform this action.',
+        t.errors.notAuthorized() +
+        ' You need to be an admin to perform this action.',
     };
   }
 
@@ -159,7 +162,7 @@ export async function createPhase({
   if (!exists.ok) {
     return {
       ok: false,
-      error: 'Failed to check if phase exists: ' + exists.error,
+      error: t.errors.phaseCheckFailed() + exists.error,
     };
   }
 
@@ -167,7 +170,7 @@ export async function createPhase({
   if (exists.data) {
     return {
       ok: false,
-      error: `Event already has a phase of type ${type.toString()}.`,
+      error: t.errors.eventAlreadyHasPhase(type.toString()),
     };
   }
 
@@ -175,7 +178,7 @@ export async function createPhase({
   if (from < new Date() && type !== 'PREP') {
     return {
       ok: false,
-      error: 'Start date must be in the future.',
+      error: t.errors.dateNotInFuture(),
     };
   }
 
@@ -187,7 +190,7 @@ export async function createPhase({
   if (startDate > endDate) {
     return {
       ok: false,
-      error: 'Start date must be before end date.',
+      error: t.errors.dateBeforeEnddate(),
     };
   }
 
@@ -196,7 +199,7 @@ export async function createPhase({
   if (!user || !user.id) {
     return {
       ok: false,
-      error: 'Failed to get user object.',
+      error: t.errors.failedToGetUser(),
     };
   }
 
@@ -213,7 +216,7 @@ export async function createPhase({
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to create phase.',
+      error: t.errors.noEventCreated(),
     };
   }
 
@@ -246,7 +249,7 @@ export async function existsPhase({
   if (!(await isAuthenticated())) {
     return {
       ok: false,
-      error: 'User is not authenticated to perform this action.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -297,7 +300,7 @@ export async function fetchPhasesForEvent({
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to fetch phases for event.',
+      error: t.errors.failedToFetch('phases'),
     };
   }
 
@@ -321,7 +324,8 @@ export async function isPhasesSetupCompleted({
     return {
       ok: false,
       error:
-        'User is not an admin therefore not authorized to perform this action.',
+        t.errors.notAuthorized() +
+        ' You need to be an admin to perform this action.',
     };
   }
 
@@ -338,7 +342,7 @@ export async function isPhasesSetupCompleted({
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to fetch phases for event.',
+      error: t.errors.failedToFetch('phases'),
     };
   }
 
@@ -381,7 +385,7 @@ export async function getCurrentPhase({
   if (!(await isAuthenticated())) {
     return {
       ok: false,
-      error: 'User is not authenticated to perform this action.',
+      error: t.errors.notAuthenticated(),
     };
   }
 

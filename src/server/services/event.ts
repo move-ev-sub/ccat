@@ -74,7 +74,9 @@ export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: t.errors.notAuthorized(),
+      error:
+        t.errors.notAuthorized() +
+        'You need to be an admin to perform this action.',
     };
   }
 
@@ -122,7 +124,9 @@ export async function createEvent({
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: t.errors.notAuthorized(),
+      error:
+        t.errors.notAuthorized() +
+        'You need to be an admin to perform this action.',
     };
   }
 
@@ -201,7 +205,9 @@ export async function getEventById(
   if (res.status !== 'PUBLISHED' && !(await isAdmin(client))) {
     return {
       ok: false,
-      error: t.errors.notAuthorized(),
+      error:
+        t.errors.notAuthorized() +
+        'You need to be an admin to perform this action.',
     };
   }
 
@@ -226,7 +232,9 @@ export async function getAllNonArchivedEvents(): Promise<
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: t.errors.notAuthorized(),
+      error:
+        t.errors.notAuthorized() +
+        'You need to be an admin to perform this action.',
     };
   }
 

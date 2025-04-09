@@ -52,5 +52,32 @@ export const messages = {
     noUserCreated: () => {
       return `Es wurde kein Benutzer erstellt.`;
     },
+    noCompanyCreated: () => {
+      return `Es wurde kein Unternehmen erstellt.`;
+    },
+    eventNotFound: (eventId: string) => {
+      return `Das Event mit der ID ${eventId} wurde nicht gefunden.`;
+    },
+    dateNotInFuture: () => {
+      return `Das Datum muss in der Zukunft liegen.`;
+    },
+    dateBeforeEnddate: () => {
+      return `Das Startdatum muss vor dem Enddatum liegen.`;
+    },
+    updateFailed: (type: string) => {
+      return `Das Aktualisieren des ${type} ist fehlgeschlagen.`;
+    },
+    phaseCheckFailed: () => {
+      return `Die Überprüfung, ob eine Phase existiert, ist fehlgeschlagen.`;
+    },
+    noEventCreated: () => {
+      return `Es wurde kein Event erstellt.`;
+    },
+    eventAlreadyHasPhase: (type: string) => {
+      return `Das Event hat bereits eine Phase vom Typ ${type}.`;
+    },
+    failedToGetUser: () => {
+      return `Fehler beim Abrufen des Benutzers.`;
+    },
   },
 };
