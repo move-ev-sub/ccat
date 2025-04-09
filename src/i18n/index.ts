@@ -87,7 +87,7 @@ export const messages = {
      * @param type Type of the resource
      */
     notCreated: (type: string) => {
-      return `Es wurde kein ${type} erstellt.`;
+      return `${type} konnte nicht erstellt werden.`;
     },
 
     /**
