@@ -6,7 +6,7 @@ export const buttonVariants = cva(
     // alignment
     'flex items-center justify-center gap-2.5 ' +
     // focus
-    'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-offset-2 focus-visible:outline-hidden ' +
+    'focus-indicator ' +
     // disabled
     'disabled:opacity-50 disabled:pointer-events-none ' +
     // svg
