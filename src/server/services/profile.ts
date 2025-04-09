@@ -1,6 +1,14 @@
 'use server';
 
-import { Prisma, Profile, Role } from '@prisma/client';
+import { createClient } from '@/utils/supabase/server';
+import {
+  AdminProfile,
+  CompanyProfile,
+  Prisma,
+  Profile,
+  Role,
+  UserProfile,
+} from '@prisma/client';
 import prisma from '../db';
 import {
   FullAdminProfile,
@@ -8,7 +16,7 @@ import {
   FullUserProfile,
 } from '../types/profile';
 import { ServiceResult } from '../types/serviceResult';
-import { isAdmin, isAuthenticated } from './auth';
+import { getUser, isAdmin, isAuthenticated } from './auth';
 
 // ---------------------------------- TYPES ----------------------------------
 interface PaginationArgs {
@@ -54,6 +62,12 @@ interface FetchProfileCountArgs {
 interface FetchSpecificProfileCountArgs
   extends Omit<FetchProfileCountArgs, 'filter'> {
   filter?: Omit<FilterArgs, 'role'>;
+}
+
+export interface FullUnknownProfile extends Profile {
+  userProfile: UserProfile | null;
+  adminProfile: AdminProfile | null;
+  companyProfile: CompanyProfile | null;
 }
 
 // --------------------------------- METHODS ---------------------------------
@@ -429,4 +443,94 @@ export async function fetchAdminProfilesCount(
       role: 'ADMIN',
     },
   });
+}
+
+/**
+ * Fetches the full Profile for the current user
+ */
+export async function fetchCurrentProfile(): Promise<
+  ServiceResult<FullUnknownProfile>
+> {
+  const client = await createClient();
+
+  // Only for authenticated users
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated',
+    };
+  }
+
+  const user = await getUser(client);
+
+  if (!user) {
+    return {
+      ok: false,
+      error: 'Could not get user object.',
+    };
+  }
+
+  try {
+    const res = await prisma.profile.findFirstOrThrow({
+      where: {
+        id: user.id,
+      },
+      include: {
+        adminProfile: true,
+        userProfile: true,
+        companyProfile: true,
+      },
+    });
+
+    if (!(await hasCorespondingProfile({ unknownProfile: res }))) {
+      return {
+        ok: false,
+        error:
+          'No matching (extended) profile could be found for the current user.',
+      };
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: 'An unknow error ocurred.',
+    };
+  }
+}
+
+/**
+ * Checks for a FullUnknownProfile, if the profile matches the profileType
+ */
+async function hasCorespondingProfile({
+  unknownProfile,
+}: {
+  unknownProfile: FullUnknownProfile;
+}): Promise<boolean> {
+  if (unknownProfile.role == 'ADMIN' && unknownProfile.adminProfile !== null) {
+    return true;
+  }
+
+  if (
+    unknownProfile.role == 'COMPANY' &&
+    unknownProfile.companyProfile !== null
+  ) {
+    return true;
+  }
+
+  if (unknownProfile.role == 'USER' && unknownProfile.userProfile !== null) {
+    return true;
+  }
+
+  return false;
 }
