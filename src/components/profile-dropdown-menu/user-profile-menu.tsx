@@ -1,0 +1,119 @@
+'use client';
+
+import { FullUnknownProfile } from '@/server/services/profile';
+import { cn } from '@/utils';
+import { createClient } from '@/utils/supabase/client';
+import {
+  CheckIcon,
+  ComputerDesktopIcon,
+  MoonIcon,
+  SunIcon,
+} from '@heroicons/react/16/solid';
+import { useTheme } from 'next-themes';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+
+export function UserProfileMenu({
+  profile,
+  className,
+  ...props
+}: React.ComponentProps<typeof DropdownMenu> & {
+  profile: FullUnknownProfile;
+  className?: string;
+}) {
+  const supabase = createClient();
+  const router = useRouter();
+  const { theme, setTheme } = useTheme();
+
+  const onLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/auth/login');
+  };
+
+  const onSetTheme = async (theme: 'light' | 'dark' | 'system') => {
+    setTheme(theme);
+  };
+
+  return (
+    <DropdownMenu {...props}>
+      <DropdownMenuTrigger
+        className={cn(
+          'focus-visible:ring-ring focus-visible:ring-offset-background rounded-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+          className
+        )}
+      >
+        <Avatar>
+          <AvatarFallback className="text-xs">
+            {profile.email.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuPortal>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="truncate">
+              {profile.email}
+            </DropdownMenuLabel>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem
+                  className="group"
+                  onSelect={() => onSetTheme('light')}
+                  data-active={theme === 'light'}
+                >
+                  <SunIcon />
+                  Light
+                  <CheckIcon className="ml-auto hidden group-data-[active=true]:block" />
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="group"
+                  onSelect={() => onSetTheme('dark')}
+                  data-active={theme === 'dark'}
+                >
+                  <MoonIcon />
+                  Dark
+                  <CheckIcon className="ml-auto hidden group-data-[active=true]:block" />
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="group"
+                  onSelect={() => onSetTheme('system')}
+                  data-active={theme === 'system'}
+                >
+                  <ComputerDesktopIcon />
+                  System
+                  <CheckIcon className="ml-auto hidden group-data-[active=true]:block" />
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuGroup>
+
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem asChild>
+              {/* TODO: Redirect users to their own settings page */}
+              <Link href={'/settings'}>Einstellungen</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem variant="destructive" onSelect={onLogout}>
+              Abmelden
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenuPortal>
+    </DropdownMenu>
+  );
+}
