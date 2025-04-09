@@ -87,7 +87,7 @@ export const messages = {
      * @param type Type of the resource
      */
     notCreated: (type: string) => {
-      return `${type} konnte nicht erstellt werden.`;
+      return `Es wurde kein ${type} erstellt.`;
     },
 
     /**
@@ -208,6 +208,155 @@ export const messages = {
      */
     eventAlreadyHasPhase: (type: string) => {
       return `Das Event hat bereits eine Phase vom Typ ${type}.`;
+    },
+  },
+  /**
+   * The errors object contains all the error messages which are used in the app.
+   */
+  pages: {
+    /**
+     * The dashboard object contains all the messages which are used in the dashboard.
+     */
+    dashboard: {
+      title: () => {
+        return `Dashboard`;
+      },
+
+      description: () => {
+        return `Hier ist eine Übersicht über alle Veranstaltungen und Unterveranstaltungen.`;
+      },
+    },
+    /**
+     * The events object contains all the messages which are used in the events.
+     */
+    events: {
+      title: () => {
+        return `Veranstaltungen`;
+      },
+      description: () => {
+        return `Hier kannst du alle Veranstaltungen einsehen, bearbeiten und neue erstellen. Klicke auf eine Veranstaltung, um mehr Informationen zu erhalten.`;
+      },
+      createEvent: () => {
+        return `Neu erstellen`;
+      },
+      allEvents: () => {
+        return 'Alle';
+      },
+      publishedEvents: () => {
+        return 'Veröffentlicht';
+      },
+      draftEvents: () => {
+        return 'Entwürfe';
+      },
+    },
+    /**
+     * The user-settings object contains all the messages which are used in the user-settings.
+     */
+    userSettings: {
+      title: () => {
+        return `Nutzerverwaltung`;
+      },
+      description: () => {
+        return `Hier kannst du alle Benutzer verwalten. Beachte, dass hier alle Benutzer angezeigt werden, sowohl Bewerber:innnen als auch Unternehmen.`;
+      },
+    },
+    /**
+     * The company-settings object contains all the messages which are used in the company-settings.
+     */
+    companySettings: {
+      title: () => {
+        return `Unternehmen`;
+      },
+      description: () => {
+        return `Hier kannst du Partnerunternehmen hinzufügen, bearbeiten und löschen.`;
+      },
+      newCompany: () => {
+        return `Neues Unternehmen`;
+      },
+      noCompanies: () => {
+        return `Keine Unternehmen gefunden`;
+      },
+      noCompaniesDesc: () => {
+        return `Klicke auf "Neues Unternehmen", um ein neues Unternehmen hinzuzufügen.`;
+      },
+    },
+    /**
+     * The new-company object contains all the messages which are used in the new-company.
+     */
+    newCompany: {
+      title: () => {
+        return `Neues Unternehmen`;
+      },
+      description: () => {
+        return `Füge ein neuen Unternehmen hinzu um diesem anschließend Veranstaltungen zuzuweisen.`;
+      },
+    },
+    /**
+     * The new-event object contains all the messages which are used in the new-event.
+     */
+    newEvent: {
+      title: () => {
+        return `Neue Veranstaltung`;
+      },
+      describtion: () => {
+        return `Du kannst eine ganz neue Veranstaltung erstellen oder eine bestehende
+        Veranstaltung kopieren.`;
+      },
+      createNew: () => {
+        return `Neue Veranstaltung`;
+      },
+      createNewDescribtion: () => {
+        return `Erstelle eine neue Veranstaltung von Grund auf.`;
+      },
+      copy: () => {
+        return `Veranstaltung kopieren`;
+      },
+      copyDescribtion: () => {
+        return `Starte mit einer bestehenden Veranstaltung als Vorlage.`;
+      },
+    },
+    /**
+     * The new-subevent object contains all the messages which are used in the new-sub-event.
+     */
+    newSubEvent: {
+      title: () => {
+        return `Neue Unter-Veranstaltung erstellen`;
+      },
+      description: () => {
+        return `Um eine Unter-Veranstaltung zu erstellen, wählen Sie bitte ein Unternehmen und einen Slot aus.`;
+      },
+    },
+    /**
+     * The register object contains all the messages which are used in the register.
+     */
+
+    register: {
+      description: () => {
+        return `Erstelle einen Account um Bewerbungen einzureichen.`;
+      },
+      alreadyHaveAccount: () => {
+        return `Du hast bereits einen Account?`;
+      },
+      login: () => {
+        return `Anmelden`;
+      },
+    },
+    /**
+     * The login object contains all the messages which are used in the login.
+     */
+    login: {
+      title: () => {
+        return `Anmeldung`;
+      },
+      description: () => {
+        return `Melde dich an um auf das CCAT zuzugreifen.`;
+      },
+      noAccount: () => {
+        return `Du hast noch keinen Account?`;
+      },
+      register: () => {
+        return `Registrieren`;
+      },
     },
   },
 };
