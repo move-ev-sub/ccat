@@ -1,5 +1,6 @@
 'use server';
 
+import { messages as t } from '@/i18n';
 import { createClient } from '@/utils/supabase/server';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { ServiceResult } from '../types/serviceResult';
@@ -36,7 +37,7 @@ export async function existsBucket(
   if (error || data === null) {
     return {
       ok: false,
-      error: 'Bucket does not exist.',
+      error: t.errors.bucketDoesNotExist(name),
     };
   }
 
@@ -76,7 +77,7 @@ export async function uploadFile(
   if (!(await existsBucket(bucketName, client))) {
     return {
       ok: false,
-      error: `Bucket "${bucketName}" does not exist.`,
+      error: t.errors.bucketDoesNotExist(bucketName),
     };
   }
 
@@ -89,7 +90,7 @@ export async function uploadFile(
       ok: false,
       error:
         error.message ??
-        `Failed to upload file "${fileName ?? file.name}" to bucket "${bucketName}".`,
+        t.errors.uploadToBucketFailed(bucketName, fileName ?? file.name),
     };
   }
 

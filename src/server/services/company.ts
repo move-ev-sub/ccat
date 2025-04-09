@@ -1,5 +1,6 @@
 'use server';
 
+import { messages as t } from '@/i18n';
 import { createAdminClient, createClient } from '@/utils/supabase/server';
 import prisma from '../db';
 import { FullCompanyProfile } from '../types/profile';
@@ -21,7 +22,7 @@ export async function getAllCompanies(): Promise<
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -35,10 +36,10 @@ export async function getAllCompanies(): Promise<
   });
 
   // Check if any companies were found
-  if (res.length === 0) {
+  if (!res) {
     return {
       ok: false,
-      error: 'No companies found.',
+      error: t.errors.failedToFetch('company'),
     };
   }
 
@@ -64,7 +65,7 @@ export async function getCompanyById(
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -89,7 +90,7 @@ export async function getCompanyById(
   if (res === null) {
     return {
       ok: false,
-      error: 'Failed to fetch company profile.',
+      error: t.errors.failedToFetch('company'),
     };
   }
 
@@ -124,7 +125,7 @@ export async function createCompany(
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -132,14 +133,14 @@ export async function createCompany(
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: 'User is not an admin.',
+      error: t.errors.notAuthorized(),
     };
   }
 
   if (!logo.name.includes('.')) {
     return {
       ok: false,
-      error: 'Invalid file name.',
+      error: t.errors.invalidFileName(),
     };
   }
 
@@ -164,7 +165,7 @@ export async function createCompany(
   if (!data.user) {
     return {
       ok: false,
-      error: error?.message || 'Failed to create company user account.',
+      error: error?.message || t.errors.notCreated('User'),
     };
   }
 
@@ -205,7 +206,7 @@ export async function createCompany(
   if (!(await existsBucket('logos'))) {
     return {
       ok: false,
-      error: 'The bucket "logos" does not exist.',
+      error: t.errors.bucketNotFound('logos'),
     };
   }
 
@@ -230,7 +231,7 @@ export async function createCompany(
     console.error(logoRes.error.stack);
     return {
       ok: false,
-      error: logoRes.error.message || 'Failed to upload logo.',
+      error: logoRes.error.message || t.errors.logoUploadFailed(),
     };
   }
 

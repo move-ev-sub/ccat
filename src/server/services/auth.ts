@@ -5,8 +5,8 @@ import { Role } from '@prisma/client';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import prisma from '../db';
-import { ServiceResult } from '../types/serviceResult';
 import { SignUpData } from '../schemas/auth';
+import { ServiceResult } from '../types/serviceResult';
 
 /**
  * Signs up a new user with email and password.

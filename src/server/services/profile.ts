@@ -1,5 +1,6 @@
 'use server';
 
+import { messages as t } from '@/i18n';
 import { createClient } from '@/utils/supabase/server';
 import {
   AdminProfile,
@@ -86,14 +87,14 @@ async function fetchProfilesForRole<T extends Profile>({
   if (!(await isAuthenticated())) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
   if (!(await isAdmin())) {
     return {
       ok: false,
-      error: 'User is not an admin.',
+      error: t.errors.noAdmin(),
     };
   }
 
@@ -202,7 +203,7 @@ async function fetchProfilesForRolePaginated<T extends Profile>({
   if (!(await isAuthenticated())) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -363,7 +364,7 @@ async function fetchProfilesCountForRole({
   if (!(await isAuthenticated())) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 

@@ -4,6 +4,7 @@ import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { messages as t } from '@/i18n';
 import { ListBulletIcon, PlusIcon } from '@heroicons/react/16/solid';
 import { Suspense } from 'react';
 import { EventsList } from './_components/events-list';
@@ -17,16 +18,12 @@ export default async function AdminOverviewPage() {
       <PageHeader>
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div>
-            <PageTitle>Veranstaltungen</PageTitle>
-            <PageDesc>
-              Hier kannst du alle Veranstaltungen einsehen, bearbeiten und neue
-              erstellen. Klicke auf eine Veranstaltung, um mehr Informationen zu
-              erhalten.
-            </PageDesc>
+            <PageTitle>{t.pages.events.title()}</PageTitle>
+            <PageDesc>{t.pages.events.description()}</PageDesc>
           </div>
           {/* @TODO: Link to CreateNewEvent Page */}
           <Button variant={'accent'}>
-            Neu erstellen <PlusIcon />
+            {t.pages.events.createEvent()} <PlusIcon />
           </Button>
         </div>
       </PageHeader>
@@ -35,13 +32,15 @@ export default async function AdminOverviewPage() {
         <div className="container px-0 sm:px-8">
           <TabsList className="pl-8 sm:pl-0">
             <TabsTrigger value="all">
-              <ListBulletIcon /> Alle
+              <ListBulletIcon /> {t.pages.events.allEvents()}
             </TabsTrigger>
             <TabsTrigger value="published">
-              <EventStatusToIcon status="PUBLISHED" /> Veröffentlicht
+              <EventStatusToIcon status="PUBLISHED" />{' '}
+              {t.pages.events.publishedEvents()}
             </TabsTrigger>
             <TabsTrigger value="drafts">
-              <EventStatusToIcon status="DRAFT" /> Entwürfe
+              <EventStatusToIcon status="DRAFT" />{' '}
+              {t.pages.events.draftEvents()}
             </TabsTrigger>
           </TabsList>
         </div>
