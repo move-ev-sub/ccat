@@ -217,6 +217,7 @@ export const messages = {
     /**
      * The dashboard object contains all the messages which are used in the dashboard.
      */
+
     dashboard: {
       title: () => {
         return `Dashboard`;
@@ -356,6 +357,42 @@ export const messages = {
       },
       register: () => {
         return `Registrieren`;
+      },
+    },
+    adminEventOverview: {
+      description: () => {
+        return `Ein Überblick über die Veranstaltung. Hier kannst du alle Bewerbungen einsehen, bearbeiten und neue erstellen.`;
+      },
+      applicationsTitle: () => {
+        return `Bewerbungen`;
+      },
+      applicationsDescription: () => {
+        return `Seit Beginn`;
+      },
+      createEvent: () => {
+        return `Neu erstellen`;
+      },
+    },
+    notFound: {
+      title: () => {
+        return `Diese Seite existiert nicht.`;
+      },
+      description: () => {
+        return `Es scheint, als hättest du dich verlaufen.`;
+      },
+      goHome: () => {
+        return `Zurück zur Startseite`;
+      },
+    },
+    error: {
+      title: () => {
+        return `Uups! Etwas ist schiefgelaufen.`;
+      },
+      goHome: () => {
+        return `Zurück zur Startseite`;
+      },
+      tryAgain: () => {
+        return `Erneut versuchen`;
       },
     },
   },

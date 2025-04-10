@@ -15,6 +15,7 @@ import { EyeIcon } from '@heroicons/react/16/solid';
  *
  * @returns
  */
+
 export default async function RedirectPage() {
   // if (!(await isAuthenticated())) {
   //   redirect('/auth/login');
@@ -42,6 +43,7 @@ export default async function RedirectPage() {
   // }
   // // Return all other users to `/user`
   // return redirect('/user');
+
   return (
     <div className="py-32">
       <div className="md:px-8">
