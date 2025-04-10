@@ -375,10 +375,10 @@ export const messages = {
     },
     notFound: {
       title: () => {
-        return `Seite nicht gefunden`;
+        return `Diese Seite existiert nicht.`;
       },
       description: () => {
-        return `Hier kannst du dich leider nicht bewerben.`;
+        return `Es scheint, als hättest du dich verlaufen.`;
       },
       goHome: () => {
         return `Zurück zur Startseite`;
