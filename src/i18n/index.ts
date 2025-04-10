@@ -373,5 +373,27 @@ export const messages = {
         return `Neu erstellen`;
       },
     },
+    notFound: {
+      title: () => {
+        return `Seite nicht gefunden`;
+      },
+      description: () => {
+        return `Hier kannst du dich leider nicht bewerben.`;
+      },
+      goHome: () => {
+        return `Zurück zur Startseite`;
+      },
+    },
+    error: {
+      title: () => {
+        return `Uups! Etwas ist schiefgelaufen.`;
+      },
+      goHome: () => {
+        return `Zurück zur Startseite`;
+      },
+      tryAgain: () => {
+        return `Erneut versuchen`;
+      },
+    },
   },
 };
