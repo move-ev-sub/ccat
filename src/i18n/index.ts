@@ -217,6 +217,7 @@ export const messages = {
     /**
      * The dashboard object contains all the messages which are used in the dashboard.
      */
+
     dashboard: {
       title: () => {
         return `Dashboard`;
@@ -356,6 +357,20 @@ export const messages = {
       },
       register: () => {
         return `Registrieren`;
+      },
+    },
+    adminEventOverview: {
+      description: () => {
+        return `Ein Überblick über die Veranstaltung. Hier kannst du alle Bewerbungen einsehen, bearbeiten und neue erstellen.`;
+      },
+      applicationsTitle: () => {
+        return `Bewerbungen`;
+      },
+      applicationsDescription: () => {
+        return `Seit Beginn`;
+      },
+      createEvent: () => {
+        return `Neu erstellen`;
       },
     },
   },
