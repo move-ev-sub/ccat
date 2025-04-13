@@ -5,8 +5,8 @@ import { Role } from '@prisma/client';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import prisma from '../db';
+import { SignUpData, UserSettingsData } from '../schemas/auth';
 import { ServiceResult } from '../types/serviceResult';
-import { SignUpData } from '../schemas/auth';
 
 /**
  * Signs up a new user with email and password.
@@ -323,4 +323,44 @@ export async function getCurrentRole(): Promise<ServiceResult<Role>> {
       error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
+}
+
+/**
+ * Updates userdata.
+ *
+ * @param firstName - The first name of the user.
+ * @param lastName - The last name of the user.
+ *
+ * @returns A promise with the status of the update.
+ */
+
+export async function updateUserSettings(
+  userSettingsData: UserSettingsData
+): Promise<ServiceResult<undefined>> {
+  const { firstName, lastName } = userSettingsData;
+
+  if (!firstName || !lastName) {
+    return {
+      ok: false,
+      error: 'Your Name must not be empty!',
+    };
+  }
+
+  // // updated here, but maybe one should use upsert in case
+  // // a user didn't enter a specific entry?
+  // const updateUser = await prisma.profile.update({
+  // where: {
+  //   email: 'viola@prisma.io',
+  // },
+  // data: {
+  //   userProfile: {
+  //     update: {
+  //       firstName: firstName,
+  //       lastName: lastName,
+  //     }
+  // },
+  // }
+  // )
+
+  return { ok: true, data: undefined };
 }

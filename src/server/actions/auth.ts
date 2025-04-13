@@ -5,6 +5,7 @@ import {
   loginSchema,
   SignUpData,
   signUpSchema,
+  UserSettingsData,
 } from '@/server/schemas/auth';
 import { signInWithPassword, signUpWithEmail } from '@/server/services/auth';
 import { redirect } from 'next/navigation';
@@ -35,6 +36,28 @@ export async function signup(
   // If the user was successfully created, redirect to the home page where
   // they will be redirected to their user specific page
   redirect('/');
+}
+
+export async function changeUserSettings(
+  userSettingsData: UserSettingsData
+): Promise<AuthActionResponse<null>> {
+  const parseRes = await signUpSchema.safeParseAsync(userSettingsData);
+
+  if (!parseRes.success) {
+    return {
+      status: 'error',
+      error: parseRes.error.message || 'Eingabe ist invalide.',
+    };
+  }
+
+  const res = await authService.updateUserSettings(userSettingsData);
+
+  if (!res.ok) {
+    return {
+      status: 'error',
+      error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
+    };
+  }
 }
 
 export async function login({

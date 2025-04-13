@@ -75,7 +75,7 @@ export const loginSchema = z.object({
     .min(6, { message: 'Passwort muss mindestens 6 Zeichen lang sein.' }),
 });
 
-export const UserSettingsSchema = z
+export const userSettingsSchema = z
   // change only first and lastname at first
   .object({
     firstName: z.string().min(1, 'Der Vorname wird benötigt'),
@@ -84,6 +84,6 @@ export const UserSettingsSchema = z
   });
 // .and(generatePasswordSchema());
 
-export type UserSettingsData = z.infer<typeof UserSettingsSchema>;
+export type UserSettingsData = z.infer<typeof userSettingsSchema>;
 
 export type LoginData = z.infer<typeof loginSchema>;

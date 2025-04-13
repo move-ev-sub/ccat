@@ -1,9 +1,12 @@
 // import { UserSettingsForm } from '@/components/forms/change-user-settings';
+import { UserSettingsForm } from '@/components/forms/change-user-settings';
 import {} from '@/components/ui/button';
 import {} from '@/components/ui/form';
 import {} from '@/components/ui/input';
 
-export default async function UserSettings() {
+export default function UserSettingsPage() {
+  // console.log(await getUser());
+
   return (
     <main className="grid min-h-svh grid-cols-1 md:grid-cols-2">
       <div className="flex flex-col items-center justify-center px-8 py-12">
@@ -15,7 +18,8 @@ export default async function UserSettings() {
             <p className="text-secondary mt-2 text-sm">
               Ändere deine Account-Einstellungen.
             </p>
-            <div className="mt-4 border-2 border-b-gray-300"></div>
+            <div className="mt-4 mb-7 border-2 border-b-gray-300"></div>
+            <UserSettingsForm />
           </div>
         </div>
       </div>
