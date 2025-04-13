@@ -40,6 +40,7 @@ export async function signup(
 }
 
 export async function changeUserSettings(
+  idPrisma: string,
   userSettingsData: UserSettingsData
 ): Promise<AuthActionResponse<null>> {
   const parseRes = await userSettingsSchema.safeParseAsync(userSettingsData);
@@ -51,7 +52,7 @@ export async function changeUserSettings(
     };
   }
 
-  const res = await authService.updateUserSettings(userSettingsData);
+  const res = await authService.updateUserSettings(idPrisma, userSettingsData);
 
   if (!res.ok) {
     return {
@@ -59,7 +60,7 @@ export async function changeUserSettings(
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
-  redirect('/settings');
+  redirect('/user/settings');
 }
 
 export async function login({

@@ -335,32 +335,34 @@ export async function getCurrentRole(): Promise<ServiceResult<Role>> {
  */
 
 export async function updateUserSettings(
+  idPrisma: string,
   userSettingsData: UserSettingsData
 ): Promise<ServiceResult<undefined>> {
   const { firstName, lastName } = userSettingsData;
 
+  // can be removed
   if (!firstName || !lastName) {
     return {
       ok: false,
       error: 'Your Name must not be empty!',
     };
   }
-
+  console.log(idPrisma);
   // // updated here, but maybe one should use upsert in case
-  // // a user didn't enter a specific entry?
-  // const updateUser = await prisma.profile.update({
-  // where: {
-  //   email: 'viola@prisma.io',
-  // },
-  // data: {
-  //   userProfile: {
-  //     update: {
-  //       firstName: firstName,
-  //       lastName: lastName,
-  //     }
-  // },
-  // }
-  // )
+  // // a user didn't enter a specific entry while registering?
+  await prisma.profile.update({
+    where: {
+      id: idPrisma,
+    },
+    data: {
+      userProfile: {
+        update: {
+          firstName: firstName,
+          lastName: lastName,
+        },
+      },
+    },
+  });
 
   return { ok: true, data: undefined };
 }

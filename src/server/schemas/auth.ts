@@ -78,6 +78,7 @@ export const loginSchema = z.object({
 export const userSettingsSchema = z
   // change only first and lastname at first
   .object({
+    idPrisma: z.any(),
     firstName: z.string().min(1, 'Der Vorname wird benötigt'),
     lastName: z.string().min(1, 'Der Nachname wird benötigt'),
     // email: z.string().email('Ungültige E-Mail-Adresse'),

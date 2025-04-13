@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { userSettingsSchema } from '@/server/schemas/auth';
 import { useEffect } from 'react';
 
+import { changeUserSettings } from '@/server/actions/auth';
 import {
   fetchCurrentProfile,
   FullUnknownProfile,
@@ -29,38 +30,47 @@ export function UserSettingsForm() {
   const [data, setData] = React.useState<FullUnknownProfile | null>(null);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
-      const res = await fetchCurrentProfile();
-
-      if (res.ok) {
-        setData(res.data);
-      } else {
-        setError(res.error);
+      try {
+        const res = await fetchCurrentProfile();
+        if (res.ok) {
+          setData(res.data);
+        }
+      } catch (error) {
+        error = 'Error fetching user data form prisma';
+        setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
+  const idPrisma = data?.userProfile?.id;
   const firstName = data?.userProfile?.firstName;
   const lastName = data?.userProfile?.lastName;
 
   const form = useForm<z.infer<typeof userSettingsSchema>>({
     resolver: zodResolver(userSettingsSchema),
     defaultValues: {
-      firstName: firstName || '',
-      lastName: lastName || '',
+      idPrisma: idPrisma,
+      firstName: firstName,
+      lastName: lastName,
     },
   });
 
+  // wie hier noch die Prisma ID mitgeben?
   async function onSubmit(values: z.infer<typeof userSettingsSchema>) {
     setLoading(true);
     setError(undefined);
-    console.log(values);
-    // const res = await signup(values);
-    // if (res.status === 'error') {
-    //   setError(res.error);
-    // }
+    if (!idPrisma) {
+      setError('User ID is missing.');
+      setLoading(false);
+      return;
+    }
+    const res = await changeUserSettings(idPrisma, values);
+    if (res.status === 'error') {
+      setError(res.error);
+    }
     setLoading(false);
   }
 
@@ -75,7 +85,11 @@ export function UserSettingsForm() {
               <FormItem>
                 <FormLabel>Vorname</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder={firstName} {...field} />
+                  <Input
+                    type="text"
+                    placeholder={loading ? 'Loading...' : firstName}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -88,7 +102,11 @@ export function UserSettingsForm() {
               <FormItem>
                 <FormLabel>Nachname</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder={lastName} {...field} />
+                  <Input
+                    type="text"
+                    placeholder={loading ? 'loading...' : lastName}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
