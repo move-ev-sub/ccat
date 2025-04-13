@@ -46,6 +46,7 @@ export function UserSettingsForm() {
   async function onSubmit(values: z.infer<typeof userSettingsSchema>) {
     setLoading(true);
     setError(undefined);
+    console.log(values);
     // const res = await signup(values);
     // if (res.status === 'error') {
     //   setError(res.error);
