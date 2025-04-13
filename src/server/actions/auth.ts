@@ -6,6 +6,7 @@ import {
   SignUpData,
   signUpSchema,
   UserSettingsData,
+  userSettingsSchema,
 } from '@/server/schemas/auth';
 import { signInWithPassword, signUpWithEmail } from '@/server/services/auth';
 import { redirect } from 'next/navigation';
@@ -41,7 +42,7 @@ export async function signup(
 export async function changeUserSettings(
   userSettingsData: UserSettingsData
 ): Promise<AuthActionResponse<null>> {
-  const parseRes = await signUpSchema.safeParseAsync(userSettingsData);
+  const parseRes = await userSettingsSchema.safeParseAsync(userSettingsData);
 
   if (!parseRes.success) {
     return {
@@ -58,6 +59,7 @@ export async function changeUserSettings(
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
+  redirect('/settings');
 }
 
 export async function login({

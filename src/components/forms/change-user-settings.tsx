@@ -11,7 +11,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { userSettingsSchema } from '@/server/schemas/auth';
+import { useEffect } from 'react';
 
+import {
+  fetchCurrentProfile,
+  FullUnknownProfile,
+} from '@/server/services/profile';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -21,25 +26,30 @@ import { Button } from '../ui/button';
 export function UserSettingsForm() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | undefined>();
-  //   const [Data, setData] = React.useState<any>(null);
+  const [data, setData] = React.useState<FullUnknownProfile | null>(null);
 
-  //   React.useEffect(() => {
-  //     getUser().then((user) => {
-  //       if (user) {
-  //         setData(user);
-  //       } else {
-  //         setError('User not found');
-  //       }a
-  //     });
-  //   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetchCurrentProfile();
 
-  //   console.log(Data?.email);
+      if (res.ok) {
+        setData(res.data);
+      } else {
+        setError(res.error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const firstName = data?.userProfile?.firstName;
+  const lastName = data?.userProfile?.lastName;
 
   const form = useForm<z.infer<typeof userSettingsSchema>>({
     resolver: zodResolver(userSettingsSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName: firstName || '',
+      lastName: lastName || '',
     },
   });
 
@@ -65,7 +75,7 @@ export function UserSettingsForm() {
               <FormItem>
                 <FormLabel>Vorname</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="" {...field} />
+                  <Input type="text" placeholder={firstName} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,7 +88,7 @@ export function UserSettingsForm() {
               <FormItem>
                 <FormLabel>Nachname</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="" {...field} />
+                  <Input type="text" placeholder={lastName} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
