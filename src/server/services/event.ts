@@ -1,7 +1,9 @@
 'use server';
 
+import { messages as t } from '@/i18n';
 import { createClient } from '@/utils/supabase/server';
-import { Event } from '@prisma/client';
+import { Event, Phase, Prisma } from '@prisma/client';
+import { validate } from 'uuid';
 import prisma from '../db';
 import { NewEventData } from '../schemas/event';
 import { ServiceResult } from '../types/serviceResult';
@@ -13,29 +15,33 @@ import { getUser, isAdmin, isAuthenticated } from './auth';
  *
  * @returns A promise with all published events.
  */
-export async function getPublishedEvents(): Promise<ServiceResult<Event[]>> {
+export async function getPublishedEvents(): Promise<
+  ServiceResult<(Event & { phases: Phase[] })[]>
+> {
   const client = await createClient();
 
   // Only authenticated users can fetch see
   if (!isAuthenticated(client)) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
-  // Fetch all events where status is published
-
+  // Fetch all events where status is published and include the phases
   const res = await prisma.event.findMany({
     where: {
       status: 'PUBLISHED',
     },
+    include: {
+      phases: true,
+    },
   });
 
-  if (!res || res.length === 0) {
+  if (!res) {
     return {
       ok: false,
-      error: 'Failed to fetch events. No events found.',
+      error: t.errors.failedToFetch('events'),
     };
   }
 
@@ -56,7 +62,7 @@ export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -65,7 +71,7 @@ export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
   if (user === null) {
     return {
       ok: false,
-      error: 'Could not fetch the user object.',
+      error: t.errors.failedToFetch('user'),
     };
   }
 
@@ -73,7 +79,7 @@ export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: 'User is not authorized.',
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -85,7 +91,7 @@ export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
   if (!res || res.length === 0) {
     return {
       ok: false,
-      error: 'Failed to fetch events. No events found.',
+      error: t.errors.failedToFetch('events'),
     };
   }
 
@@ -113,7 +119,7 @@ export async function createEvent({
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -121,7 +127,7 @@ export async function createEvent({
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: 'User is not authorized.',
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -130,7 +136,7 @@ export async function createEvent({
   if (user === null) {
     return {
       ok: false,
-      error: 'Could not fetch the user object.',
+      error: t.errors.failedToFetch('user'),
     };
   }
 
@@ -146,7 +152,7 @@ export async function createEvent({
   if (res === null) {
     return {
       ok: false,
-      error: 'Failed to create event in the database.',
+      error: t.errors.notCreated('Unternehmen'),
     };
   }
 
@@ -176,7 +182,7 @@ export async function getEventById(
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -192,7 +198,7 @@ export async function getEventById(
   if (res === null) {
     return {
       ok: false,
-      error: `Event with ID ${eventId} not found in the database.`,
+      error: t.errors.eventNotFound(eventId),
     };
   }
 
@@ -200,7 +206,7 @@ export async function getEventById(
   if (res.status !== 'PUBLISHED' && !(await isAdmin(client))) {
     return {
       ok: false,
-      error: 'User is not authorized to fetch this event.',
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -218,14 +224,14 @@ export async function getAllNonArchivedEvents(): Promise<
   if (!(await isAuthenticated(client))) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
   if (!(await isAdmin(client))) {
     return {
       ok: false,
-      error: 'User is not authorized.',
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -240,7 +246,7 @@ export async function getAllNonArchivedEvents(): Promise<
   if (!res) {
     return {
       ok: false,
-      error: 'Failed to fetch events. Something went wrong.',
+      error: t.errors.failedToFetch('events'),
     };
   }
 
@@ -248,4 +254,76 @@ export async function getAllNonArchivedEvents(): Promise<
     ok: true,
     data: res,
   };
+}
+
+interface EventWithPhases extends Event {
+  phases: Phase[];
+}
+
+export async function getPublishedEventById({
+  eventId,
+}: {
+  eventId: string;
+}): Promise<ServiceResult<EventWithPhases>> {
+  if (!validate(eventId)) {
+    return {
+      ok: false,
+      error: 'Invalid event ID.',
+    };
+  }
+
+  const client = await createClient();
+
+  if (!(await isAuthenticated(client))) {
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+  }
+
+  try {
+    const res = await prisma.event.findFirstOrThrow({
+      where: {
+        AND: [
+          {
+            id: eventId,
+          },
+          {
+            status: 'PUBLISHED',
+          },
+        ],
+      },
+      include: {
+        phases: {
+          where: {
+            type: 'APPLICATION',
+          },
+        },
+      },
+    });
+
+    if (res.phases.length === 0) {
+      return {
+        ok: false,
+        error: 'Event has no application phase.',
+      };
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: 'Failed to fetch event. Something went wrong.',
+    };
+  }
 }

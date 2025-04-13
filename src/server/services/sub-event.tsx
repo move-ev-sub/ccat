@@ -1,5 +1,6 @@
 'use server';
 
+import { messages as t } from '@/i18n';
 import { SubEvent } from '@prisma/client';
 import { validate as uuidValidate } from 'uuid';
 import prisma from '../db';
@@ -116,7 +117,7 @@ export async function createSubEvent({
   ) {
     return {
       ok: false,
-      error: 'At least one of the provided UUIDs is invalid.',
+      error: t.errors.nInvalidUUID(),
     };
   }
 
@@ -124,7 +125,7 @@ export async function createSubEvent({
   if (startDate >= endDate) {
     return {
       ok: false,
-      error: 'Start date must be before end date.',
+      error: t.errors.dateBeforeEnddate(),
     };
   }
 
@@ -132,7 +133,7 @@ export async function createSubEvent({
   if (startDate < new Date() || endDate < new Date()) {
     return {
       ok: false,
-      error: 'Both start and end date must be in the future.',
+      error: t.errors.dateNotInFuture(),
     };
   }
 
@@ -140,7 +141,7 @@ export async function createSubEvent({
   if (maxParticipants <= 0) {
     return {
       ok: false,
-      error: 'Max participants must be positive.',
+      error: t.errors.maxParticipantsNotPositive(),
     };
   }
 
@@ -148,7 +149,7 @@ export async function createSubEvent({
   if (!(await isAdmin())) {
     return {
       ok: false,
-      error: 'User is not authorized to create sub events.',
+      error: t.errors.noAdmin(),
     };
   }
 
@@ -157,7 +158,7 @@ export async function createSubEvent({
   if (!user) {
     return {
       ok: false,
-      error: 'Could not find user object.',
+      error: t.errors.userNotFoundGeneric(),
     };
   }
 
@@ -181,7 +182,7 @@ export async function createSubEvent({
     if (!res) {
       return {
         ok: false,
-        error: 'Failed to create sub event.',
+        error: t.errors.failedToCreate('Sub Event'),
       };
     }
 
@@ -193,7 +194,7 @@ export async function createSubEvent({
     if (error instanceof Error) {
       return {
         ok: false,
-        error: `Failed to create sub event: ${error.message}`,
+        error: t.errors.failedToCreate('Sub Event') + error.message,
       };
     }
 
@@ -201,7 +202,7 @@ export async function createSubEvent({
 
     return {
       ok: false,
-      error: `Failed to create sub event: ${error}`,
+      error: t.errors.failedToCreate('Sub Event') + error,
     };
   }
 }
@@ -215,7 +216,7 @@ export async function getSubEventsForEvent({
   if (!(await isAuthenticated())) {
     return {
       ok: false,
-      error: 'User is not authenticated.',
+      error: t.errors.notAuthenticated(),
     };
   }
 
@@ -223,7 +224,7 @@ export async function getSubEventsForEvent({
   if (!uuidValidate(eventId)) {
     return {
       ok: false,
-      error: 'Invalid event ID.',
+      error: t.errors.invalidUUID(eventId),
     };
   }
 
@@ -237,7 +238,7 @@ export async function getSubEventsForEvent({
     if (!res) {
       return {
         ok: false,
-        error: 'Failed to get sub events.',
+        error: t.errors.failedToGet('Sub Events'),
       };
     }
 
@@ -249,12 +250,12 @@ export async function getSubEventsForEvent({
     if (error instanceof Error) {
       return {
         ok: false,
-        error: `Failed to get sub events: ${error.message}`,
+        error: t.errors.failedToGet('Sub Events') + error.message,
       };
     }
     return {
       ok: false,
-      error: `Failed to get sub events: ${error}`,
+      error: t.errors.failedToGet('Sub Events') + error,
     };
   }
 }

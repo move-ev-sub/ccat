@@ -1,18 +1,18 @@
 'use client';
 
+import { FullUnknownProfile } from '@/server/services/profile';
+import { cn } from '@/utils';
 import { createClient } from '@/utils/supabase/client';
 import {
-  ArrowUpRightIcon,
   CheckIcon,
-  ChevronUpDownIcon,
   ComputerDesktopIcon,
   MoonIcon,
   SunIcon,
 } from '@heroicons/react/16/solid';
-import { User } from '@supabase/supabase-js';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,18 +27,20 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 
-export function SidebarProfileMenu({
-  user,
+export function UserProfileMenu({
+  profile,
+  className,
   ...props
 }: React.ComponentProps<typeof DropdownMenu> & {
-  user: User;
+  profile: FullUnknownProfile;
+  className?: string;
 }) {
   const supabase = createClient();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
 
   const onLogout = async () => {
-    supabase.auth.signOut();
+    await supabase.auth.signOut();
     router.push('/auth/login');
   };
 
@@ -48,19 +50,20 @@ export function SidebarProfileMenu({
 
   return (
     <DropdownMenu {...props}>
-      <DropdownMenuTrigger asChild>
-        <button className="border-border bg-background focus-indicator focus-visible:ring-offset-background-muted hover:bg-background-muted flex w-full items-center justify-start gap-2.5 rounded-lg border px-2.5 py-1.5">
-          <span className="text-foreground truncate text-sm font-medium">
-            {user.email ?? 'Unbekannt'}
-          </span>
-          <ChevronUpDownIcon className="text-secondary ml-auto size-4 shrink-0" />
-        </button>
+      <DropdownMenuTrigger
+        className={cn('focus-indicator rounded-full', className)}
+      >
+        <Avatar>
+          <AvatarFallback className="text-xs">
+            {profile.email.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuPortal>
         <DropdownMenuContent className="w-56">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="truncate">
-              christoph.langer100@gmail.com
+              {profile.email}
             </DropdownMenuLabel>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
@@ -95,24 +98,7 @@ export function SidebarProfileMenu({
               </DropdownMenuSubContent>
             </DropdownMenuSub>
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem asChild>
-              <Link href={'https://docs.consultingcontact.de'} target="_blank">
-                Dokumentation
-                <ArrowUpRightIcon className="ml-auto" />
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href={'https://github.com/move-ev-sub/ccat/releases'}
-                target="_blank"
-              >
-                Changelog
-                <ArrowUpRightIcon className="ml-auto" />
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>

@@ -149,9 +149,7 @@ describe('Card Components', () => {
       // Focus the link
       await user.tab();
 
-      expect(link).toHaveClass('focus-visible:ring-2');
-      expect(link).toHaveClass('focus-visible:ring-offset-2');
-      expect(link).toHaveClass('focus-visible:outline-none');
+      expect(link).toHaveClass('focus-indicator');
     });
 
     it('renders with absolute positioned span for click area', () => {
