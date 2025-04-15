@@ -2,7 +2,18 @@ import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { PublicEventThumbnailCard } from '@/components/public-event-thumbnail-card';
 import { getPublishedEvents } from '@/server/services/event';
+import { Metadata } from 'next';
 import NoPublishedEvents from './_components/no-published-events';
+
+export const metadata: Metadata = {
+  title: 'Benutzerübersicht',
+  description:
+    'Hier siehst du alle Veranstaltungen, welche derzeit verfügbar sind.',
+  robots: {
+    index: true,
+    follow: false,
+  },
+};
 
 export default async function UserOverviewPage() {
   const publishedEvents = await getPublishedEvents();

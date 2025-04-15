@@ -11,9 +11,26 @@ const interSans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Consulting Contact Application Tool',
+  title: 'Consulting Contact Bewerbertool',
   description:
-    'Tool zur Verwaltung von Bewerbungen und Veranstaltungen für die Consulting Contact',
+    'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts',
+  icons: {
+    icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'Consulting Contact Bewerbertool',
+    description:
+      'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts',
+    url: 'https://consultingcontact.de',
+  },
+  viewport: {
+    initialScale: 1,
+    width: 'device-width',
+  },
+  robots: {
+    index: true,
+    follow: false,
+  },
 };
 
 export default function RootLayout({
@@ -22,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="de" suppressHydrationWarning>
       <body
         className={cn(
           interSans.variable,

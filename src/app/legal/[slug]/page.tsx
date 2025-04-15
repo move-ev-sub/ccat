@@ -6,9 +6,22 @@ import { Separator } from '@/components/ui/separator';
 import { extractHeadings } from '@/utils/mdx';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
 import fs, { existsSync } from 'fs';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import path from 'path';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  return {
+    title: `${params.slug} der Consulting Contact`,
+    description:
+      'Hier finden Sie die rechtlichen Informationen zur Consulting Contact',
+  };
+}
 
 async function getDocumentSlugs(): Promise<string[]> {
   // Get all the names of the files in the directory "../data"
