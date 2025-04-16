@@ -11,48 +11,26 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { userSettingsSchema } from '@/server/schemas/auth';
-import { useEffect } from 'react';
 
 import { changeUserSettings } from '@/server/actions/auth';
-import {
-  fetchCurrentProfile,
-  FullUnknownProfile,
-} from '@/server/services/profile';
+import { FullUnknownProfile } from '@/server/services/profile';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '../ui/button';
 
-export function UserSettingsForm() {
+export function UserSettingsForm({ profile }: { profile: FullUnknownProfile }) {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | undefined>();
-  const [data, setData] = React.useState<FullUnknownProfile | null>(null);
 
-  useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const res = await fetchCurrentProfile();
-        if (res.ok) {
-          setData(res.data);
-        }
-      } catch (error) {
-        error = 'Error fetching user data form prisma';
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const idPrisma = data?.userProfile?.id;
-  const firstName = data?.userProfile?.firstName;
-  const lastName = data?.userProfile?.lastName;
+  const idPrisma = profile?.userProfile?.id;
+  const firstName = profile?.userProfile?.firstName;
+  const lastName = profile?.userProfile?.lastName;
 
   const form = useForm<z.infer<typeof userSettingsSchema>>({
     resolver: zodResolver(userSettingsSchema),
     defaultValues: {
-      idPrisma: idPrisma,
       firstName: firstName,
       lastName: lastName,
     },
@@ -85,11 +63,7 @@ export function UserSettingsForm() {
               <FormItem>
                 <FormLabel>Vorname</FormLabel>
                 <FormControl>
-                  <Input
-                    type="text"
-                    placeholder={loading ? 'Loading...' : firstName}
-                    {...field}
-                  />
+                  <Input type="text" placeholder={firstName} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -102,11 +76,7 @@ export function UserSettingsForm() {
               <FormItem>
                 <FormLabel>Nachname</FormLabel>
                 <FormControl>
-                  <Input
-                    type="text"
-                    placeholder={loading ? 'loading...' : lastName}
-                    {...field}
-                  />
+                  <Input type="text" placeholder={lastName} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

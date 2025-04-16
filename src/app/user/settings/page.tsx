@@ -3,9 +3,14 @@ import { UserSettingsForm } from '@/components/forms/change-user-settings';
 import {} from '@/components/ui/button';
 import {} from '@/components/ui/form';
 import {} from '@/components/ui/input';
+import { fetchCurrentProfile } from '@/server/services/profile';
 
-export default function UserSettingsPage() {
+export default async function UserSettingsPage() {
   // console.log(await getUser());
+  const response = await fetchCurrentProfile();
+  if (!response.ok) {
+    throw new Error('Failed to fetch user profile');
+  }
 
   return (
     <main className="grid min-h-svh grid-cols-1 md:grid-cols-2">
@@ -19,7 +24,7 @@ export default function UserSettingsPage() {
               Ändere deine Account-Einstellungen.
             </p>
             <div className="mt-4 mb-7 border-2 border-b-gray-300"></div>
-            <UserSettingsForm />
+            <UserSettingsForm profile={response.data} />
           </div>
         </div>
       </div>

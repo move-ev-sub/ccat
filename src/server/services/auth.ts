@@ -340,13 +340,13 @@ export async function updateUserSettings(
 ): Promise<ServiceResult<undefined>> {
   const { firstName, lastName } = userSettingsData;
 
-  // can be removed
-  if (!firstName || !lastName) {
-    return {
-      ok: false,
-      error: 'Your Name must not be empty!',
-    };
-  }
+  // can be removed?
+  // if (!firstName || !lastName) {
+  //   return {
+  //     ok: false,
+  //     error: 'Your Name must not be empty!',
+  //   };
+  // }
   console.log(idPrisma);
   // // updated here, but maybe one should use upsert in case
   // // a user didn't enter a specific entry while registering?

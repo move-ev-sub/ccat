@@ -42,6 +42,7 @@ export async function signup(
 export async function changeUserSettings(
   idPrisma: string,
   userSettingsData: UserSettingsData
+  // I think Promise isn't needed here, since only sideeffects are executed
 ): Promise<AuthActionResponse<null>> {
   const parseRes = await userSettingsSchema.safeParseAsync(userSettingsData);
 
