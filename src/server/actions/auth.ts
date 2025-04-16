@@ -61,7 +61,8 @@ export async function changeUserSettings(
       error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
-  redirect('/user/settings');
+  return { status: 'success', error: null, data: null };
+  // redirect('/user/settings');
 }
 
 export async function login({
