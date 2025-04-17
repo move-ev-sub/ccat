@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     width: 'device-width',
   },
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
   },
 };
