@@ -9,10 +9,6 @@ export const metadata: Metadata = {
   title: 'Benutzerübersicht',
   description:
     'Hier siehst du alle Veranstaltungen, welche derzeit verfügbar sind.',
-  robots: {
-    index: true,
-    follow: false,
-  },
 };
 
 export default async function UserOverviewPage() {

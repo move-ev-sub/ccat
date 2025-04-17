@@ -4,10 +4,6 @@ import { Metadata } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
-  viewport: {
-    initialScale: 1,
-    width: 'device-width',
-  },
   robots: {
     index: false,
     follow: false,

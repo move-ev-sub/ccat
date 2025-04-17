@@ -16,8 +16,14 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  // Convert slug to title case by replacing hyphens with spaces and capitalizing each word
+  const title = params.slug
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
   return {
-    title: `${params.slug} der Consulting Contact`,
+    title: `${title} der Consulting Contact`,
     description:
       'Hier finden Sie die rechtlichen Informationen zur Consulting Contact',
   };

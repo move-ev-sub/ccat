@@ -6,8 +6,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { messages as t } from '@/i18n';
 import { ListBulletIcon, PlusIcon } from '@heroicons/react/16/solid';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { EventsList } from './_components/events-list';
+
+export const metadata: Metadata = {
+  title: 'Veranstaltungen',
+  description:
+    'Hier können alle Veranstaltungen eingesehen, bearbeitet und erstellt werden.',
+};
 
 /**
  * The admin overview page where all events are displayed.

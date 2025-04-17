@@ -2,8 +2,14 @@ import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { messages as t } from '@/i18n';
 import { fetchUserProfiles } from '@/server/services/profile';
+import { Metadata } from 'next';
 import { columns } from './_components/columns';
 import { DataTable } from './_components/data-table';
+
+export const metadata: Metadata = {
+  title: 'Nutzerverwaltung',
+  description: 'Hier können alle Benutzer verwaltet werden.',
+};
 
 /**
  * The AdminUserSettingsPage is the page, where administrators can manage

@@ -6,9 +6,15 @@ import {
 } from '@heroicons/react/16/solid';
 import { Slot } from '@prisma/client';
 import { format } from 'date-fns';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { AddSlotButton } from './_components/add-slot';
 import { SlotItem } from './_components/slot-item';
+
+export const metadata: Metadata = {
+  title: 'Slots',
+  description: 'Hier können die Slots der Veranstaltung bearbeitet werden.',
+};
 
 export default async function AdminEventSlotsSettingsPage({
   params,

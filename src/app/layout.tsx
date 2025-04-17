@@ -31,6 +31,13 @@ export const metadata: Metadata = {
     index: true,
     follow: false,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Consulting Contact Bewerbertool',
+    description:
+      'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function RootLayout({
