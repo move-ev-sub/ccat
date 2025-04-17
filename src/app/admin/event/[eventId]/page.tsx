@@ -7,11 +7,12 @@ import { Metadata } from 'next';
 import { PhasesCard } from './_components/phases-card';
 
 export async function generateMetadata({
-  params: { eventId },
+  params,
 }: {
-  params: { eventId: string };
+  params: Promise<{ eventId: string }>;
 }): Promise<Metadata> {
-  const event = await getEvent(eventId);
+  const resolvedParams = await params;
+  const event = await getEvent(resolvedParams.eventId);
 
   if (!event.data) {
     return {
@@ -29,11 +30,9 @@ export async function generateMetadata({
 export default async function AdminEventOverviewPage({
   params,
 }: {
-  params: Promise<{
-    eventId: string;
-  }>;
+  params: { eventId: string };
 }) {
-  const eventId = (await params).eventId;
+  const eventId = params.eventId;
 
   const res = await getEvent(eventId);
 
