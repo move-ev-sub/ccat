@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!events.ok) {
     return [
       {
-        url: 'https://consulting-contact.de',
+        url: `${process.env.NEXT_PUBLIC_APP_URL}`,
         lastModified: new Date().toISOString(),
       },
     ];
@@ -16,11 +16,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     {
-      url: 'https://consulting-contact.de',
+      url: `${process.env.NEXT_PUBLIC_APP_URL}`,
       lastModified: new Date().toISOString(),
     },
     ...events.data.map((event: Event) => ({
-      url: `https://consulting-contact.de/event/${event.id}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/event/${event.id}`,
       lastModified: new Date().toISOString(),
     })),
   ];
