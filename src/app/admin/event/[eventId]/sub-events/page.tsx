@@ -1,5 +1,11 @@
 import { getSubEventsForEvent } from '@/server/services/sub-event';
+import { Metadata } from 'next';
 import { SubEventsList } from './_components/sub-events-list';
+
+export const metadata: Metadata = {
+  title: 'Teilveranstaltungen',
+  description: 'Teilveranstaltungen für diese Consulting Contact',
+};
 
 export default async function AdminEventSubeventsPage({
   params: paramsPromise,

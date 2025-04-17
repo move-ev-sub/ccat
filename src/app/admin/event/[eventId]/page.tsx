@@ -3,7 +3,28 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { getEvent } from '@/server/actions/event';
 import { PlusIcon } from '@heroicons/react/16/solid';
+import { Metadata } from 'next';
 import { PhasesCard } from './_components/phases-card';
+
+export async function generateMetadata({
+  params: { eventId },
+}: {
+  params: { eventId: string };
+}): Promise<Metadata> {
+  const event = await getEvent(eventId);
+
+  if (!event.data) {
+    return {
+      title: 'Event not found',
+      description: 'This event could not be found',
+    };
+  }
+
+  return {
+    title: event.data.name,
+    description: event.data.description || 'No description available',
+  };
+}
 
 export default async function AdminEventOverviewPage({
   params,
