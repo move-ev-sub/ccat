@@ -8,9 +8,11 @@ import { PhasesCard } from './_components/phases-card';
 export default async function AdminEventOverviewPage({
   params,
 }: {
-  params: { eventId: string };
+  params: Promise<{
+    eventId: string;
+  }>;
 }) {
-  const eventId = params.eventId;
+  const eventId = (await params).eventId;
 
   const res = await getEvent(eventId);
 
