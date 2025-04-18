@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { userSettingsSchema } from '@/server/schemas/auth';
 
-import { changeUserSettings } from '@/server/actions/auth';
+import { updateUserSettings } from '@/server/services/auth';
 import { FullUnknownProfile } from '@/server/services/profile';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
@@ -45,8 +45,8 @@ export function UserSettingsForm({ profile }: { profile: FullUnknownProfile }) {
       setLoading(false);
       return;
     }
-    const res = await changeUserSettings(idPrisma, values);
-    if (res.status === 'error') {
+    const res = await updateUserSettings({ idPrisma, ...values });
+    if (!res.ok) {
       setError(res.error);
     }
     setLoading(false);

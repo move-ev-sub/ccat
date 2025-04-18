@@ -5,8 +5,6 @@ import {
   loginSchema,
   SignUpData,
   signUpSchema,
-  UserSettingsData,
-  userSettingsSchema,
 } from '@/server/schemas/auth';
 import { signInWithPassword, signUpWithEmail } from '@/server/services/auth';
 import { redirect } from 'next/navigation';
@@ -37,32 +35,6 @@ export async function signup(
   // If the user was successfully created, redirect to the home page where
   // they will be redirected to their user specific page
   redirect('/');
-}
-
-export async function changeUserSettings(
-  idPrisma: string,
-  userSettingsData: UserSettingsData
-  // I think Promise isn't needed here, since only sideeffects are executed
-): Promise<AuthActionResponse<null>> {
-  const parseRes = await userSettingsSchema.safeParseAsync(userSettingsData);
-
-  if (!parseRes.success) {
-    return {
-      status: 'error',
-      error: parseRes.error.message || 'Eingabe ist invalide.',
-    };
-  }
-
-  const res = await authService.updateUserSettings(idPrisma, userSettingsData);
-
-  if (!res.ok) {
-    return {
-      status: 'error',
-      error: res.error || 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
-  return { status: 'success', error: null, data: null };
-  // redirect('/user/settings');
 }
 
 export async function login({
