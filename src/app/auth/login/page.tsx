@@ -1,6 +1,12 @@
 import { LoginForm } from '@/components/forms/login';
 import { messages as t } from '@/i18n';
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Login',
+  description: 'Login für die Consulting Contact',
+};
 
 export default async function LoginPage() {
   return (

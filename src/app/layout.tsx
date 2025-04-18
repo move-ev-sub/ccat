@@ -27,10 +27,6 @@ export const metadata: Metadata = {
     initialScale: 1,
     width: 'device-width',
   },
-  robots: {
-    index: true,
-    follow: false,
-  },
   twitter: {
     card: 'summary_large_image',
     title: 'Consulting Contact Bewerbertool',

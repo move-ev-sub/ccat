@@ -1,6 +1,12 @@
 import { RegisterForm } from '@/components/forms/register';
 import { messages as t } from '@/i18n';
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Registrieren',
+  description: 'Registrieren für die Consulting Contact',
+};
 
 export default async function RegisterPage() {
   return (

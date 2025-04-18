@@ -27,6 +27,10 @@ export async function generateMetadata({
     title: title,
     description:
       'Hier finden Sie die rechtlichen Informationen zur Consulting Contact',
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 
