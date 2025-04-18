@@ -338,7 +338,7 @@ interface UpdateUserSettingsArgs {
  * @param firstName - The first name of the user.
  * @param lastName - The last name of the user.
  *
- * @returns A promise with the status of the update.
+ * @returns A promise with the status of the update and the updated profile data.
  */
 export async function updateUserSettings(
   args: UpdateUserSettingsArgs
