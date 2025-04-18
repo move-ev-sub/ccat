@@ -1,27 +1,10 @@
-import { getAllEvents } from '@/server/services/event';
-import { Event } from '@prisma/client';
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const events = await getAllEvents();
+const baseUrl = 'https://your-domain.com'; // replace with your actual domain
 
-  if (!events.ok) {
-    return [
-      {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}`,
-        lastModified: new Date().toISOString(),
-      },
-    ];
-  }
-
+export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    {
-      url: `${process.env.NEXT_PUBLIC_APP_URL}`,
-      lastModified: new Date().toISOString(),
-    },
-    ...events.data.map((event: Event) => ({
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/event/${event.id}`,
-      lastModified: new Date().toISOString(),
-    })),
+    { url: `${baseUrl}/auth/login`, lastModified: new Date() },
+    { url: `${baseUrl}/auth/register`, lastModified: new Date() },
   ];
 }

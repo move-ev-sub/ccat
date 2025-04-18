@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import { ApplicationsCountChart } from './_components/applications-count-chart';
 import { ApplicationsCountBarchart } from './_components/applications-count-chart-bar';
 import { GenderDistributionChart } from './_components/gender-distribution-chart';
+
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
   description:

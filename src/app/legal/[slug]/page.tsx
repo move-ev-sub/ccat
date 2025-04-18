@@ -24,7 +24,7 @@ export async function generateMetadata({
     .join(' ');
 
   return {
-    title: `${title} der Consulting Contact`,
+    title: title,
     description:
       'Hier finden Sie die rechtlichen Informationen zur Consulting Contact',
   };

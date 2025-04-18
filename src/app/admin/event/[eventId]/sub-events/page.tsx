@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import { SubEventsList } from './_components/sub-events-list';
 
 export const metadata: Metadata = {
-  title: 'Teilveranstaltungen',
-  description: 'Teilveranstaltungen für diese Consulting Contact',
+  title: 'Unterveranstaltungen',
+  description: 'Unterveranstaltungen für diese Consulting Contact',
 };
 
 export default async function AdminEventSubeventsPage({
