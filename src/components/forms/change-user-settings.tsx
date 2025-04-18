@@ -63,7 +63,7 @@ export function UserSettingsForm({ profile }: { profile: FullUnknownProfile }) {
               <FormItem>
                 <FormLabel>Vorname</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder={firstName} {...field} />
+                  <Input placeholder="Dein Vorname" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -76,7 +76,7 @@ export function UserSettingsForm({ profile }: { profile: FullUnknownProfile }) {
               <FormItem>
                 <FormLabel>Nachname</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder={lastName} {...field} />
+                  <Input type="text" placeholder="Dein Nachname" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -84,7 +84,7 @@ export function UserSettingsForm({ profile }: { profile: FullUnknownProfile }) {
           />
         </div>
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Lädt...' : 'Änderungen Absenden'}
+          {loading ? 'Lädt...' : 'Änderungen speichern'}
         </Button>
         <FormError visible={!!error} message={error} />
       </form>
