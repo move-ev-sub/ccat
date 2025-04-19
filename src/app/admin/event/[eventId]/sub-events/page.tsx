@@ -4,7 +4,7 @@ import { SubEventsList } from './_components/sub-events-list';
 
 export const metadata: Metadata = {
   title: 'Unterveranstaltungen',
-  description: 'Unterveranstaltungen für diese Consulting Contact',
+  description: 'Unterveranstaltungen für diese Veranstaltung.',
 };
 
 export default async function AdminEventSubeventsPage({
