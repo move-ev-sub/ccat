@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Registrieren',
-  description: 'Registrieren für die Consulting Contact',
+  description: 'Registrieren für das Bewerbungsportal.',
 };
 
 export default async function RegisterPage() {

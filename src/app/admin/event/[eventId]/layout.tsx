@@ -12,7 +12,7 @@ export async function generateMetadata({
 
   return {
     title: event.data?.name,
-    description: `Hier können alle Informationen zur ${event.data?.name} einsehen.`,
+    description: `Informationen zur ${event.data?.name}.`,
   };
 }
 

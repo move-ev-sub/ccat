@@ -8,7 +8,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Neue Veranstaltung',
-  description: 'Hier kannst du eine neue Veranstaltung erstellen.',
+  description: 'Neue Veranstaltung erstellen.',
 };
 
 export default async function NewEventPage() {

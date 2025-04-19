@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Login',
-  description: 'Login für die Consulting Contact',
+  description: 'Login für das Bewerbungsportal.',
 };
 
 export default async function LoginPage() {

@@ -7,8 +7,7 @@ import NoPublishedEvents from './_components/no-published-events';
 
 export const metadata: Metadata = {
   title: 'Benutzerübersicht',
-  description:
-    'Hier siehst du alle Veranstaltungen, welche derzeit verfügbar sind.',
+  description: 'Alle Veranstaltungen, welche derzeit verfügbar sind.',
 };
 
 export default async function UserOverviewPage() {

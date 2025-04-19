@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Neues Unternehmen',
-  description: 'Hier kannst du ein neues Unternehmen erstellen.',
+  description: 'Neues Unternehmen erstellen.',
 };
 
 export default async function NewCompanyPage() {

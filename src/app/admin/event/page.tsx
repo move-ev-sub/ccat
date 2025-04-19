@@ -12,8 +12,7 @@ import { EventsList } from './_components/events-list';
 
 export const metadata: Metadata = {
   title: 'Veranstaltungen',
-  description:
-    'Hier können alle Veranstaltungen eingesehen, bearbeitet und erstellt werden.',
+  description: 'Alle bisherigen und aktuellen Veranstaltungen.',
 };
 
 /**

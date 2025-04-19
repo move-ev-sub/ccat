@@ -25,8 +25,7 @@ export async function generateMetadata({
 
   return {
     title: title,
-    description:
-      'Hier finden Sie die rechtlichen Informationen zur Consulting Contact',
+    description: 'Alle rechtlichen Informationen zum Bewerbungsportal.',
     robots: {
       index: false,
       follow: false,

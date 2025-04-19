@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Unternehmensverwaltung',
-  description: 'Hier können alle Unternehmen verwaltet werden.',
+  description: 'Verwaltung aller Unternehmen.',
 };
 
 /**

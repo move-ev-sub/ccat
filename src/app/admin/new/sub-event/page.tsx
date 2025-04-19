@@ -10,7 +10,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Neue Unterveranstaltung',
-  description: 'Hier kannst du eine neue Unterveranstaltung erstellen.',
+  description: 'Neue Unterveranstaltung erstellen.',
 };
 
 async function hasIdParam({

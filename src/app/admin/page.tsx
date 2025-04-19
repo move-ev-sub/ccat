@@ -8,8 +8,7 @@ import { GenderDistributionChart } from './_components/gender-distribution-chart
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
-  description:
-    'Das Admin Dashboard bietet eine Übersicht über alle Bewerbungen und Unternehmen.',
+  description: 'Übersicht über alle Bewerbungen und Unternehmen.',
 };
 
 export default async function AdminGeneralPage() {

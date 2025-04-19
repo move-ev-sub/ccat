@@ -8,7 +8,7 @@ import { DataTable } from './_components/data-table';
 
 export const metadata: Metadata = {
   title: 'Nutzerverwaltung',
-  description: 'Hier können alle Benutzer verwaltet werden.',
+  description: 'Verwaltung aller Nutzer.',
 };
 
 /**
