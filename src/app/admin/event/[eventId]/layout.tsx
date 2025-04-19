@@ -10,16 +10,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const event = await getEvent(eventId);
 
-  if (!event.data) {
-    return {
-      title: 'Event not found',
-      description: 'This event could not be found',
-    };
-  }
-
   return {
-    title: event.data.name,
-    description: event.data.description || 'No description available',
+    title: event.data?.name,
+    description: `Hier können alle Informationen zur ${event.data?.name} einsehen.`,
   };
 }
 
