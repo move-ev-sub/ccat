@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const baseUrl = 'https://your-domain.com'; // replace with your actual domain
+const baseUrl = 'https://app.consultingcontact.de';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
