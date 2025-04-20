@@ -10,17 +10,32 @@ const interSans = Inter({
   subsets: ['latin'],
 });
 
+const title = 'Consulting Contact Bewerbertool';
+const description =
+  'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts';
+
 export const metadata: Metadata = {
-  title: 'Consulting Contact Bewerbertool',
-  description:
-    'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts',
+  title: {
+    default: title,
+    template: '%s | Consulting Contact Bewerbertool',
+  },
+  description,
+  generator: 'Next.js',
+  applicationName: 'Consulting Contact Bewerbertool',
+  referrer: 'strict-origin-when-cross-origin',
+  keywords: ['Consulting Contact', 'Bewerbertool'],
+  authors: [
+    { name: 'Christoph Langer', url: 'https://github.com/chris23lngr' },
+    { name: 'Lennard Lohmann', url: 'https://github.com/lennardlohmann' },
+    { name: 'Ron Bellemann', url: 'https://github.com/1RoBe' },
+  ],
+  publisher: 'move - Studentische Unternehmensberatung e.V.',
   icons: {
     icon: '/favicon.ico',
   },
   openGraph: {
-    title: 'Consulting Contact Bewerbertool',
-    description:
-      'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts',
+    title,
+    description,
     url: 'https://consultingcontact.de',
   },
   viewport: {
@@ -29,9 +44,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Consulting Contact Bewerbertool',
-    description:
-      'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts',
+    title,
+    description,
     images: ['/og-image.png'],
   },
 };
