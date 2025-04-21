@@ -2,15 +2,17 @@ import { cva, VariantProps } from 'class-variance-authority';
 
 export const buttonVariants = cva(
   // base
-  'text-sm font-medium rounded-lg transition-colors cursor-pointer h-fit ' +
+  [
+    'text-sm font-medium rounded-lg transition-colors cursor-pointer h-fit',
     // alignment
-    'flex items-center justify-center gap-2.5 ' +
+    'flex items-center justify-center gap-2.5',
     // focus
-    'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-offset-2 focus-visible:outline-hidden ' +
+    'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-offset-2 focus-visible:outline-hidden',
     // disabled
-    'disabled:opacity-50 disabled:pointer-events-none ' +
+    'disabled:opacity-50 disabled:pointer-events-none',
     // svg
     '[&_svg]:shrink-0',
+  ],
   {
     variants: {
       variant: {
@@ -19,8 +21,9 @@ export const buttonVariants = cva(
         accent:
           'bg-accent text-white border border-accent shadow-[inset_0px_2px_0px_rgba(255,255,255,0.25)] hover:bg-accent-600 shadow-sm ',
         outline:
-          'border border-border bg-background hover:bg-background-muted [&_svg]:text-accent',
-        ghost: 'hover:bg-background-muted [&_svg]:fill-accent',
+          'border border-border bg-background hover:bg-background-muted [&_svg:not([class*="text-"])]:text-accent',
+        ghost:
+          'hover:bg-background-muted [&_svg:not([class*="text-"])]:fill-accent',
         success:
           'bg-success-background border-success-border border text-success-foreground hover:bg-success-background/90 shadow-sm shadow-success/40 focus-visible:ring-success',
         destructive:
@@ -31,10 +34,15 @@ export const buttonVariants = cva(
       size: {
         default: 'text-sm px-3 py-1.5 [&_svg]:size-4',
       },
+      btnRole: {
+        button: '',
+        input: 'h-input',
+      },
     },
     defaultVariants: {
       variant: 'default',
       size: 'default',
+      btnRole: 'button',
     },
   }
 );
