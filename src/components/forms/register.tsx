@@ -1,6 +1,11 @@
 'use client';
 
+import {
+  PasswordInput,
+  type PasswordCriteria,
+} from '@/components/password-input';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -18,8 +23,6 @@ import Link from 'next/link';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { PasswordInput, type PasswordCriteria } from '../password-input';
-import { Checkbox } from '../ui/checkbox';
 
 const passwordCriteria: PasswordCriteria[] = [
   {

@@ -1,6 +1,6 @@
+import { SidebarHeader } from '@/components/ui/sidebar';
 import { cn } from '@/utils';
 import Image from 'next/image';
-import { SidebarHeader } from '../ui/sidebar';
 
 export function DefaultSidebarHeader({
   className,

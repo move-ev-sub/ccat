@@ -15,17 +15,17 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Slot } from '@prisma/client';
-import React from 'react';
-import { toast } from 'sonner';
-import { TimePicker } from '../time-picker/time-picker';
-import { Label } from '../ui/label';
+import { Label } from '@/components/ui/label';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
+} from '@/components/ui/tooltip';
+import { Slot } from '@prisma/client';
+import React from 'react';
+import { toast } from 'sonner';
+import { TimePicker } from '../time-picker/time-picker';
 
 const editSlotSchema = z.object({
   eventId: z.string(),
