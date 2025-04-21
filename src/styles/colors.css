@@ -135,10 +135,12 @@
   :root {
     --border: var(--primary-200);
     --border-secondary: var(--primary-300);
+    --border-input: var(--primary-300);
   }
   .dark {
     --border: var(--primary-700);
     --border-secondary: var(--primary-600);
+    --border-input: var(--primary-600);
   }
 }
 
@@ -351,6 +353,7 @@
   /* Border colors */
   --color-border: var(--border);
   --color-border-secondary: var(--border-secondary);
+  --color-border-input: var(--border-input);
 
   /* Ring color */
   --color-ring: var(--ring);
