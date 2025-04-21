@@ -166,7 +166,7 @@ describe('Select', () => {
       'w-full',
       'items-center',
       'justify-between',
-      'rounded-md',
+      'rounded-input',
       'border',
       'bg-transparent',
       'px-3',
@@ -175,7 +175,7 @@ describe('Select', () => {
       'shadow-xs',
       'transition-[color,box-shadow]',
       'outline-none',
-      'focus-visible:ring-[3px]',
+      'focus-indicator',
       'disabled:cursor-not-allowed',
       'disabled:opacity-50'
     );
