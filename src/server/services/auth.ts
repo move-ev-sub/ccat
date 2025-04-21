@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { Role } from '@prisma/client';
+import { Profile, Role } from '@prisma/client';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import prisma from '../db';
@@ -323,4 +323,50 @@ export async function getCurrentRole(): Promise<ServiceResult<Role>> {
       error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
+}
+
+interface UpdateUserSettingsArgs {
+  idPrisma: string;
+  firstName: string;
+  lastName: string;
+}
+/**
+ * Updates first name and last name of user in the userProfile table.
+ * Returns the updated profile.
+ *
+ * @param idPrisma - The Prisma ID of the user.
+ * @param firstName - The first name of the user.
+ * @param lastName - The last name of the user.
+ *
+ * @returns A promise with the status of the update and the updated profile data.
+ */
+export async function updateUserSettings(
+  args: UpdateUserSettingsArgs
+): Promise<ServiceResult<Profile>> {
+  const { idPrisma, firstName, lastName } = args;
+
+  // should we add a try catch here, to get prisma specific errors?
+  const res = await prisma.profile.update({
+    where: {
+      id: idPrisma,
+    },
+    data: {
+      userProfile: {
+        update: {
+          firstName: firstName,
+          lastName: lastName,
+        },
+      },
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: false,
+      error:
+        'Ein unbekannter Fehler ist aufgetreten. User-Profil konnte nicht aktualisiert werden.',
+    };
+  }
+
+  return { ok: true, data: res };
 }
