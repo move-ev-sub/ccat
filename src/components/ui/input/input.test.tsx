@@ -10,7 +10,7 @@ describe('Input', () => {
 
     const input = screen.getByRole('textbox');
     expect(input).toBeInTheDocument();
-    expect(input).toHaveClass('rounded-lg');
+    expect(input).toHaveClass('rounded-input');
     expect(input).toHaveClass('border');
   });
 
@@ -79,9 +79,7 @@ describe('Input', () => {
     await user.tab();
 
     // Check focus styles
-    expect(input).toHaveClass('focus-visible:ring-ring');
-    expect(input).toHaveClass('focus-visible:ring-1');
-    expect(input).toHaveClass('focus-visible:outline-none');
+    expect(input).toHaveClass('focus-indicator');
   });
 
   it('handles file input type', () => {
