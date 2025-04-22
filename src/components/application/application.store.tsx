@@ -9,20 +9,47 @@
  */
 'use client';
 
+import { Prisma } from '@prisma/client';
 import React from 'react';
 import { z } from 'zod';
 import { createStore, useStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { generalFormSchema } from './general-form';
 
+export interface SubApplicationSelection
+  extends Omit<
+    Prisma.SubApplicationCreateInput,
+    'application' | 'subEvent' | 'id'
+  > {
+  eventName: string;
+  subEventId: string;
+}
+
 // #region Store
 // ============================================================
 type ApplicationState = {
+  // General
   general: z.infer<typeof generalFormSchema>;
+
+  // Sub Events
+  subApplications: SubApplicationSelection[];
 };
 
 export type ApplicationActions = {
+  // General
   setGeneral: (general: z.infer<typeof generalFormSchema>) => void;
+
+  // Sub Events
+  addSubApplication: (subApplication: SubApplicationSelection) => void;
+  removeSubApplication: (id: string) => void;
+  prioritizeSubApplication: (id: string) => void;
+  getSubApplicationForEvent: (
+    eventId: string
+  ) => SubApplicationSelection | undefined;
+  updateSubApplication: (
+    id: string,
+    subApplication: Partial<SubApplicationSelection>
+  ) => void;
 };
 
 export type ApplicationStore = ApplicationState & ApplicationActions;
@@ -44,6 +71,7 @@ export const defaultInitState: ApplicationState = {
     experienceConsulting: 0,
     experienceAbroad: 0,
   },
+  subApplications: [],
 };
 
 export function initApplicationStore(): ApplicationState {
@@ -55,12 +83,48 @@ export const createApplicationStore = (
 ) => {
   return createStore<ApplicationStore>()(
     persist(
-      (set) => ({
+      (set, get) => ({
+        // General
         general: initialState.general,
+
         setGeneral(general) {
           set({ general });
         },
+
+        // Sub Events
+        subApplications: initialState.subApplications,
+
+        addSubApplication(subApplication) {
+          set((state) => ({
+            subApplications: [...state.subApplications, subApplication],
+          }));
+        },
+        removeSubApplication(id) {
+          set((state) => ({
+            subApplications: state.subApplications.filter(
+              (s) => s.subEventId !== id
+            ),
+          }));
+        },
+        prioritizeSubApplication(id) {
+          set((state) => ({
+            subApplications: state.subApplications.map((s) =>
+              s.subEventId === id ? { ...s, prioritized: true } : s
+            ),
+          }));
+        },
+        getSubApplicationForEvent(eventId) {
+          return get().subApplications.find((s) => s.subEventId === eventId);
+        },
+        updateSubApplication(id, subApplication) {
+          set((state) => ({
+            subApplications: state.subApplications.map((s) =>
+              s.subEventId === id ? { ...s, ...subApplication } : s
+            ),
+          }));
+        },
       }),
+
       {
         name: 'application-store',
         storage: createJSONStorage(() => sessionStorage),
