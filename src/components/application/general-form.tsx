@@ -4,7 +4,6 @@ import {
   BackButton,
   NextButton,
 } from '@/components/application/application-navigation';
-import { useApplicationContext } from '@/components/application/application.context';
 import { useStepContext } from '@/components/application/step';
 import {
   Form,
@@ -35,6 +34,7 @@ import { useForm, UseFormReturn } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
 import { z } from 'zod';
 import { DatePicker } from '../birth-date-picker-new';
+import { useApplicationStore } from './application.store';
 import { translateDegree, translateGender } from './utils';
 
 /**
@@ -95,20 +95,21 @@ export const generalFormSchema = z.object({
 });
 
 export function ApplicationGeneralForm() {
-  const { data, setData } = useApplicationContext();
+  const { general, setGeneral } = useApplicationStore((state) => state);
   const { nextStep } = useStepContext();
   const [error, setError] = React.useState<string | undefined>();
 
   const form = useForm<z.infer<typeof generalFormSchema>>({
     resolver: zodResolver(generalFormSchema),
     defaultValues: {
-      ...data.general,
+      ...general,
     },
   });
 
   async function onSubmit(values: z.infer<typeof generalFormSchema>) {
     setError(undefined);
-    setData({ ...data, general: values });
+    setGeneral(values);
+    // setData({ ...data, general: values });
     nextStep();
   }
 

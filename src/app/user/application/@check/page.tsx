@@ -1,7 +1,7 @@
 'use client';
 
 import { NavigationBar } from '@/components/application/application-navigation';
-import { useApplicationContext } from '@/components/application/application.context';
+import { useApplicationStore } from '@/components/application/application.store';
 import {
   translateDegree,
   translateGender,
@@ -16,8 +16,7 @@ import {
 import { format } from 'date-fns';
 
 export default function ApplicationCheckPage() {
-  const ctx = useApplicationContext();
-  const data = ctx.data;
+  const { general } = useApplicationStore((store) => store);
   const {
     firstName,
     lastName,
@@ -33,7 +32,7 @@ export default function ApplicationCheckPage() {
     experienceAbroad,
     experienceConsulting,
     fieldOfStudy,
-  } = data.general;
+  } = general;
 
   return (
     <>

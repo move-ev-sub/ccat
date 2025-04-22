@@ -4,7 +4,7 @@ import {
   ProgressBar,
   ProgressBarItem,
 } from '@/components/application/application-navigation';
-import { ApplicationProvider } from '@/components/application/application.context';
+import { ApplicationStoreProvider } from '@/components/application/application.store';
 import { StepContent, StepProvider } from '@/components/application/step';
 import { PageContainer } from '@/components/page-container';
 import React from 'react';
@@ -38,7 +38,7 @@ export default function ApplicationLayout({
 
   return (
     <main>
-      <ApplicationProvider>
+      <ApplicationStoreProvider>
         <StepProvider steps={['general', 'select', 'prioritize', 'check']}>
           <PageContainer className="container">
             <header>
@@ -55,10 +55,7 @@ export default function ApplicationLayout({
                   value="prioritize"
                   label="Prioritäten setzen"
                 />
-                <ProgressBarItem
-                  value="check"
-                  label="Überprüfen und abschicken"
-                />
+                <ProgressBarItem value="check" label="Überprüfen" />
               </ProgressBar>
             </header>
             <div className="mt-20">
@@ -69,7 +66,7 @@ export default function ApplicationLayout({
             </div>
           </PageContainer>
         </StepProvider>
-      </ApplicationProvider>
+      </ApplicationStoreProvider>
     </main>
   );
 }
