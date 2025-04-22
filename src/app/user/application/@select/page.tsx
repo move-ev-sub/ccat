@@ -1,6 +1,63 @@
+'use client';
+
+import { SubEventSelectCard } from '@/components/application/sub-event-select-card';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
-import { NavigationBar } from '../../../../components/application/application-navigation';
-import { SubEventSelectCard } from '../../../../components/application/sub-event-select-card';
+import { SubEvent } from '@prisma/client';
+import { SelectNavigationBar } from './_components/select-navgation-bar';
+
+const subEvents: SubEvent[] = [
+  {
+    companyProfileId: '1',
+    createdAt: new Date(),
+    createdById: '1',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
+    eventId: '1',
+    id: '1',
+    maxParticipants: 10,
+    name: 'Interview mit viadee',
+    startDate: new Date(),
+    endDate: new Date(),
+    coverLetterRequirement: 'NOT_REQUIRED',
+    hostId: '1',
+    profileId: '1',
+    slotId: '1',
+  },
+  {
+    companyProfileId: '2',
+    createdAt: new Date(),
+    createdById: '2',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
+    eventId: '2',
+    id: '2',
+    maxParticipants: 10,
+    name: 'Interview mit Roland Berger',
+    startDate: new Date(),
+    endDate: new Date(),
+    coverLetterRequirement: 'REQUIRED',
+    hostId: '2',
+    profileId: '2',
+    slotId: '2',
+  },
+  {
+    companyProfileId: '3',
+    createdAt: new Date(),
+    createdById: '3',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
+    eventId: '3',
+    id: '3',
+    maxParticipants: 10,
+    name: 'Interview mit McKinsey',
+    startDate: new Date(),
+    endDate: new Date(),
+    hostId: '1',
+    slotId: '1',
+    coverLetterRequirement: 'NOT_REQUIRED',
+    profileId: '1',
+  },
+];
 
 export default function ApplicationSelectPage() {
   return (
@@ -19,47 +76,12 @@ export default function ApplicationSelectPage() {
           <p className="text-foreground font-medium">Socials</p>
         </div>
         <div className="col-span-3 space-y-8">
-          <SubEventSelectCard
-            subEvent={{
-              companyProfileId: '1',
-              createdAt: new Date(),
-              createdById: '1',
-              description:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
-              eventId: '1',
-              id: '1',
-              maxParticipants: 10,
-              name: 'Interview mit viadee',
-              startDate: new Date(),
-              endDate: new Date(),
-              coverLetterRequirement: 'NOT_REQUIRED',
-              hostId: '1',
-              profileId: '1',
-              slotId: '1',
-            }}
-          />
-          <SubEventSelectCard
-            subEvent={{
-              companyProfileId: '1',
-              createdAt: new Date(),
-              createdById: '1',
-              description:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
-              eventId: '1',
-              id: '1',
-              maxParticipants: 10,
-              name: 'Interview mit viadee',
-              startDate: new Date(),
-              endDate: new Date(),
-              coverLetterRequirement: 'OPTIONAL',
-              hostId: '1',
-              profileId: '1',
-              slotId: '1',
-            }}
-          />
+          {subEvents.map((subEvent) => (
+            <SubEventSelectCard key={subEvent.id} subEvent={subEvent} />
+          ))}
         </div>
       </div>
-      <NavigationBar currentPageValid={true} className="mt-12" />
+      <SelectNavigationBar className="mt-12" />
     </>
   );
 }
