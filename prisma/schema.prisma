@@ -8,6 +8,8 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// #region Profiles
+// ============================================================
 model Profile {
   id        String   @id @unique @default(dbgenerated()) @db.Uuid
   role      Role     @default(USER)
@@ -69,6 +71,8 @@ model CompanyProfile {
   @@map("company_profiles")
 }
 
+// #region Events
+// ============================================================
 model Event {
   id          String      @id @unique @default(uuid()) @db.Uuid
   name        String
@@ -102,6 +106,8 @@ model Phase {
   @@map("phases")
 }
 
+// #region Sub Events
+// ============================================================
 model SubEvent {
   id                     String                 @id @unique @default(uuid()) @db.Uuid
   event                  Event                  @relation(fields: [eventId], references: [id])
@@ -142,6 +148,8 @@ model Slot {
   @@map("slots")
 }
 
+// #region Applications
+// ============================================================
 model Application {
   id                     String            @id @unique @default(uuid()) @db.Uuid
   event                  Event             @relation(fields: [eventId], references: [id])
@@ -171,6 +179,8 @@ model Application {
   @@map("applications")
 }
 
+// #region Sub Applications
+// ============================================================
 model SubApplication {
   id            String                      @id @unique @default(uuid()) @db.Uuid
   application   Application                 @relation(fields: [applicationId], references: [id])
@@ -193,6 +203,8 @@ model University {
   @@map("universities")
 }
 
+// #region Enums
+// ============================================================
 enum Role {
   ADMIN
   USER
@@ -241,6 +253,7 @@ enum SubApplicationStatus {
 }
 
 enum SubApplicationPrioritzation {
+  UNSET
   PRIO_1
   PRIO_2
   PRIO_3
