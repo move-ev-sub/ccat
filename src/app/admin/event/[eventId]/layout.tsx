@@ -1,20 +1,11 @@
 import { SubNavigation, SubNavigationItem } from '@/components/navigation';
-import { getEvent } from '@/server/actions/event';
 import { Metadata } from 'next';
 import React from 'react';
 
-export async function generateMetadata({
-  params: { eventId },
-}: {
-  params: { eventId: string };
-}): Promise<Metadata> {
-  const event = await getEvent(eventId);
-
-  return {
-    title: event.data?.name,
-    description: `Informationen zur ${event.data?.name}.`,
-  };
-}
+export const metadata: Metadata = {
+  title: 'Event Details',
+  description: 'Informationen zum Event.',
+};
 
 export default async function AdminEventLayout({
   children,
