@@ -4,7 +4,13 @@ import { buttonVariants } from '@/components/ui/button';
 import { messages as t } from '@/i18n';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Unternehmensverwaltung',
+  description: 'Verwaltung aller Unternehmen.',
+};
 
 /**
  * The admin companies settings page displays all companies and allows the

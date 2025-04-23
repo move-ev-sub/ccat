@@ -4,6 +4,12 @@ import { PageDesc, PageTitle } from '@/components/page-header';
 import { messages as t } from '@/i18n';
 import { ClipboardDocumentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as Tabs from '@radix-ui/react-tabs';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Neue Veranstaltung',
+  description: 'Neue Veranstaltung erstellen.',
+};
 
 export default async function NewEventPage() {
   return (

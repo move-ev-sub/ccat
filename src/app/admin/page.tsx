@@ -1,9 +1,15 @@
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { messages as t } from '@/i18n';
+import { Metadata } from 'next';
 import { ApplicationsCountChart } from './_components/applications-count-chart';
 import { ApplicationsCountBarchart } from './_components/applications-count-chart-bar';
 import { GenderDistributionChart } from './_components/gender-distribution-chart';
+
+export const metadata: Metadata = {
+  title: 'Admin Dashboard',
+  description: 'Übersicht über alle Bewerbungen und Unternehmen.',
+};
 
 export default async function AdminGeneralPage() {
   return (

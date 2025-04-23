@@ -2,6 +2,12 @@ import { BackLink } from '@/components/back-link';
 import { CreateNewCompanyForm } from '@/components/forms/create-new-company';
 import { PageDesc, PageTitle } from '@/components/page-header';
 import { messages as t } from '@/i18n';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Neues Unternehmen',
+  description: 'Neues Unternehmen erstellen.',
+};
 
 export default async function NewCompanyPage() {
   return (

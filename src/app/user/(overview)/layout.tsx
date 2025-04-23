@@ -1,9 +1,17 @@
 import { UserProfileMenu } from '@/components/profile-dropdown-menu/user-profile-menu';
 import { fetchCurrentProfile } from '@/server/services/profile';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import MoveLogo from '../../../../public/move-logo.svg';
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function UserLayout({
   children,

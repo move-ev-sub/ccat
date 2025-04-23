@@ -3,6 +3,12 @@ import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { fetchPhasesForEvent } from '@/server/services/phase';
 import { Phase, PhaseType } from '@prisma/client';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Phasen',
+  description: 'Hier können Sie die Phasen des Events bearbeiten.',
+};
 
 export default async function AdminEventPhasesPage({
   params: paramPromise,

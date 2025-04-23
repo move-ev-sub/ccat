@@ -2,6 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { ArchiveBoxArrowDownIcon, TrashIcon } from '@heroicons/react/16/solid';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Sicherheit',
+  description:
+    'Hier können die Sicherheitseinstellungen der Veranstaltung bearbeitet werden.',
+};
 
 export default async function AdminEventSecuritySettingsPage() {
   return (

@@ -6,9 +6,32 @@ import { Separator } from '@/components/ui/separator';
 import { extractHeadings } from '@/utils/mdx';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
 import fs, { existsSync } from 'fs';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import path from 'path';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  // Convert slug to title case by replacing hyphens with spaces and capitalizing each word
+  const title = slug
+    .split('-')
+    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  return {
+    title: title,
+    description: 'Alle rechtlichen Informationen zum Bewerbungsportal.',
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
+}
 
 async function getDocumentSlugs(): Promise<string[]> {
   // Get all the names of the files in the directory "../data"

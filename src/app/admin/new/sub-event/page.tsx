@@ -6,6 +6,12 @@ import { fetchSlotsForEvent } from '@/server/services/slot';
 import { FullCompanyProfile } from '@/server/types/profile';
 import { ServiceResult } from '@/server/types/serviceResult';
 import { Slot } from '@prisma/client';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Neue Unterveranstaltung',
+  description: 'Neue Unterveranstaltung erstellen.',
+};
 
 async function hasIdParam({
   searchParams,
