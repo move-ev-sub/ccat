@@ -14,8 +14,12 @@ export function SelectNavigationBar({
   const { subApplications } = useApplicationStore((store) => store);
   const { nextStep } = useStepContext();
 
+  const isDisabled = Object.values(subApplications).some(
+    (subApplications) => subApplications.length === 0
+  );
+
   function onNext() {
-    if (subApplications.length === 0) {
+    if (isDisabled) {
       // TODO: Show error message
       return;
     }
@@ -30,11 +34,7 @@ export function SelectNavigationBar({
       {...props}
     >
       <BackButton />
-      <NextButton
-        type="submit"
-        disabled={subApplications.length === 0}
-        onClick={onNext}
-      >
+      <NextButton type="submit" disabled={isDisabled} onClick={onNext}>
         Weiter
       </NextButton>
     </nav>

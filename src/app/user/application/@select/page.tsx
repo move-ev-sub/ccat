@@ -57,6 +57,23 @@ const subEvents: SubEvent[] = [
     coverLetterRequirement: 'NOT_REQUIRED',
     profileId: '1',
   },
+  {
+    companyProfileId: '4',
+    createdAt: new Date(),
+    createdById: '4',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
+    eventId: '4',
+    id: '4',
+    maxParticipants: 10,
+    name: 'Interview mit BCG',
+    startDate: new Date(),
+    endDate: new Date(),
+    coverLetterRequirement: 'REQUIRED',
+    hostId: '4',
+    profileId: '4',
+    slotId: '2',
+  },
 ];
 
 export default function ApplicationSelectPage() {

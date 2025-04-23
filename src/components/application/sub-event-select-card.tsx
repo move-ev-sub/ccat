@@ -56,6 +56,7 @@ export function SubEventSelectCard({
     status: 'PENDING',
     subEventId: subEvent.id,
     prioritized: false,
+    slotId: subEvent.slotId,
   };
 
   const id = React.useId();
@@ -74,7 +75,7 @@ export function SubEventSelectCard({
     subApplications,
     addSubApplication,
     removeSubApplication,
-    getSubApplicationForEvent,
+    getSubApplication,
     updateSubApplication,
   } = useApplicationStore((store) => store);
 
@@ -88,8 +89,8 @@ export function SubEventSelectCard({
    * be re-rendered when the component is re-rendered.
    */
   const subApplication = React.useMemo(() => {
-    return getSubApplicationForEvent(subEvent.id);
-  }, [subEvent, subApplications, getSubApplicationForEvent]);
+    return getSubApplication(subEvent.slotId, subEvent.id);
+  }, [subEvent, subApplications, getSubApplication]);
 
   // Helper variables to keep track of the sub application state
   const [isEditing, setIsEditing] = React.useState(false);
@@ -145,20 +146,24 @@ export function SubEventSelectCard({
 
     if (!res.success) {
       // TODO: Show error message
+      console.error('Fehler beim Speichern des Cover Letters');
       return;
     }
 
     if (!isAdded) {
+      console.log('Adding sub application');
       addSubApplication({
         ...initialSubApplication,
         coverLetter: res.data.coverLetter,
       });
       setIsEditing(false);
+      console.log('Sub application added');
       return;
     }
 
     // Otherwise, update the existing sub application
-    updateSubApplication(subEvent.id, {
+    updateSubApplication(subEvent.slotId, {
+      subEventId: subEvent.id,
       coverLetter: res.data.coverLetter,
     });
     setIsEditing(false);
@@ -189,7 +194,7 @@ export function SubEventSelectCard({
     }
 
     // Remove the sub application from the application
-    removeSubApplication(subEvent.id);
+    removeSubApplication(subEvent.slotId, subEvent.id);
   }
 
   /**
