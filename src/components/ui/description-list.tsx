@@ -28,7 +28,10 @@ export function DescriptionListRow({
   return (
     <div
       data-slot="description-list-row"
-      className={cn('py-6 sm:grid sm:grid-cols-3 sm:gap-4', className)}
+      className={cn(
+        'py-6 first:pt-0 last:pb-0 sm:grid sm:grid-cols-3 sm:gap-4',
+        className
+      )}
       {...props}
     />
   );

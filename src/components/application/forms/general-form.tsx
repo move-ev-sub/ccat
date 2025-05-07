@@ -1,10 +1,7 @@
 'use client';
 
-import {
-  BackButton,
-  NextButton,
-} from '@/components/application/application-navigation';
-import { useStepContext } from '@/components/application/step';
+import { DatePicker } from '@/components/birth-date-picker-new';
+import { FileUpload } from '@/components/file-upload';
 import {
   Form,
   FormControl,
@@ -25,17 +22,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/utils';
+import {
+  ACCEPTED_FILE_TYPES,
+  MAX_FILE_COUNT,
+  MAX_FILE_SIZE,
+} from '@/server/schemas/application';
+import { cn, translateDegree, translateGender } from '@/utils';
+import { ApplicationRoutes } from '@/utils/consts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Degree, Gender } from '@prisma/client';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
 import { z } from 'zod';
-import { DatePicker } from '../birth-date-picker-new';
-import { useApplicationStore } from './application.store';
-import { translateDegree, translateGender } from './utils';
+import { PageNavigation } from '../components/page-navigation';
+import { useApplicationStore } from '../stores/application.store';
 
 /**
  * Not really a clean solution, but it works for now
@@ -92,13 +95,15 @@ export const generalFormSchema = z.object({
   abiturGrade: gradeSchema,
   experienceAbroad: z.number(),
   experienceConsulting: z.number(),
+
+  // ======================= Documents =======================
+  cv: z.array(z.instanceof(File)).max(1),
 });
 
 export function ApplicationGeneralForm() {
   const { general, setGeneral } = useApplicationStore((state) => state);
-  const { nextStep } = useStepContext();
   const [error, setError] = React.useState<string | undefined>();
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof generalFormSchema>>({
     resolver: zodResolver(generalFormSchema),
     defaultValues: {
@@ -110,7 +115,8 @@ export function ApplicationGeneralForm() {
     setError(undefined);
     setGeneral(values);
     // setData({ ...data, general: values });
-    nextStep();
+
+    router.push(ApplicationRoutes.SELECT_ROUTE);
   }
 
   return (
@@ -161,10 +167,43 @@ export function ApplicationGeneralForm() {
             <ExperienceConsultingField form={form} />
           </div>
         </section>
-        <nav className="flex items-center justify-between">
-          <BackButton />
-          <NextButton type="submit">Weiter</NextButton>
-        </nav>
+        <Separator className="my-10" />
+        <section id="documents" className="grid gap-8 md:grid-cols-4">
+          <div>
+            <p className="text-foreground font-medium md:text-sm">Dokumente</p>
+          </div>
+          <div className="md:col-span-3">
+            <FormField
+              control={form.control}
+              name="cv"
+              render={({ field }) => (
+                <div className="space-y-6">
+                  <FormItem className="w-full space-y-2">
+                    <FormLabel>Lebenslauf</FormLabel>
+                    <FormControl>
+                      <FileUpload
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        accept={ACCEPTED_FILE_TYPES}
+                        maxFileCount={MAX_FILE_COUNT}
+                        maxSize={MAX_FILE_SIZE}
+                        ref={field.ref}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
+          </div>
+        </section>
+        <PageNavigation
+          canGoBack={false}
+          canGoForward={true}
+          nextButtonProps={{
+            type: 'submit',
+          }}
+        />
         <FormError visible={!!error} message={error} />
       </form>
     </Form>
