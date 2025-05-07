@@ -12,7 +12,7 @@ export function Switch({
   return (
     <SwitchPrimitives.Root
       className={cn(
-        'peer border-border-secondary bg-background-muted focus-visible:ring-ring focus-visible:ring-offset-background data-[state=checked]:bg-accent data-[state=checked]:border-accent w-[2.375rem] rounded-full border p-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+        'peer border-border-secondary bg-background-muted data-[state=checked]:bg-accent data-[state=checked]:border-accent focus-indicator w-[2.375rem] rounded-full border p-0.5 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       {...props}

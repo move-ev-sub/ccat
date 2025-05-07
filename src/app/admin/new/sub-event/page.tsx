@@ -1,10 +1,17 @@
 import { CreateNewSubEventForm } from '@/components/forms/create-sub-event';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { messages as t } from '@/i18n';
 import { fetchCompanyProfiles } from '@/server/services/profile';
 import { fetchSlotsForEvent } from '@/server/services/slot';
 import { FullCompanyProfile } from '@/server/types/profile';
 import { ServiceResult } from '@/server/types/serviceResult';
 import { Slot } from '@prisma/client';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Neue Unterveranstaltung',
+  description: 'Neue Unterveranstaltung erstellen.',
+};
 
 async function hasIdParam({
   searchParams,
@@ -89,11 +96,8 @@ export default async function NewSubEventPage({
   return (
     <>
       <PageHeader className="px-0">
-        <PageTitle>Neue Unter-Veranstaltung erstellen</PageTitle>
-        <PageDesc>
-          Um eine Unter-Veranstaltung zu erstellen, wählen Sie bitte ein
-          Unternehmen und einen Slot aus.
-        </PageDesc>
+        <PageTitle>{t.pages.newSubEvent.title()}</PageTitle>
+        <PageDesc>{t.pages.newSubEvent.description()}</PageDesc>
       </PageHeader>
       <div className="mt-to-header">
         <CreateNewSubEventForm

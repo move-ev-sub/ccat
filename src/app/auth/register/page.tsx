@@ -1,5 +1,12 @@
 import { RegisterForm } from '@/components/forms/register';
+import { messages as t } from '@/i18n';
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Registrieren',
+  description: 'Registrieren für das Bewerbungsportal.',
+};
 
 export default async function RegisterPage() {
   return (
@@ -11,7 +18,7 @@ export default async function RegisterPage() {
               Registrieren
             </h1>
             <p className="text-secondary mt-2 text-sm">
-              Erstelle einen Account um Bewerbungen einzureichen.
+              {t.pages.register.description()}
             </p>
           </div>
           <div className="mt-10">
@@ -19,12 +26,12 @@ export default async function RegisterPage() {
           </div>
           <div className="mt-10">
             <p className="text-secondary text-sm">
-              Du hast bereits einen Account?{' '}
+              {t.pages.register.alreadyHaveAccount()}{' '}
               <Link
                 href="/auth/login"
                 className="text-foreground hover:text-accent font-medium transition-colors"
               >
-                Anmelden
+                {t.pages.register.login()}
               </Link>
             </p>
           </div>

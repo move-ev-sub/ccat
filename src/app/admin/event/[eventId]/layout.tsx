@@ -1,5 +1,11 @@
 import { SubNavigation, SubNavigationItem } from '@/components/navigation';
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+  title: 'Event Details',
+  description: 'Informationen zum Event.',
+};
 
 export default async function AdminEventLayout({
   children,

@@ -1,8 +1,15 @@
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { messages as t } from '@/i18n';
 import { fetchUserProfiles } from '@/server/services/profile';
+import { Metadata } from 'next';
 import { columns } from './_components/columns';
 import { DataTable } from './_components/data-table';
+
+export const metadata: Metadata = {
+  title: 'Nutzerverwaltung',
+  description: 'Verwaltung aller Nutzer.',
+};
 
 /**
  * The AdminUserSettingsPage is the page, where administrators can manage
@@ -52,12 +59,8 @@ export default async function AdminUserSettingsPage() {
   return (
     <PageContainer>
       <PageHeader>
-        <PageTitle>Nutzerverwaltung</PageTitle>
-        <PageDesc>
-          Hier kannst du alle Benutzer verwalten. Beachte, dass hier alle
-          Benutzer angezeigt werden, sowohl Bewerber:innnen als auch
-          Unternehmen.
-        </PageDesc>
+        <PageTitle>{t.pages.userSettings.title()}</PageTitle>
+        <PageDesc>{t.pages.userSettings.description()}</PageDesc>
       </PageHeader>
       <div className="mt-to-header container">
         <DataTable columns={columns} data={data} />

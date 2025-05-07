@@ -306,7 +306,7 @@ export function FileUpload({
               // base styles
               'group border-border-secondary relative grid h-52 w-full cursor-pointer place-items-center rounded-xl border border-dashed px-5 py-2.5 text-center transition',
               // focus styles
-              'ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+              'focus-indicator',
               // styles for when a file is being dragged anywhere on the page
               isDragActive && 'border-accent bg-accent-50 dark:bg-accent-950',
               // disabled styles

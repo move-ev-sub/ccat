@@ -91,7 +91,7 @@ function ThemeSwitchButton({
         // highlight the button if the theme is the current theme
         theme === currentTheme && 'bg-foreground text-background',
         // focus styles
-        'focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'focus-indicator',
         className
       )}
       {...props}

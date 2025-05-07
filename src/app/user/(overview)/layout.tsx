@@ -1,9 +1,17 @@
 import { UserProfileMenu } from '@/components/profile-dropdown-menu/user-profile-menu';
 import { fetchCurrentProfile } from '@/server/services/profile';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import MoveLogo from '../../../../public/move-logo.svg';
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function UserLayout({
   children,
@@ -19,10 +27,7 @@ export default async function UserLayout({
   return (
     <main>
       <nav className="border-border flex w-full items-center justify-start gap-6 border-b px-8 py-3">
-        <Link
-          href="/user"
-          className="focus-visible:ring-ring focus-visible:ring-offset-background rounded-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-        >
+        <Link href="/user" className="focus-indicator rounded-md">
           <Image src={MoveLogo} alt="Move Logo" className="h-8 w-fit" />
         </Link>
         <Link

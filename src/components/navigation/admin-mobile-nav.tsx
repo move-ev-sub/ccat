@@ -22,7 +22,7 @@ export function AdminMobileNav({
       <SheetTrigger asChild>
         <button
           className={cn(
-            'text-foreground active:bg-background-muted hover:bg-background-muted focus-visible:ring-ring rounded-lg p-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+            'text-foreground active:bg-background-muted hover:bg-background-muted focus-indicator rounded-lg p-2',
             className
           )}
           {...props}

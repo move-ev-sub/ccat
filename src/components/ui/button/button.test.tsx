@@ -75,7 +75,7 @@ describe('Button', () => {
     render(<Button>Focus me</Button>);
     const button = screen.getByRole('button');
     button.focus();
-    expect(button).toHaveClass('focus-visible:ring-2');
+    expect(button).toHaveClass('focus-indicator');
   });
 
   // Custom className

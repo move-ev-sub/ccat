@@ -13,7 +13,7 @@ export function UserDropdownMenu({
 }: React.ComponentProps<typeof DropdownMenu>) {
   return (
     <DropdownMenu {...props}>
-      <DropdownMenuTrigger className="focus-visible:ring-ring focus-visible:ring-offset-background-muted rounded-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
+      <DropdownMenuTrigger className="focus-indicator focus-visible:ring-offset-background-muted rounded-full">
         <Avatar>
           <AvatarFallback>
             <span className="text-xs">JD</span>

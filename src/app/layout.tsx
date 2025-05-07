@@ -10,10 +10,44 @@ const interSans = Inter({
   subsets: ['latin'],
 });
 
+const title = 'Consulting Contact Bewerbertool';
+const description =
+  'Tool zur Organisation des Bewerbungsprozesses für Consulting Contacts';
+
 export const metadata: Metadata = {
-  title: 'Consulting Contact Application Tool',
-  description:
-    'Tool zur Verwaltung von Bewerbungen und Veranstaltungen für die Consulting Contact',
+  title: {
+    default: title,
+    template: '%s | Consulting Contact Bewerbertool',
+  },
+  description,
+  generator: 'Next.js',
+  applicationName: 'Consulting Contact Bewerbertool',
+  referrer: 'strict-origin-when-cross-origin',
+  keywords: ['Consulting Contact', 'Bewerbertool'],
+  authors: [
+    { name: 'Christoph Langer', url: 'https://github.com/chris23lngr' },
+    { name: 'Lennard Lohmann', url: 'https://github.com/lennardlohmann' },
+    { name: 'Ron Bellemann', url: 'https://github.com/1RoBe' },
+  ],
+  publisher: 'move - Studentische Unternehmensberatung e.V.',
+  icons: {
+    icon: '/favicon.ico',
+  },
+  openGraph: {
+    title,
+    description,
+    url: 'https://consultingcontact.de',
+  },
+  viewport: {
+    initialScale: 1,
+    width: 'device-width',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+    images: ['/og-image.png'],
+  },
 };
 
 export default function RootLayout({
@@ -22,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="de" suppressHydrationWarning>
       <body
         className={cn(
           interSans.variable,

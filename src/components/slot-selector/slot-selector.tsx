@@ -254,7 +254,7 @@ function SlotItem({
       data-state={activeValue?.id === value.id ? 'active' : 'inactive'}
       className={cn(
         'text-foreground w-full rounded-sm border px-2.5 py-1.5 text-center text-sm font-medium',
-        'focus-visible:ring-ring focus-visible:ring-offset-background-muted focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'focus-indicator focus-visible:ring-offset-background-muted',
         'data-[state=active]:text-accent data-[state=active]:bg-accent/15 data-[state=active]:border-accent/30',
         className
       )}
@@ -272,7 +272,7 @@ function DateTrigger({
     <Tabs.Trigger
       className={cn(
         'text-foreground w-full rounded-sm border px-2.5 py-1.5 text-center text-sm font-medium',
-        'focus-visible:ring-ring focus-visible:ring-offset-background-muted focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        'focus-indicator focus-visible:ring-offset-background-muted',
         'data-[state=active]:text-accent data-[state=active]:bg-accent/15 data-[state=active]:border-accent/30',
         className
       )}
