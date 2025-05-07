@@ -17,7 +17,8 @@
     "db:migrate": "drizzle-kit push",
     "db:seed": "prisma db seed",
     "prepare": "husky",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "mail:dev": "email dev --port 3030 --dir './src/emails'"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
