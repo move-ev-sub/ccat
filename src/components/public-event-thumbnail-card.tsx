@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { cn } from '@/utils';
 import {
   ArrowUpRightIcon,
@@ -6,8 +8,6 @@ import {
 import { Event, Phase } from '@prisma/client';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import { Button } from './ui/button';
-import { Card, CardContent, CardTitle } from './ui/card';
 
 interface PublicEventThumbnailCardProps
   extends React.ComponentProps<typeof Card> {

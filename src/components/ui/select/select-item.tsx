@@ -15,7 +15,12 @@ export function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "focus:bg-accent [&_svg:not([class*='text-'])]:text-secondary relative flex w-full cursor-default items-center gap-2 rounded-lg py-1.5 pr-8 pl-2 text-sm font-medium outline-hidden select-none focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus:[&_svg:not([class*='text-'])]:text-white *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        // base
+        "[&_svg:not([class*='text-'])]:text-secondary relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm font-medium outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus:[&_svg:not([class*='text-'])]:text-white *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        // disabled
+        'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        // focus
+        "focus:bg-background-muted focus:text-foreground focus:[&_svg:not([class*='text-'])]:text-secondary",
         className
       )}
       {...props}

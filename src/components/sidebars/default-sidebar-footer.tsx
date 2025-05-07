@@ -1,7 +1,7 @@
 'use server';
 
+import { SidebarFooter } from '@/components/ui/sidebar';
 import { createClient } from '@/utils/supabase/server';
-import { SidebarFooter } from '../ui/sidebar';
 import { SidebarProfileMenu } from './sidebar-profile-menu';
 
 export async function DefaultSidebarFooter({

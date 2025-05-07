@@ -1,3 +1,7 @@
 @theme {
   --spacing-to-header: calc(var(--spacing) * 10);
+
+  /* =================== Inputs =================== */
+  --height-input: calc(var(--spacing) * 9);
+  --radius-input: var(--radius-md);
 }

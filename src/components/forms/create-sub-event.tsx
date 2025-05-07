@@ -1,6 +1,10 @@
 'use client';
 
+import { RequiredMark } from '@/components/forms/required-mark';
+import { SlotSelector } from '@/components/slot-selector/slot-selector';
+import { TimePicker24h } from '@/components/time-picker/time-picker-24h';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -12,6 +16,19 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { createSubEvent } from '@/server/services/sub-event';
 import { FullCompanyProfile } from '@/server/types/profile';
 import { cn } from '@/utils';
@@ -24,19 +41,6 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { SlotSelector } from '../slot-selector/slot-selector';
-import { TimePicker24h } from '../time-picker/time-picker-24h';
-import { Calendar } from '../ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
-import { Textarea } from '../ui/textarea';
-import { RequiredMark } from './required-mark';
 
 const formSchema = z.object({
   name: z.string(),

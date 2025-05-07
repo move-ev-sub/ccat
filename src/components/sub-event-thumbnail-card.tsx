@@ -1,9 +1,9 @@
+import { Card, CardContent, CardHeader, CardLink } from '@/components/ui/card';
 import { cn } from '@/utils';
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/16/solid';
 import { SubEvent } from '@prisma/client';
 import { format } from 'date-fns';
 import React from 'react';
-import { Card, CardContent, CardHeader, CardLink } from './ui/card';
 
 /**
  * A Component that displays a preview of a sub-event and links to the

@@ -16,11 +16,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { createEvent } from '@/server/actions/event';
 import { newEventSchema } from '@/server/schemas/event';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { Textarea } from '../ui/textarea';
 
 export function CreateNewEventForm() {
   const [loading, setLoading] = React.useState(false);

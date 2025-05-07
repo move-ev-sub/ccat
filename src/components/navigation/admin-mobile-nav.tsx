@@ -1,3 +1,4 @@
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/utils';
 import {
   ArrowRightStartOnRectangleIcon,
@@ -8,7 +9,6 @@ import {
 } from '@heroicons/react/16/solid';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { ThemeSwitch } from '../theme-switch';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { MobileNavigationGroup } from './mobile-navigation-group';
 import { MobileNavigationItem } from './mobile-navigation-item';
 

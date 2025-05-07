@@ -10,10 +10,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Label } from '@/components/ui/label';
 import { ClipboardIcon } from '@heroicons/react/16/solid';
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
 import React from 'react';
-import { Label } from './ui/label';
 
 /**
  * The CompanyCreationConfirmDialog component is the alert dialog

@@ -1,23 +1,27 @@
 import * as React from 'react';
 
 import { cn } from '@/utils';
+import { cva, VariantProps } from 'class-variance-authority';
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
-  ({ className, type, ...props }, ref) => {
-    return (
-      <input
-        type={type}
-        className={cn(
-          //TODO: adjust focus state
-          'border-border file:text-foreground placeholder:text-secondary focus-visible:border-ring focus-visible:ring-ring bg-background flex h-9 w-full rounded-lg border px-3 py-1 text-base transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-          className
-        )}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
-Input.displayName = 'Input';
+export const inputVariants = cva([
+  // base
+  'border-border-input placeholder:text-secondary bg-background rounded-input flex h-9 w-full border px-3 py-1 text-base transition-colors md:text-sm shadow-xs',
+  // disabled
+  'disabled:cursor-not-allowed disabled:opacity-50',
+  // focus
+  'focus-indicator',
+  // file
+  'file:text-foreground file:border-0 file:bg-transparent file:text-sm file:font-medium',
+  // error
+  'aria-invalid:ring-destructive/20 aria-invalid:border-destructive',
+]);
 
-export { Input };
+interface InputProps
+  extends React.ComponentProps<'input'>,
+    VariantProps<typeof inputVariants> {}
+
+export function Input({ className, type, ...props }: InputProps) {
+  return (
+    <input type={type} className={cn(inputVariants(), className)} {...props} />
+  );
+}

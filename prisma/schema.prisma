@@ -8,6 +8,8 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// #region Profiles
+// ============================================================
 model Profile {
   id        String   @id @unique @default(dbgenerated()) @db.Uuid
   role      Role     @default(USER)
@@ -69,6 +71,8 @@ model CompanyProfile {
   @@map("company_profiles")
 }
 
+// #region Events
+// ============================================================
 model Event {
   id          String      @id @unique @default(uuid()) @db.Uuid
   name        String
@@ -102,27 +106,30 @@ model Phase {
   @@map("phases")
 }
 
+// #region Sub Events
+// ============================================================
 model SubEvent {
-  id               String           @id @unique @default(uuid()) @db.Uuid
-  event            Event            @relation(fields: [eventId], references: [id])
-  eventId          String           @db.Uuid
-  name             String
-  description      String?
-  maxParticipants  Int              @default(30)
-  startDate        DateTime         @db.Timestamptz(3)
-  endDate          DateTime         @db.Timestamptz(3)
-  host             Profile          @relation("SubEventHost", fields: [hostId], references: [id])
-  hostId           String           @db.Uuid
-  slot             Slot             @relation(fields: [slotId], references: [id])
-  slotId           String           @db.Uuid
-  createdAt        DateTime         @default(now())
-  createdBy        Profile          @relation("SubEventCreator", fields: [createdById], references: [id])
-  createdById      String           @db.Uuid
-  subApplications  SubApplication[]
-  CompanyProfile   CompanyProfile?  @relation(fields: [companyProfileId], references: [id])
-  companyProfileId String?          @db.Uuid
-  Profile          Profile?         @relation(fields: [profileId], references: [id])
-  profileId        String?          @db.Uuid
+  id                     String                 @id @unique @default(uuid()) @db.Uuid
+  event                  Event                  @relation(fields: [eventId], references: [id])
+  eventId                String                 @db.Uuid
+  name                   String
+  description            String?
+  maxParticipants        Int                    @default(30)
+  startDate              DateTime               @db.Timestamptz(3)
+  endDate                DateTime               @db.Timestamptz(3)
+  host                   Profile                @relation("SubEventHost", fields: [hostId], references: [id])
+  hostId                 String                 @db.Uuid
+  slot                   Slot                   @relation(fields: [slotId], references: [id])
+  slotId                 String                 @db.Uuid
+  coverLetterRequirement CoverLetterRequirement @default(NOT_REQUIRED)
+  createdAt              DateTime               @default(now())
+  createdBy              Profile                @relation("SubEventCreator", fields: [createdById], references: [id])
+  createdById            String                 @db.Uuid
+  subApplications        SubApplication[]
+  CompanyProfile         CompanyProfile?        @relation(fields: [companyProfileId], references: [id])
+  companyProfileId       String?                @db.Uuid
+  Profile                Profile?               @relation(fields: [profileId], references: [id])
+  profileId              String?                @db.Uuid
 
   @@map("sub_events")
 }
@@ -141,6 +148,8 @@ model Slot {
   @@map("slots")
 }
 
+// #region Applications
+// ============================================================
 model Application {
   id                     String            @id @unique @default(uuid()) @db.Uuid
   event                  Event             @relation(fields: [eventId], references: [id])
@@ -170,6 +179,8 @@ model Application {
   @@map("applications")
 }
 
+// #region Sub Applications
+// ============================================================
 model SubApplication {
   id            String                      @id @unique @default(uuid()) @db.Uuid
   application   Application                 @relation(fields: [applicationId], references: [id])
@@ -192,6 +203,8 @@ model University {
   @@map("universities")
 }
 
+// #region Enums
+// ============================================================
 enum Role {
   ADMIN
   USER
@@ -240,9 +253,16 @@ enum SubApplicationStatus {
 }
 
 enum SubApplicationPrioritzation {
+  UNSET
   PRIO_1
   PRIO_2
   PRIO_3
   PRIO_4
   PRIO_5
+}
+
+enum CoverLetterRequirement {
+  REQUIRED
+  OPTIONAL
+  NOT_REQUIRED
 }

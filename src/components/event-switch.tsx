@@ -1,11 +1,5 @@
 'use client';
 
-import { cn } from '@/utils';
-import { ChevronUpDownIcon, PlusCircleIcon } from '@heroicons/react/16/solid';
-import { Event } from '@prisma/client';
-import * as SelectPrimitive from '@radix-ui/react-select';
-import { usePathname, useRouter } from 'next/navigation';
-import React from 'react';
 import {
   Select,
   SelectContent,
@@ -13,7 +7,13 @@ import {
   SelectItem,
   SelectSeparator,
   SelectValue,
-} from './ui/select';
+} from '@/components/ui/select';
+import { cn } from '@/utils';
+import { ChevronUpDownIcon, PlusCircleIcon } from '@heroicons/react/16/solid';
+import { Event } from '@prisma/client';
+import * as SelectPrimitive from '@radix-ui/react-select';
+import { usePathname, useRouter } from 'next/navigation';
+import React from 'react';
 
 interface EventSwitchProps
   extends React.ComponentProps<typeof SelectPrimitive.Trigger> {

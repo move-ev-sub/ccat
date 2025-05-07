@@ -1,18 +1,6 @@
 'use client';
 
-import { FullUnknownProfile } from '@/server/services/profile';
-import { cn } from '@/utils';
-import { createClient } from '@/utils/supabase/client';
-import {
-  CheckIcon,
-  ComputerDesktopIcon,
-  MoonIcon,
-  SunIcon,
-} from '@heroicons/react/16/solid';
-import { useTheme } from 'next-themes';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +13,19 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
+import { FullUnknownProfile } from '@/server/services/profile';
+import { cn } from '@/utils';
+import { createClient } from '@/utils/supabase/client';
+import {
+  CheckIcon,
+  ComputerDesktopIcon,
+  MoonIcon,
+  SunIcon,
+} from '@heroicons/react/16/solid';
+import { useTheme } from 'next-themes';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export function UserProfileMenu({
   profile,

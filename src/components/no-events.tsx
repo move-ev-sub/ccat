@@ -1,7 +1,7 @@
+import { Button } from '@/components/ui/button';
 import { cn } from '@/utils';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import React from 'react';
-import { Button } from './ui/button';
 
 export function NoEvents({ className, ...props }: React.ComponentProps<'div'>) {
   return (
