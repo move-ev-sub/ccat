@@ -8,8 +8,8 @@ export const buttonVariants = cva(
     'flex items-center justify-center gap-2.5',
     // focus
     'focus-indicator' +
-    // disabled
-    'disabled:opacity-50 disabled:pointer-events-none',
+      // disabled
+      'disabled:opacity-50 disabled:pointer-events-none',
     // svg
     '[&_svg]:shrink-0',
   ],
