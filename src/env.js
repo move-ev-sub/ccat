@@ -12,6 +12,7 @@ export const env = createEnv({
       .default('development'),
     DATABASE_URL: z.string().url(),
     SERVICE_ROLE_KEY: z.string(),
+    RESEND_API_KEY: z.string(),
   },
 
   /**
@@ -35,6 +36,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     SERVICE_ROLE_KEY: process.env.SERVICE_ROLE_KEY,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

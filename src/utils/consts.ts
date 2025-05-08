@@ -17,3 +17,7 @@ export const ApplicationRoutes = {
   /** Review the application */
   REVIEW_ROUTE: '/user/new-application/review',
 } as const;
+
+export const Email = {
+  FROM: 'Do Not Reply <donotreply@transactional.consultingcontact.de>',
+};
