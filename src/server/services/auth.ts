@@ -5,8 +5,16 @@ import { Profile, Role } from '@prisma/client';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import prisma from '../db';
-import { SignUpData } from '../schemas/auth';
+import { passwordSchema } from '../schemas/auth';
 import { ServiceResult } from '../types/serviceResult';
+
+interface SignUpWithEmailArgs {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  acceptLegal: boolean;
+}
 
 /**
  * Signs up a new user with email and password.
@@ -18,11 +26,19 @@ import { ServiceResult } from '../types/serviceResult';
  *
  * @returns A promise with the status of the sign up.
  */
-
 export async function signUpWithEmail(
-  signUpData: SignUpData
+  args: SignUpWithEmailArgs
 ): Promise<ServiceResult<{ user: User | null; session: Session | null }>> {
-  const { firstName, lastName, email, password } = signUpData;
+  const { firstName, lastName, email, password } = args;
+
+  const parseRes = await passwordSchema.safeParseAsync(password);
+
+  if (!parseRes.success) {
+    return {
+      ok: false,
+      error: parseRes.error.message,
+    };
+  }
 
   if (!firstName || !lastName || !email || !password) {
     return {
@@ -41,11 +57,11 @@ export async function signUpWithEmail(
   if (error || !data?.user) {
     console.error(
       'Error when signing up:',
-      error?.stack || 'Ein unbekannter Fehler ist aufgetreten.'
+      error?.message || 'Ein unbekannter Fehler ist aufgetreten.'
     );
     return {
       ok: false,
-      error: error?.stack || 'Ein unbekannter Fehler ist aufgetreten.',
+      error: error?.message || 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
 
@@ -369,4 +385,36 @@ export async function updateUserSettings(
   }
 
   return { ok: true, data: res };
+}
+
+interface RequestPasswordResetArgs {
+  email: string;
+}
+
+/**
+ * Sends a link to the user's email with which they can log back into their account and
+ * reset their password.
+ */
+export async function requestPasswordReset({
+  email,
+}: RequestPasswordResetArgs): Promise<ServiceResult<void>> {
+  const client = await createClient();
+
+  if (await isAuthenticated()) {
+    return {
+      ok: false,
+      error: 'User is already authenticated.',
+    };
+  }
+
+  const { error } = await client.auth.resetPasswordForEmail(email);
+
+  if (error) {
+    return {
+      ok: false,
+      error: error.message ?? 'Ein unbekannter Fehler ist aufgetreten.',
+    };
+  }
+
+  return { ok: true, data: undefined };
 }

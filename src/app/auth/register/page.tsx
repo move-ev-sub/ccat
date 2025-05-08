@@ -1,43 +1,45 @@
-import { RegisterForm } from '@/components/forms/register';
-import { messages as t } from '@/i18n';
-import { Metadata } from 'next';
+import {
+  AuthDescription,
+  AuthHeader,
+  AuthTitle,
+} from '@/components/auth/auth-header';
+import { RegisterForm } from '@/components/auth/forms/register-form';
+import { cn } from '@/utils';
 import Link from 'next/link';
-
-export const metadata: Metadata = {
-  title: 'Registrieren',
-  description: 'Registrieren für das Bewerbungsportal.',
-};
 
 export default async function RegisterPage() {
   return (
-    <main className="grid min-h-svh grid-cols-1 md:grid-cols-2">
-      <div className="flex flex-col items-center justify-center px-8 py-12">
-        <div className="w-full max-w-sm">
-          <div>
-            <h1 className="text-foreground text-xl font-medium">
-              Registrieren
-            </h1>
-            <p className="text-secondary mt-2 text-sm">
-              {t.pages.register.description()}
-            </p>
-          </div>
-          <div className="mt-10">
-            <RegisterForm />
-          </div>
-          <div className="mt-10">
-            <p className="text-secondary text-sm">
-              {t.pages.register.alreadyHaveAccount()}{' '}
-              <Link
-                href="/auth/login"
-                className="text-foreground hover:text-accent font-medium transition-colors"
-              >
-                {t.pages.register.login()}
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="border-border hidden border-l bg-zinc-50 md:block dark:bg-zinc-950"></div>
-    </main>
+    <section className="container max-w-lg space-y-10">
+      <AuthHeader>
+        <AuthTitle>Registrieren</AuthTitle>
+        <AuthDescription>
+          Du hast bereits ein Konto?{' '}
+          <Link
+            href={'/auth/login'}
+            className={cn(
+              'text-accent rounded-md font-medium',
+              'focus-indicator'
+            )}
+          >
+            Jetzt anmelden
+          </Link>
+        </AuthDescription>
+      </AuthHeader>
+
+      <RegisterForm />
+
+      <p className="text-secondary text-sm">
+        Du hast Probleme mit der Registrierung?{' '}
+        <Link
+          href={'mailto:support@app.consultingcontact.de'}
+          className={cn(
+            'text-accent rounded-md font-medium',
+            'focus-indicator'
+          )}
+        >
+          Kontaktiere uns
+        </Link>
+      </p>
+    </section>
   );
 }

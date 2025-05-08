@@ -87,3 +87,26 @@ export const userSettingsSchema = z
 export type UserSettingsData = z.infer<typeof userSettingsSchema>;
 
 export type LoginData = z.infer<typeof loginSchema>;
+
+export const passwordSchema = z
+  .string({
+    required_error: 'Passwort ist erforderlich',
+  })
+  .min(6, {
+    message: 'Passwort muss mindestens 6 Zeichen lang sein',
+  })
+  .regex(/[a-z]/, {
+    message: 'Passwort muss mindestens einen Kleinbuchstaben enthalten',
+  })
+  .regex(/[A-Z]/, {
+    message: 'Passwort muss mindestens einen Großbuchstaben enthalten',
+  })
+  .regex(/[0-9]/, {
+    message: 'Passwort muss mindestens eine Zahl enthalten',
+  })
+  .regex(/[^a-zA-Z0-9]/, {
+    message: 'Passwort muss mindestens ein Sonderzeichen enthalten',
+  })
+  .regex(/^\S*$/, {
+    message: 'Passwort darf keine Leerzeichen enthalten',
+  });

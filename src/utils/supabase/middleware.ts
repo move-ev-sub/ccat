@@ -35,7 +35,8 @@ export async function updateSession(request: NextRequest) {
   // When the user is not authenticated, redirect to the login page
   if (
     user.data.user === null &&
-    !request.nextUrl.pathname.startsWith('/auth')
+    !request.nextUrl.pathname.startsWith('/auth') &&
+    !request.nextUrl.pathname.startsWith('/legal')
   ) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
