@@ -3,40 +3,33 @@ import {
   AuthHeader,
   AuthTitle,
 } from '@/components/auth/auth-header';
-import { LoginForm } from '@/components/auth/forms/login-form';
+import { RequestPasswordResetForm } from '@/components/auth/forms/request-password-reset-form';
 import { cn } from '@/utils';
 import Link from 'next/link';
 
-export default async function LoginPage() {
+export default async function ResetPasswordPage() {
   return (
     <section className="container max-w-lg space-y-10">
       <AuthHeader>
-        <AuthTitle>Anmelden</AuthTitle>
+        <AuthTitle>Passwort zurücksetzen</AuthTitle>
         <AuthDescription>
-          Du hast noch kein Konto?{' '}
-          <Link
-            href={'/auth/register'}
-            className={cn(
-              'text-accent rounded-md font-medium',
-              'focus-indicator'
-            )}
-          >
-            Jetzt registrieren
-          </Link>
+          Gib deine E-Mail-Adresse ein und wir senden dir einen Link mit dem du
+          dein Passwort zurücksetzen kannst.
         </AuthDescription>
       </AuthHeader>
 
-      <LoginForm />
+      <RequestPasswordResetForm />
+
       <p className="text-secondary text-sm">
-        Passwort vergessen?{' '}
+        Passwort doch noch im Kopf?{' '}
         <Link
-          href={'/auth/reset-password'}
+          href={'/auth/login'}
           className={cn(
             'text-accent rounded-md font-medium',
             'focus-indicator'
           )}
         >
-          Jetzt zurücksetzen
+          Zurück zur Anmeldung
         </Link>
       </p>
     </section>
