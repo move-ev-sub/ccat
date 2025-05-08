@@ -19,7 +19,7 @@ import { cookies } from 'next/headers';
 export async function createAdminClient(): Promise<SupabaseClient> {
   const client = supabaseJsCreateClient(
     env.NEXT_PUBLIC_SUPABASE_URL,
-    env.SERVICE_ROLE_KEY,
+    env.SUPABASE_SERVICE_ROLE_KEY,
     {
       auth: {
         autoRefreshToken: false,
