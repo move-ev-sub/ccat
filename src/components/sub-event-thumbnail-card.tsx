@@ -23,12 +23,15 @@ import React from 'react';
 export function SubEventThumbnailCard({
   className,
   subEvent,
+  href,
   ...props
 }: React.ComponentProps<typeof Card> & {
   /**
    * The sub event from which the thumbnail should be generated.
    */
   subEvent: SubEvent;
+
+  href?: string;
 }) {
   /**
    * Checks if two dates are on the same calendar day.
@@ -78,7 +81,7 @@ export function SubEventThumbnailCard({
         <div className="border-border bg-background text-accent w-fit rounded-md border p-2">
           <ChatBubbleLeftRightIcon className="size-5" />
         </div>
-        <CardLink href={subEventPath} className="mt-4">
+        <CardLink href={href ?? subEventPath} className="mt-4">
           {subEvent.name}
         </CardLink>
       </CardHeader>

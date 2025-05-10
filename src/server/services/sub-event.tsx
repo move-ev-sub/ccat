@@ -259,3 +259,54 @@ export async function getSubEventsForEvent({
     };
   }
 }
+
+interface GetOpenSubEventsForCompanyParams {
+  companyId: string;
+}
+
+export async function getOpenSubEventsForCompany({
+  companyId,
+}: GetOpenSubEventsForCompanyParams): Promise<ServiceResult<SubEvent[]>> {
+  // Only authenticated users can get sub events
+  if (!(await isAuthenticated())) {
+    return {
+      ok: false,
+      error: t.errors.notAuthenticated(),
+    };
+  }
+
+  // Check if company ID is valid
+  if (!uuidValidate(companyId)) {
+    return {
+      ok: false,
+      error: t.errors.invalidUUID(companyId),
+    };
+  }
+
+  const res = await prisma.subEvent.findMany({
+    where: {
+      AND: [
+        {
+          hostId: companyId,
+        },
+        {
+          event: {
+            status: 'PUBLISHED',
+          },
+        },
+      ],
+    },
+  });
+
+  if (!res) {
+    return {
+      ok: false,
+      error: t.errors.failedToGet('Sub Events'),
+    };
+  }
+
+  return {
+    ok: true,
+    data: res,
+  };
+}
