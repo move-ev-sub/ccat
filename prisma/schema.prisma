@@ -10,6 +10,7 @@ datasource db {
 
 // #region Profiles
 // ============================================================
+
 model Profile {
   id        String   @id @unique @default(dbgenerated()) @db.Uuid
   role      Role     @default(USER)
@@ -33,6 +34,7 @@ model Profile {
 }
 
 // A table that refferences the Profile table
+
 model UserProfile {
   profile Profile @relation(fields: [id], references: [id])
   id      String  @id @unique @db.Uuid
@@ -73,6 +75,7 @@ model CompanyProfile {
 
 // #region Events
 // ============================================================
+
 model Event {
   id          String      @id @unique @default(uuid()) @db.Uuid
   name        String
@@ -108,6 +111,7 @@ model Phase {
 
 // #region Sub Events
 // ============================================================
+
 model SubEvent {
   id                     String                 @id @unique @default(uuid()) @db.Uuid
   event                  Event                  @relation(fields: [eventId], references: [id])
@@ -150,6 +154,7 @@ model Slot {
 
 // #region Applications
 // ============================================================
+
 model Application {
   id                     String            @id @unique @default(uuid()) @db.Uuid
   event                  Event             @relation(fields: [eventId], references: [id])
@@ -181,6 +186,7 @@ model Application {
 
 // #region Sub Applications
 // ============================================================
+
 model SubApplication {
   id            String                      @id @unique @default(uuid()) @db.Uuid
   application   Application                 @relation(fields: [applicationId], references: [id])
@@ -205,6 +211,7 @@ model University {
 
 // #region Enums
 // ============================================================
+
 enum Role {
   ADMIN
   USER
@@ -265,4 +272,64 @@ enum CoverLetterRequirement {
   REQUIRED
   OPTIONAL
   NOT_REQUIRED
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }
