@@ -21,7 +21,7 @@ export const buttonVariants = cva(
         accent:
           'bg-accent text-white border border-accent shadow-[inset_0px_2px_0px_rgba(255,255,255,0.25)] hover:bg-accent-600 shadow-sm ',
         outline:
-          'border border-border bg-background hover:bg-background-muted [&_svg:not([class*="text-"])]:text-accent',
+          'border border-border bg-background hover:bg-background-muted [&_svg:not([class*="text-"])]:text-secondary',
         ghost:
           'hover:bg-background-muted [&_svg:not([class*="text-"])]:fill-accent',
         success:
@@ -30,6 +30,8 @@ export const buttonVariants = cva(
           'bg-destructive-background border-destructive-border border text-destructive-foreground hover:bg-destructive-background/90 shadow-sm shadow-destructive/40 focus-visible:!ring-destructive',
         warning:
           'bg-warning-background border-warning-border border text-warning-foreground hover:bg-warning-background/90 shadow-sm shadow-warning/40 focus-visible:!ring-warning',
+        input:
+          'border border-border-input bg-background hover:bg-background-muted [&_svg:not([class*="text-"])]:text-secondary !shadow-sm !rounded-input',
       },
       size: {
         sm: 'text-xs px-2 py-1 [&_svg]:size-3',

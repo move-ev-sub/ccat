@@ -1,4 +1,9 @@
-import { Degree, Gender } from '@prisma/client';
+import {
+  Degree,
+  Gender,
+  SubApplicationPrioritzation,
+  SubApplicationStatus,
+} from '@prisma/client';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -63,6 +68,38 @@ export function translateDegree(degree: Degree): string {
       return 'Abitur';
     case Degree.HOCHSCHULREIFE:
       return 'Hochschulreife';
+    default:
+      return 'Keine Auswahl';
+  }
+}
+
+export function translatePriorization(
+  priorization: SubApplicationPrioritzation
+): string {
+  switch (priorization) {
+    case SubApplicationPrioritzation.PRIO_1:
+      return 'Priorität 1';
+    case SubApplicationPrioritzation.PRIO_2:
+      return 'Priorität 2';
+    case SubApplicationPrioritzation.PRIO_3:
+      return 'Priorität 3';
+    case SubApplicationPrioritzation.PRIO_4:
+      return 'Priorität 4';
+    case SubApplicationPrioritzation.PRIO_5:
+      return 'Priorität 5';
+    default:
+      return 'Keine Auswahl';
+  }
+}
+
+export function translateStatus(status: SubApplicationStatus): string {
+  switch (status) {
+    case SubApplicationStatus.ACCEPTED:
+      return 'Akzeptiert';
+    case SubApplicationStatus.REJECTED:
+      return 'Abgelehnt';
+    case SubApplicationStatus.PENDING:
+      return 'Keine Entscheidung';
     default:
       return 'Keine Auswahl';
   }
