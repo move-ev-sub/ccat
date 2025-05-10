@@ -14,6 +14,7 @@
     "format:check": "prettier --check .",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
+    "db:migrate-dev": "pnpm prisma migrate dev",
     "db:migrate-prod": "dotenv -e .env.production -- pnpm prisma migrate deploy",
     "db:seed": "prisma db seed",
     "prepare": "husky",
@@ -74,6 +75,7 @@
     "resend": "^4.5.1",
     "sonner": "^2.0.1",
     "swr": "^2.3.3",
+    "use-debounce": "^10.0.4",
     "uuid": "^11.1.0",
     "zod": "^3.24.2",
     "zustand": "^5.0.3"
@@ -82,6 +84,7 @@
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
     "@eslint/eslintrc": "^3",
+    "@faker-js/faker": "^9.7.0",
     "@tailwindcss/postcss": "^4.0.7",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/dom": "^10.4.0",
