@@ -1,11 +1,13 @@
-import prisma from '@/server/db';
-import {
-  sendConfirmEmail,
-  sendResetPasswordEmail,
-} from '@/server/services/email';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
+import { admin as adminPlugin } from 'better-auth/plugins';
+import prisma from '../server/db';
+import {
+  sendConfirmEmail,
+  sendResetPasswordEmail,
+} from '../server/services/email';
+import { ac, admin, company, user } from './auth/permissions';
 
 export const auth = betterAuth({
   emailAndPassword: {
@@ -34,6 +36,16 @@ export const auth = betterAuth({
     provider: 'postgresql',
   }),
   plugins: [
+    adminPlugin({
+      adminRoles: ['admin'],
+      defaultRole: 'user',
+      ac,
+      roles: {
+        user,
+        company,
+        admin,
+      },
+    }),
     // Needs to be the last plugin in the array
     nextCookies(),
   ],
