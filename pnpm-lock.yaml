@@ -268,8 +268,8 @@ importers:
         specifier: 4.0.11
         version: 4.0.11(@babel/core@7.26.9)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       supabase:
-        specifier: ^2.20.12
-        version: 2.20.12
+        specifier: ^2.22.12
+        version: 2.22.12
       tailwind-merge:
         specifier: ^3.0.1
         version: 3.0.1
@@ -5221,8 +5221,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.20.12:
-    resolution: {integrity: sha512-8UTRRvQdMsfs7jcHPDfv6cFYwrar5OyqidtB8GSdPCaKfEP+0n4TwCVwu7H0tDCbCYs28HDZDzQAZ8Ox+aVIiA==}
+  supabase@2.22.12:
+    resolution: {integrity: sha512-PWQT+uzwAXcamM/FK60CaWRjVwsX2SGW5vF7edbiTQC6vsNvTBnSIvd1yiXsIpq32uzQFu+iOrayxaTQytNiTw==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -11046,7 +11046,7 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.26.9
 
-  supabase@2.20.12:
+  supabase@2.22.12:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.6

@@ -38,10 +38,6 @@ export const metadata: Metadata = {
     description,
     url: 'https://consultingcontact.de',
   },
-  viewport: {
-    initialScale: 1,
-    width: 'device-width',
-  },
   twitter: {
     card: 'summary_large_image',
     title,

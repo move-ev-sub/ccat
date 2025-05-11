@@ -8,166 +8,89 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// #region Profiles
-// ============================================================
-
-model Profile {
-  id        String   @id @unique @default(dbgenerated()) @db.Uuid
-  role      Role     @default(USER)
-  email     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userProfile    UserProfile?
-  adminProfile   AdminProfile?
-  companyProfile CompanyProfile?
-
-  createdEvents    Event[]
-  createdPhases    Phase[]
-  createdSubEvents SubEvent[]    @relation("SubEventCreator")
-  hostedSubEvents  SubEvent[]    @relation("SubEventHost")
-  createdSlots     Slot[]
-  ownApplications  Application[]
-  SubEvent         SubEvent[]
-
-  @@map("profiles")
-}
-
-// A table that refferences the Profile table
-
-model UserProfile {
-  profile Profile @relation(fields: [id], references: [id])
-  id      String  @id @unique @db.Uuid
-
-  // User Info
-  firstName String
-  lastName  String
-
-  // Notifications
-  notifyMe       Boolean @default(false)
-  emailReminders Boolean @default(false)
-
-  @@map("user_profiles")
-}
-
-model AdminProfile {
-  profile Profile @relation(fields: [id], references: [id])
-  id      String  @id @unique @db.Uuid
-
-  // Admin Info
-  firstName String
-  lastName  String
-
-  @@map("admin_profiles")
-}
-
-model CompanyProfile {
-  profile Profile @relation(fields: [id], references: [id])
-  id      String  @id @unique @db.Uuid
-
-  // Company Info
-  name     String
-  logoUrl  String     @default("https://move-ev.de/wp-content/uploads/2018/12/Logo_hell_Text_Rehcts.svg")
-  SubEvent SubEvent[]
-
-  @@map("company_profiles")
-}
-
 // #region Events
 // ============================================================
 
 model Event {
-  id          String      @id @unique @default(uuid()) @db.Uuid
+  id          String      @id @unique @default(cuid()) @db.Text
   name        String
   description String?
   status      EventStatus @default(DRAFT)
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  createdBy    Profile       @relation(fields: [createdById], references: [id])
-  createdById  String        @db.Uuid
+  createdBy    User          @relation(fields: [createdById], references: [id])
+  createdById  String        @db.Text
   phases       Phase[]
   subEvents    SubEvent[]
   slots        Slot[]
   applications Application[]
-
-  @@map("events")
 }
 
 model Phase {
-  id          String    @id @unique @default(uuid()) @db.Uuid
+  id          String    @id @unique @default(cuid()) @db.Text
   description String?
   event       Event     @relation(fields: [eventId], references: [id])
-  eventId     String    @db.Uuid
+  eventId     String    @db.Text
   type        PhaseType @default(PREP)
   startDate   DateTime  @db.Timestamptz(3)
   endDate     DateTime  @db.Timestamptz(3)
   createdAt   DateTime  @default(now())
-  createdBy   Profile   @relation(fields: [createdById], references: [id])
-  createdById String    @db.Uuid
-
-  @@map("phases")
+  createdBy   User      @relation(fields: [createdById], references: [id])
+  createdById String    @db.Text
 }
 
 // #region Sub Events
 // ============================================================
 
 model SubEvent {
-  id                     String                 @id @unique @default(uuid()) @db.Uuid
+  id                     String                 @id @unique @default(cuid()) @db.Text
   event                  Event                  @relation(fields: [eventId], references: [id])
-  eventId                String                 @db.Uuid
+  eventId                String                 @db.Text
   name                   String
   description            String?
   maxParticipants        Int                    @default(30)
   startDate              DateTime               @db.Timestamptz(3)
   endDate                DateTime               @db.Timestamptz(3)
-  host                   Profile                @relation("SubEventHost", fields: [hostId], references: [id])
-  hostId                 String                 @db.Uuid
+  host                   User                   @relation("SubEventHost", fields: [hostId], references: [id])
+  hostId                 String                 @db.Text
   slot                   Slot                   @relation(fields: [slotId], references: [id])
-  slotId                 String                 @db.Uuid
+  slotId                 String                 @db.Text
   coverLetterRequirement CoverLetterRequirement @default(NOT_REQUIRED)
   createdAt              DateTime               @default(now())
-  createdBy              Profile                @relation("SubEventCreator", fields: [createdById], references: [id])
-  createdById            String                 @db.Uuid
+  createdBy              User                   @relation("SubEventCreator", fields: [createdById], references: [id])
+  createdById            String                 @db.Text
   subApplications        SubApplication[]
-  CompanyProfile         CompanyProfile?        @relation(fields: [companyProfileId], references: [id])
-  companyProfileId       String?                @db.Uuid
-  Profile                Profile?               @relation(fields: [profileId], references: [id])
-  profileId              String?                @db.Uuid
-
-  @@map("sub_events")
 }
 
 model Slot {
-  id          String     @id @unique @default(uuid()) @db.Uuid
+  id          String     @id @unique @default(cuid()) @db.Text
   event       Event      @relation(fields: [eventId], references: [id])
-  eventId     String     @db.Uuid
+  eventId     String     @db.Text
   startDate   DateTime   @db.Timestamptz(3)
   endDate     DateTime   @db.Timestamptz(3)
   createdAt   DateTime   @default(now())
-  createdBy   Profile    @relation(fields: [createdById], references: [id])
-  createdById String     @db.Uuid
+  createdBy   User       @relation(fields: [createdById], references: [id])
+  createdById String     @db.Text
   SubEvent    SubEvent[]
-
-  @@map("slots")
 }
 
 // #region Applications
 // ============================================================
 
 model Application {
-  id                     String            @id @unique @default(uuid()) @db.Uuid
+  id                     String            @id @unique @default(cuid()) @db.Text
   event                  Event             @relation(fields: [eventId], references: [id])
-  eventId                String            @db.Uuid
-  user                   Profile           @relation(fields: [userId], references: [id])
-  userId                 String            @db.Uuid
+  eventId                String            @db.Text
+  user                   User              @relation(fields: [userId], references: [id])
+  userId                 String            @db.Text
   status                 ApplicationStatus @default(SAVED)
   firstName              String
   lastName               String
   birthDate              DateTime
   gender                 Gender            @default(PREFFER_NOT_TO_SAY)
   university             University        @relation(fields: [universityId], references: [id])
-  universityId           String            @db.Uuid
+  universityId           String            @db.Text
   currentDegree          Degree
   targetDegree           Degree
   fieldOfStudy           String
@@ -180,33 +103,29 @@ model Application {
   experienceConsulting   Int
   cvUrl                  String
   subApplications        SubApplication[]
-
-  @@map("applications")
 }
 
 // #region Sub Applications
 // ============================================================
 
 model SubApplication {
-  id            String                      @id @unique @default(uuid()) @db.Uuid
+  id            String                      @id @unique @default(cuid()) @db.Text
   application   Application                 @relation(fields: [applicationId], references: [id])
-  applicationId String                      @db.Uuid
+  applicationId String                      @db.Text
   subEvent      SubEvent                    @relation(fields: [subEventId], references: [id])
-  subEventId    String                      @db.Uuid
+  subEventId    String                      @db.Text
   coverLetter   String
   prioritized   Boolean                     @default(false)
   status        SubApplicationStatus
   priorization  SubApplicationPrioritzation
-
-  @@map("sub_applications")
+  User          User?                       @relation(fields: [userId], references: [id])
+  userId        String?
 }
 
 model University {
-  id           String        @id @unique @default(uuid()) @db.Uuid
+  id           String        @id @unique @default(cuid()) @db.Text
   name         String
   applications Application[]
-
-  @@map("universities")
 }
 
 // #region Enums
@@ -292,6 +211,17 @@ model User {
 
   firstName String
   lastName  String
+
+  emailReminders Boolean
+  notifyMe       Boolean
+
+  Event            Event[]
+  Phase            Phase[]
+  Slot             Slot[]
+  Application      Application[]
+  SubApplication   SubApplication[]
+  createdSubEvents SubEvent[]       @relation("SubEventCreator")
+  hostedSubEvents  SubEvent[]       @relation("SubEventHost")
 
   @@unique([email])
   @@map("user")

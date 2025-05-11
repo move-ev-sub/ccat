@@ -1,8 +1,9 @@
 'use server';
 
+import { auth } from '@/utils/auth';
 import { createClient } from '@/utils/supabase/server';
 import { Profile, Role } from '@prisma/client';
-import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
+import type { SupabaseClient, User } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import prisma from '../db';
 import { passwordSchema } from '../schemas/auth';
@@ -28,7 +29,7 @@ interface SignUpWithEmailArgs {
  */
 export async function signUpWithEmail(
   args: SignUpWithEmailArgs
-): Promise<ServiceResult<{ user: User | null; session: Session | null }>> {
+): Promise<ServiceResult<void>> {
   const { firstName, lastName, email, password } = args;
 
   const parseRes = await passwordSchema.safeParseAsync(password);
@@ -47,50 +48,48 @@ export async function signUpWithEmail(
     };
   }
 
-  const client = await createClient();
+  try {
+    const signUpRes = await auth.api.signUpEmail({
+      body: {
+        email,
+        password,
+        firstName,
+        lastName,
+        name: firstName,
+      },
+    });
 
-  const { error, data } = await client.auth.signUp({
-    email: email,
-    password: password,
-  });
-
-  if (error || !data?.user) {
-    console.error(
-      'Error when signing up:',
-      error?.message || 'Ein unbekannter Fehler ist aufgetreten.'
-    );
-    return {
-      ok: false,
-      error: error?.message || 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
-
-  // Create a profile for the user
-  const res = await prisma.profile.create({
-    data: {
-      id: data.user.id,
-      role: 'USER',
-      email: email,
-      userProfile: {
-        create: {
-          firstName: firstName,
-          lastName: lastName,
-          emailReminders: false,
-          notifyMe: false,
+    // Create a profile for the user
+    const res = await prisma.profile.create({
+      data: {
+        id: signUpRes.user.id,
+        role: 'USER',
+        email: email,
+        userProfile: {
+          create: {
+            firstName: firstName,
+            lastName: lastName,
+            emailReminders: false,
+            notifyMe: false,
+          },
         },
       },
-    },
-  });
+    });
 
-  if (!res) {
+    if (!res) {
+      throw new Error(
+        'Ein unbekannter Fehler ist aufgetreten. Es konnte kein Profil für den Benutzer erstellt werden.'
+      );
+    }
+
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.error('Error when signing up with email:', error);
     return {
       ok: false,
-      error:
-        'Ein unbekannter Fehler ist aufgetreten. Es konnte kein Profil für den Benutzer erstellt werden.',
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
-
-  return { ok: true, data };
 }
 
 /**
@@ -104,12 +103,7 @@ export async function signUpWithEmail(
 export async function signInWithPassword(
   email: string,
   password: string
-): Promise<
-  ServiceResult<{
-    user: User | null;
-    session: Session | null;
-  }>
-> {
+): Promise<ServiceResult<void>> {
   if (!email || !password) {
     console.log('Error when logging in: Email and password are required.');
     return {
@@ -129,20 +123,46 @@ export async function signInWithPassword(
     };
   }
 
-  // Sign in with email and password
-  const { error, data } = await client.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    await auth.api.signInEmail({
+      body: {
+        email,
+        password,
+      },
+    });
 
-  if (error) {
+    return {
+      ok: true,
+      data: undefined,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
     return {
       ok: false,
-      error: error.message,
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
 
-  return { ok: true, data };
+  // Sign in with email and password
+  // const { error, data } = await client.auth.signInWithPassword({
+  //   email,
+  //   password,
+  // });
+
+  // if (error) {
+  //   return {
+  //     ok: false,
+  //     error: error.message,
+  //   };
+  // }
+
+  // return { ok: true, data };
 }
 
 /**

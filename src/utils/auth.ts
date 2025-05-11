@@ -23,6 +23,8 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ url, user }) => {
       await sendConfirmEmail({
         to: user.email,
@@ -46,6 +48,18 @@ export const auth = betterAuth({
         type: 'string',
         required: true,
         input: true,
+      },
+      emailReminders: {
+        type: 'boolean',
+        required: true,
+        input: true,
+        defaultValue: false,
+      },
+      notifyMe: {
+        type: 'boolean',
+        required: true,
+        input: true,
+        defaultValue: false,
       },
     },
   },
