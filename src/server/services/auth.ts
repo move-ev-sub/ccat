@@ -1,10 +1,14 @@
 'use server';
 
+import { User as PrismaUser, Role } from '@/generated/prisma/client';
 import { auth } from '@/utils/auth';
 import { createClient } from '@/utils/supabase/server';
-import { Profile, Role } from '@prisma/client';
-import type { SupabaseClient, User } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { User } from 'better-auth';
+import { UserWithRole } from 'better-auth/plugins';
 import { randomBytes } from 'crypto';
+import { headers } from 'next/headers';
 import prisma from '../db';
 import { passwordSchema } from '../schemas/auth';
 import { ServiceResult } from '../types/serviceResult';
@@ -49,38 +53,17 @@ export async function signUpWithEmail(
   }
 
   try {
-    const signUpRes = await auth.api.signUpEmail({
+    await auth.api.signUpEmail({
       body: {
         email,
         password,
         firstName,
         lastName,
         name: firstName,
+        emailReminders: false,
+        notifyMe: false,
       },
     });
-
-    // Create a profile for the user
-    const res = await prisma.profile.create({
-      data: {
-        id: signUpRes.user.id,
-        role: 'USER',
-        email: email,
-        userProfile: {
-          create: {
-            firstName: firstName,
-            lastName: lastName,
-            emailReminders: false,
-            notifyMe: false,
-          },
-        },
-      },
-    });
-
-    if (!res) {
-      throw new Error(
-        'Ein unbekannter Fehler ist aufgetreten. Es konnte kein Profil für den Benutzer erstellt werden.'
-      );
-    }
 
     return { ok: true, data: undefined };
   } catch (error) {
@@ -112,11 +95,9 @@ export async function signInWithPassword(
     };
   }
 
-  const client = await createClient();
-
   // TODO: Check if the supabase client exists -> Optional
 
-  if (await isAuthenticated(client)) {
+  if (await isAuthenticated()) {
     return {
       ok: false,
       error: 'User is already authenticated.',
@@ -177,7 +158,7 @@ export async function signOut(client?: SupabaseClient): Promise<undefined> {
   }
 
   // Only authenticated users can sign out
-  if (!(await isAuthenticated(client))) {
+  if (!(await isAuthenticated())) {
     return;
   }
 
@@ -187,37 +168,30 @@ export async function signOut(client?: SupabaseClient): Promise<undefined> {
 /**
  * Returns the current user object.
  *
- * @param client - Supabase client (optional)
  * @returns The current user object.
+ *
+ * @deprecated Use the user object provided by the better auth session instead.
  */
-export async function getUser(client?: SupabaseClient): Promise<User | null> {
-  if (!client) {
-    client = await createClient();
+export async function getUser(): Promise<User | null> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return null;
   }
 
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
-  return user;
+  return session.user;
 }
 
 /**
  * Checks if the current user is authenticated by checking if the
  * supabase auth client returns a valid user object.
  *
- * @param client - Supabase client (optional)
- *
  * @returns boolean - `false` if the user is not authenticated, `true` if the user is authenticated.
  */
-export async function isAuthenticated(
-  client?: SupabaseClient
-): Promise<boolean> {
-  if (!client) {
-    client = await createClient();
-  }
-
-  const user = await getUser(client);
+export async function isAuthenticated(): Promise<boolean> {
+  const user = await getUser();
 
   return user !== null && user.id !== null;
 }
@@ -226,68 +200,32 @@ export async function isAuthenticated(
  * Checks if the current user is an admin.
  *
  * @returns boolean - `false` if the user is not an admin, `true` if the user is an admin.
+ *
+ * @deprecated Use the permissions provided by better auth instead.
  */
-export async function isAdmin(
-  client?: SupabaseClient
-): Promise<ServiceResult<boolean>> {
-  console.debug('[isAdmin] Checking if user is an admin!');
+export async function isAdmin(): Promise<ServiceResult<boolean>> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (!client) {
-    client = await createClient();
-    console.debug('[isAdmin] Supabase Client created');
-  }
-
-  // Check if user is authenticated
-  if (!(await isAuthenticated(client))) {
-    console.debug('[isAdmin] User is not authenticated');
+  if (!session) {
     return {
       ok: false,
       error: 'User is not authenticated.',
     };
   }
 
-  console.debug('[isAdmin] User is authenticated');
-  console.debug('[isAdmin] Getting user object');
-  const user = await getUser(client);
-  console.debug('[isAdmin] User object:', user);
-
-  if (!user) {
+  if (session.user.role === 'admin') {
     return {
-      ok: false,
-      error: 'No user object found.',
+      ok: true,
+      data: true,
     };
   }
 
-  const { id: userId } = user;
-
-  try {
-    console.debug('[isAdmin] Getting profile for user', userId);
-    const profile = await prisma.profile.findFirstOrThrow({
-      where: {
-        id: userId,
-      },
-    });
-    console.debug('[isAdmin] Profile:', profile);
-
-    console.debug('[isAdmin] Checking User Role: ', profile.role);
-    // Check if user is an admin
-    if (!profile || profile.role !== 'ADMIN') {
-      return {
-        ok: false,
-        error: 'User is not authorized.',
-      };
-    }
-
-    console.debug('[isAdmin] User is an admin');
-
-    return { ok: true, data: true };
-  } catch (error) {
-    console.error('Error when checking if user is an admin:', error);
-    return {
-      ok: false,
-      error: 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
+  return {
+    ok: false,
+    error: 'User is not an admin.',
+  };
 }
 
 /**
@@ -314,97 +252,93 @@ export async function createSecurePassword(
  * is returned.
  *
  * @returns {ServiceResult<Role>} The Role of the current user.
+ *
+ * @deprecated Use the permissions provided by better auth instead. This function
+ * will be removed in the future and is currently only implemented for backwards
+ * compatibility.
  */
 export async function getCurrentRole(): Promise<ServiceResult<Role>> {
-  const client = await createClient();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (!(await isAuthenticated(client))) {
+  if (!session) {
     return {
       ok: false,
       error: 'User is not authenticated.',
     };
   }
 
-  const user = await getUser(client);
-
-  if (!user) {
-    return {
-      ok: false,
-      error: 'No user object found.',
-    };
+  switch (session.user.role) {
+    case 'admin':
+      return {
+        ok: true,
+        data: 'ADMIN',
+      };
+    case 'company':
+      return {
+        ok: true,
+        data: 'COMPANY',
+      };
+    default:
+      return {
+        ok: true,
+        data: 'USER',
+      };
   }
+}
 
+interface UpdateOwnSettingsArgs {
+  firstName: string;
+  lastName: string;
+}
+
+/**
+ * Updates the first name and last name fields of the current user.
+ *
+ * @param firstName - The first name of the user.
+ * @param lastName - The last name of the user.
+ *
+ * @returns A promise with the status of the update. True if the update was
+ * successful, false otherwise.
+ */
+export async function updateOwnSettings({
+  firstName,
+  lastName,
+}: UpdateOwnSettingsArgs): Promise<ServiceResult<void>> {
   try {
-    const profile = await prisma.profile.findFirstOrThrow({
-      where: {
-        id: user.id,
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      throw new Error('User is not authenticated.');
+    }
+
+    await auth.api.updateUser({
+      body: {
+        firstName,
+        lastName,
       },
     });
 
-    if (!profile) {
+    return {
+      ok: true,
+      data: undefined,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
       return {
         ok: false,
-        error: `No profile found for user with id ${user.id}`,
+        error: error.message,
       };
     }
 
-    return {
-      ok: true,
-      data: profile.role,
-    };
-  } catch (error) {
-    console.error('Error when getting the current role:', error);
     return {
       ok: false,
       error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
-}
-
-interface UpdateUserSettingsArgs {
-  idPrisma: string;
-  firstName: string;
-  lastName: string;
-}
-/**
- * Updates first name and last name of user in the userProfile table.
- * Returns the updated profile.
- *
- * @param idPrisma - The Prisma ID of the user.
- * @param firstName - The first name of the user.
- * @param lastName - The last name of the user.
- *
- * @returns A promise with the status of the update and the updated profile data.
- */
-export async function updateUserSettings(
-  args: UpdateUserSettingsArgs
-): Promise<ServiceResult<Profile>> {
-  const { idPrisma, firstName, lastName } = args;
-
-  // should we add a try catch here, to get prisma specific errors?
-  const res = await prisma.profile.update({
-    where: {
-      id: idPrisma,
-    },
-    data: {
-      userProfile: {
-        update: {
-          firstName: firstName,
-          lastName: lastName,
-        },
-      },
-    },
-  });
-
-  if (!res) {
-    return {
-      ok: false,
-      error:
-        'Ein unbekannter Fehler ist aufgetreten. User-Profil konnte nicht aktualisiert werden.',
-    };
-  }
-
-  return { ok: true, data: res };
 }
 
 interface RequestPasswordResetArgs {
@@ -437,4 +371,165 @@ export async function requestPasswordReset({
   }
 
   return { ok: true, data: undefined };
+}
+
+interface GetUserByIdArgs {
+  id: string;
+}
+
+/**
+ * Returns the database user object for the given id. Only users with the
+ * `admin` role and the `userProfile:fetchAll` permission can fetch the user.
+ *
+ * @param id - The id of the user to get.
+ *
+ * @returns The database user object if the user has permission to fetch the user.
+ */
+export async function getUserById({
+  id,
+}: GetUserByIdArgs): Promise<ServiceResult<PrismaUser>> {
+  try {
+    const hasPermission = await auth.api.userHasPermission({
+      body: {
+        role: 'admin',
+        permissions: {
+          userProfile: ['fetchAll'],
+        },
+      },
+    });
+
+    if (!hasPermission.success) {
+      throw new Error('User does not have permission to fetch user by id.');
+    }
+
+    const res = await prisma.user.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
+    };
+  }
+}
+
+export async function getUsers(): Promise<ServiceResult<PrismaUser[]>> {
+  try {
+    const hasPermission = await auth.api.userHasPermission({
+      body: {
+        role: 'admin',
+        permissions: {
+          userProfile: ['fetchAll'],
+        },
+      },
+    });
+
+    if (!hasPermission.success) {
+      throw new Error('User does not have permission to fetch users.');
+    }
+
+    const res = await prisma.user.findMany();
+
+    if (!res) {
+      throw new Error('An unkown error occurred while fetching users.');
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
+    };
+  }
+}
+
+interface CreateUserArgs {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: 'user' | 'company';
+}
+
+export async function createUser({
+  email,
+  firstName,
+  lastName,
+  role,
+  password,
+}: CreateUserArgs): Promise<ServiceResult<UserWithRole>> {
+  try {
+    const hasPermission = await auth.api.userHasPermission({
+      body: {
+        role: 'admin',
+        permissions: {
+          user: ['create'],
+        },
+      },
+    });
+
+    if (!hasPermission.success) {
+      throw new Error('No permission to create user');
+    }
+
+    const res = await auth.api.createUser({
+      body: {
+        email,
+        password,
+        role,
+        name: firstName,
+        data: {
+          firstName,
+          lastName,
+          emailReminders: false,
+          notifyMe: false,
+        },
+      },
+    });
+
+    if (!res) {
+      throw new Error('Failed to create user');
+    }
+
+    return {
+      ok: true,
+      data: res.user,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: 'An error occurred while creating the user',
+    };
+  }
 }

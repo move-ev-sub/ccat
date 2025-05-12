@@ -1,12 +1,11 @@
 'use server';
 
+import { Slot } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { createClient } from '@/utils/supabase/server';
-import { Slot } from '@prisma/client';
-import { validate } from 'uuid';
+import { auth } from '@/utils/auth';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
-import { getUser, isAdmin, isAuthenticated } from './auth';
+import { getUser } from './auth';
 
 /**
  * Creates a new Time Slot for an Event in which sub events can be
@@ -21,19 +20,18 @@ export async function createSlot(
   startDate: Date,
   endDate: Date
 ): Promise<ServiceResult<Slot>> {
-  const client = await createClient();
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        slot: ['create'],
+      },
+    },
+  });
 
-  if (!(await isAuthenticated(client))) {
+  if (!hasPermission.success) {
     return {
       ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  if (!(await isAdmin(client))) {
-    return {
-      ok: false,
-      error: t.errors.noAdmin(),
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -114,38 +112,43 @@ export async function createSlot(
 /**
  * Gets all slots for a given event.
  */
-export async function fetchSlotsForEvent(
+export async function getSlotsForEvent(
   eventId: string
 ): Promise<ServiceResult<Slot[]>> {
-  if (!validate(eventId)) {
+  try {
+    const hasPermission = await auth.api.userHasPermission({
+      body: { permissions: { slot: ['fetchAll'] } },
+    });
+
+    if (!hasPermission.success) {
+      throw new Error('Not authorized');
+    }
+
+    const res = await prisma.slot.findMany({
+      where: {
+        eventId: eventId,
+      },
+    });
+
+    if (!res) {
+      throw new Error(t.errors.failedToGet('Slots'));
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
     return {
       ok: false,
-      error: t.errors.invalidUUID(eventId),
+      error: 'Unknown error',
     };
   }
-
-  if (!(await isAuthenticated())) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  const res = await prisma.slot.findMany({
-    where: {
-      eventId: eventId,
-    },
-  });
-
-  if (!res) {
-    return {
-      ok: false,
-      error: t.errors.failedToGet('Slots'),
-    };
-  }
-
-  return {
-    ok: true,
-    data: res,
-  };
 }

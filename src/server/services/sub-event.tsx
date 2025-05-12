@@ -1,11 +1,13 @@
 'use server';
 
+import { SubEvent } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { SubEvent } from '@prisma/client';
+import { auth } from '@/utils/auth';
+import { headers } from 'next/headers';
 import { validate as uuidValidate } from 'uuid';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
-import { getUser, isAdmin, isAuthenticated } from './auth';
+import { isAuthenticated } from './auth';
 
 /**
  * The parameters for creating a sub-event.
@@ -105,19 +107,18 @@ export async function createSubEvent({
   hostId,
   slotId,
 }: CreateSubEventParams): Promise<ServiceResult<SubEvent>> {
-  console.log('EventID', eventId);
-  console.log('HostID', hostId);
-  console.log('SlotID', slotId);
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        subEvent: ['create'],
+      },
+    },
+  });
 
-  // Check if provided uuids are valid
-  if (
-    !uuidValidate(eventId) ||
-    !uuidValidate(hostId) ||
-    !uuidValidate(slotId)
-  ) {
+  if (!hasPermission.success) {
     return {
       ok: false,
-      error: t.errors.nInvalidUUID(),
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -145,24 +146,18 @@ export async function createSubEvent({
     };
   }
 
-  // Only admins can create new sub events
-  if (!(await isAdmin())) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
     return {
       ok: false,
-      error: t.errors.noAdmin(),
+      error: t.errors.failedToFetch('session'),
     };
   }
 
-  const user = await getUser();
-
-  if (!user) {
-    return {
-      ok: false,
-      error: t.errors.userNotFoundGeneric(),
-    };
-  }
-
-  const createdById = user.id;
+  const createdById = session.user.id;
 
   try {
     const res = await prisma.subEvent.create({
@@ -207,31 +202,41 @@ export async function createSubEvent({
   }
 }
 
+// TODO: Add distinction between published and unpublished sub events
 export async function getSubEventsForEvent({
   eventId,
 }: {
   eventId: string;
 }): Promise<ServiceResult<SubEvent[]>> {
   // Only authenticated users can get sub events
-  if (!(await isAuthenticated())) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        subEvent: ['fetchAll'],
+      },
+    },
+  });
 
-  // Check if event ID is valid
-  if (!uuidValidate(eventId)) {
+  if (!hasPermission.success) {
     return {
       ok: false,
-      error: t.errors.invalidUUID(eventId),
+      error: t.errors.notAuthorized(),
     };
   }
 
   try {
     const res = await prisma.subEvent.findMany({
       where: {
-        eventId,
+        AND: [
+          {
+            eventId,
+          },
+          // {
+          //   event: {
+          //     status: 'PUBLISHED',
+          //   },
+          // },
+        ],
       },
     });
 
@@ -260,13 +265,140 @@ export async function getSubEventsForEvent({
   }
 }
 
-interface GetOpenSubEventsForCompanyParams {
+interface GetPublishedSubEventsForCompanyParams {
   companyId: string;
 }
 
-export async function getOpenSubEventsForCompany({
+/**
+ * Returns all sub events, where the host company is the currently authenticated
+ * user and the main event is published.
+ *
+ * @returns All published and owned sub events.
+ */
+export async function getOwnSubEvents(): Promise<ServiceResult<SubEvent[]>> {
+  try {
+    // Get the current session
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    // When no session if present, abort
+    if (!session) {
+      throw new Error('User is not authenticated. No session was found.');
+    }
+
+    // Check if user has permission to fetch own sub events
+    const hasPermission = await auth.api.userHasPermission({
+      body: {
+        permissions: {
+          subEvent: ['fetchOwn'],
+        },
+      },
+    });
+
+    if (!hasPermission.success) {
+      throw new Error('User does not have permission to fetch own sub events.');
+    }
+
+    const id = session.user.id;
+
+    // Fetch all sub events, where the host company is the currently authenticated
+    // user and the main event is published.
+    const res = await prisma.subEvent.findMany({
+      where: {
+        AND: [
+          {
+            id,
+          },
+          {
+            event: {
+              status: 'PUBLISHED',
+            },
+          },
+        ],
+      },
+    });
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: t.errors.failedToGet('Sub Events') + error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: t.errors.failedToGet('Sub Events') + error,
+    };
+  }
+}
+
+interface GetSubEventsForCompanyParams {
+  /**
+   * The ID of the company to fetch sub events for.
+   */
+  companyId: string;
+}
+
+/**
+ * Returns all sub events for a given company. This function should only be
+ * called by admins.
+ *
+ * @returns All sub events for the given company.
+ */
+export async function getSubEventsForCompany({
   companyId,
-}: GetOpenSubEventsForCompanyParams): Promise<ServiceResult<SubEvent[]>> {
+}: GetSubEventsForCompanyParams): Promise<ServiceResult<SubEvent[]>> {
+  try {
+    const hasPermission = await auth.api.userHasPermission({
+      body: {
+        permissions: {
+          subEvent: ['fetchAll'],
+        },
+      },
+    });
+
+    if (!hasPermission.success) {
+      throw new Error('User does not have permission to fetch sub events.');
+    }
+
+    const res = await prisma.subEvent.findMany({
+      where: {
+        hostId: companyId,
+      },
+    });
+
+    if (!res) {
+      throw new Error('Failed to fetch sub events for company.');
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: t.errors.failedToGet('Sub Events') + error.message,
+      };
+    }
+
+    return {
+      ok: false,
+      error: t.errors.failedToGet('Sub Events') + error,
+    };
+  }
+}
+
+export async function getPublishedSubEventsForCompany({
+  companyId,
+}: GetPublishedSubEventsForCompanyParams): Promise<ServiceResult<SubEvent[]>> {
   // Only authenticated users can get sub events
   if (!(await isAuthenticated())) {
     return {

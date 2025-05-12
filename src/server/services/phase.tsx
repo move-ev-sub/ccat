@@ -1,13 +1,13 @@
 'use server';
 
+import { Phase, PhaseType, Prisma } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
+import { auth } from '@/utils/auth';
 import { toEndOfDay, toStartOfDay } from '@/utils/date';
-import { createClient } from '@/utils/supabase/server';
-import { Phase, PhaseType, Prisma } from '@prisma/client';
 import { validate } from 'uuid';
 import prisma from '../db';
 import { ServiceResult } from '../types/serviceResult';
-import { getUser, isAdmin, isAuthenticated } from './auth';
+import { getUser } from './auth';
 
 /**
  * Upadtes a phase for an event. If the phase does not exist, a new phase will
@@ -39,16 +39,15 @@ export async function updatePhase({
    */
   to: Date;
 }): Promise<ServiceResult<Phase>> {
-  const client = await createClient();
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        phase: ['update'],
+      },
+    },
+  });
 
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  if (!(await isAdmin(client))) {
+  if (!hasPermission.success) {
     return {
       ok: false,
       error: t.errors.notAuthorized(),
@@ -138,16 +137,15 @@ export async function createPhase({
    */
   type: PhaseType;
 }): Promise<ServiceResult<Phase>> {
-  const client = await createClient();
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        phase: ['create'],
+      },
+    },
+  });
 
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  if (!(await isAdmin(client))) {
+  if (!hasPermission.success) {
     return {
       ok: false,
       error: t.errors.notAuthorized(),
@@ -191,7 +189,7 @@ export async function createPhase({
     };
   }
 
-  const user = await getUser(client);
+  const user = await getUser();
 
   if (!user || !user.id) {
     return {
@@ -243,10 +241,18 @@ export async function existsPhase({
    */
   type: PhaseType;
 }): Promise<ServiceResult<boolean>> {
-  if (!(await isAuthenticated())) {
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        phase: ['fetchAll'],
+      },
+    },
+  });
+
+  if (!hasPermission.success) {
     return {
       ok: false,
-      error: t.errors.notAuthenticated(),
+      error: t.errors.notAuthorized(),
     };
   }
 
@@ -284,6 +290,21 @@ export async function fetchPhasesForEvent({
   eventId: string;
   sort?: Prisma.PhaseFindManyArgs['orderBy'];
 }): Promise<ServiceResult<Omit<Phase, 'createdById'>[]>> {
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        phase: ['fetchAll'],
+      },
+    },
+  });
+
+  if (!hasPermission.success) {
+    return {
+      ok: false,
+      error: t.errors.notAuthorized(),
+    };
+  }
+
   const res = await prisma.phase.findMany({
     where: {
       eventId: eventId,
@@ -317,7 +338,16 @@ export async function isPhasesSetupCompleted({
 }: {
   eventId: string;
 }): Promise<ServiceResult<boolean>> {
-  if (!(await isAdmin())) {
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      role: 'admin',
+      permissions: {
+        phase: ['fetchAll'],
+      },
+    },
+  });
+
+  if (!hasPermission.success) {
     return {
       ok: false,
       error: t.errors.notAuthorized(),
@@ -377,17 +407,25 @@ export async function getCurrentPhase({
 }: {
   eventId: string;
 }): Promise<ServiceResult<Phase | null>> {
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        phase: ['fetchAll'],
+      },
+    },
+  });
+
+  if (!hasPermission.success) {
+    return {
+      ok: false,
+      error: t.errors.notAuthorized(),
+    };
+  }
+
   if (!validate(eventId)) {
     return {
       ok: false,
       error: 'Invalid event ID.',
-    };
-  }
-
-  if (!(await isAuthenticated())) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
     };
   }
 

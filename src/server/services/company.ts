@@ -1,11 +1,13 @@
 'use server';
 
+import { Prisma } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { createAdminClient, createClient } from '@/utils/supabase/server';
+import { auth } from '@/utils/auth';
+import { createClient } from '@/utils/supabase/server';
+import { User } from 'better-auth';
 import prisma from '../db';
-import { FullCompanyProfile } from '../types/profile';
 import { ServiceResult } from '../types/serviceResult';
-import { createSecurePassword, isAdmin, isAuthenticated } from './auth';
+import { createSecurePassword } from './auth';
 import { existsBucket } from './storage';
 
 /**
@@ -14,44 +16,54 @@ import { existsBucket } from './storage';
  *
  * @returns
  */
-export async function getAllCompanies(): Promise<
-  ServiceResult<FullCompanyProfile[]>
-> {
-  const client = await createClient();
+export async function getAllCompanies(): Promise<ServiceResult<User[]>> {
+  try {
+    const hasPermission = await auth.api.userHasPermission({
+      body: {
+        permissions: {
+          company: ['fetchAll'],
+        },
+      },
+    });
 
-  if (!(await isAuthenticated(client))) {
+    if (!hasPermission.success) {
+      throw new Error('User does not have permission to fetch all companies.');
+    }
+
+    const res = await prisma.user.findMany({
+      where: {
+        role: {
+          contains: 'company',
+        },
+      },
+    });
+
+    if (!res) {
+      throw new Error('Failed to fetch companies.');
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
     return {
       ok: false,
-      error: t.errors.notAuthenticated(),
+      error: t.errors.failedToFetch('companies'),
     };
   }
-
-  const res = await prisma.profile.findMany({
-    where: {
-      role: 'COMPANY',
-    },
-    include: {
-      companyProfile: true,
-    },
-  });
-
-  // Check if any companies were found
-  if (!res) {
-    return {
-      ok: false,
-      error: t.errors.failedToFetch('company'),
-    };
-  }
-
-  return {
-    ok: true,
-    data: res,
-  };
 }
 
 /**
  * Returns a single company by its ID from the database. Only authenticated
- * users can fetch a companies. Returns an error if the company was not found
+ * users can fetch a company. Returns an error if the company was not found
  * or if more than one company was found.
  *
  * @param companyId
@@ -59,45 +71,61 @@ export async function getAllCompanies(): Promise<
  */
 export async function getCompanyById(
   companyId: string
-): Promise<ServiceResult<FullCompanyProfile>> {
-  const client = await createClient();
-
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  // Get the company from the database
-  const res: FullCompanyProfile | null = await prisma.profile.findFirst({
-    where: {
-      AND: [
-        {
-          id: companyId,
-        },
-        {
-          role: 'COMPANY',
-        },
-      ],
-    },
-    include: {
-      companyProfile: true,
+): Promise<ServiceResult<User>> {
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        company: ['fetchSingle'],
+      },
     },
   });
 
-  // If more than one company was found return an error
-  if (res === null) {
+  if (!hasPermission.success) {
+    return {
+      ok: false,
+      error: t.errors.notAuthorized(),
+    };
+  }
+
+  try {
+    // Get the company from the database
+    const res = await prisma.user.findFirst({
+      where: {
+        AND: [
+          {
+            id: companyId,
+          },
+          {
+            role: {
+              contains: 'company',
+            },
+          },
+        ],
+      },
+    });
+
+    // If no result was found return an error
+    if (res === null) {
+      throw new Error(t.errors.failedToFetch('company'));
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
     return {
       ok: false,
       error: t.errors.failedToFetch('company'),
     };
   }
-
-  return {
-    ok: true,
-    data: res,
-  };
 }
 
 /**
@@ -119,18 +147,16 @@ export async function createCompany(
     password: string;
   }>
 > {
-  const client = await createClient();
+  // Authorization
+  const hasPermission = await auth.api.userHasPermission({
+    body: {
+      permissions: {
+        company: ['create'],
+      },
+    },
+  });
 
-  // Only authenticated users can create new companies
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  // Only admins can create new companies
-  if (!(await isAdmin(client))) {
+  if (!hasPermission.success) {
     return {
       ok: false,
       error: t.errors.notAuthorized(),
@@ -146,100 +172,80 @@ export async function createCompany(
 
   const password = await createSecurePassword();
 
-  // The admin client is ONLY used to create a new user
-  // After the user is created, the admin client is no longer needed
-  // and the regular client is used to interact with the database
-  const adminClient = await createAdminClient();
-
-  // Create a new user
-  const { data, error } = await adminClient.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true, // Automatically confirm the email,
-    user_metadata: {
-      compay_name: name,
-    },
-  });
-
-  // When no user was created, return an error
-  if (!data.user) {
-    return {
-      ok: false,
-      error: error?.message || t.errors.notCreated('User'),
-    };
-  }
-
-  const {
-    user: { id: userId },
-  } = data;
-
-  // Create a new profile
-
-  const profileRes = await prisma.profile.create({
-    data: {
-      id: userId,
-      role: 'COMPANY',
-      email,
-      companyProfile: {
-        create: {
-          name,
-        },
+  try {
+    const newUser = await auth.api.createUser({
+      body: {
+        name: name,
+        email: email,
+        password: password,
+        role: 'company',
       },
-    },
-  });
-
-  if (!profileRes) {
-    const err =
-      '[High Severity] Failed to create company profile but user account was created. This needs manual intervention since there now exists a user account without a profile!';
-    console.error(err);
-    return {
-      ok: false,
-      error:
-        '[High Severity] Failed to create company profile but user account was created. This needs manual intervention since there now exists a user account without a profile!',
-    };
-  }
-
-  // Split the file name at every . and get the last element as the file ending
-  const fileEnding = logo.name.split('.').pop();
-
-  // Check if the bucket exists
-  if (!(await existsBucket('logos'))) {
-    return {
-      ok: false,
-      error: t.errors.bucketNotFound('logos'),
-    };
-  }
-
-  // If the file already exists, delete it first
-  if (
-    await client.storage.from('logos').exists(`company/${userId}.${fileEnding}`)
-  ) {
-    await client.storage
-      .from('logos')
-      .remove([`company/${userId}.${fileEnding}`]);
-  }
-
-  // Upload the logo to the storage bucket
-  const logoRes = await client.storage
-    .from('logos')
-    .upload(`company/${userId}.${fileEnding}`, logo, {
-      cacheControl: '3600',
-      upsert: false,
     });
 
-  if (logoRes.error || logoRes.data == null) {
-    console.error(logoRes.error.stack);
+    if (!newUser.user) {
+      throw new Error('Failed to create user');
+    }
+
+    const userId = newUser.user.id;
+
+    // Split the file name at every . and get the last element as the file ending
+    const fileEnding = logo.name.split('.').pop();
+
+    // Check if the bucket exists
+    if (!(await existsBucket('logos'))) {
+      return {
+        ok: false,
+        error: t.errors.bucketNotFound('logos'),
+      };
+    }
+
+    const client = await createClient();
+
+    // If the file already exists, delete it first
+    if (
+      await client.storage
+        .from('logos')
+        .exists(`company/${userId}.${fileEnding}`)
+    ) {
+      await client.storage
+        .from('logos')
+        .remove([`company/${userId}.${fileEnding}`]);
+    }
+
+    // Upload the logo to the storage bucket
+    const logoRes = await client.storage
+      .from('logos')
+      .upload(`company/${userId}.${fileEnding}`, logo, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (logoRes.error || logoRes.data == null) {
+      console.error(logoRes.error.stack);
+      return {
+        ok: false,
+        error: logoRes.error.message || t.errors.logoUploadFailed(),
+      };
+    }
+
+    return {
+      ok: true,
+      data: {
+        userId,
+        password,
+      },
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
     return {
       ok: false,
-      error: logoRes.error.message || t.errors.logoUploadFailed(),
+      error: t.errors.failedToCreate('company'),
     };
   }
-
-  return {
-    ok: true,
-    data: {
-      userId,
-      password,
-    },
-  };
 }
