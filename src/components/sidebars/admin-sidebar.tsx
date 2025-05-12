@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarMenuLink,
 } from '@/components/ui/sidebar';
+import { AdminRoutes } from '@/contants/routes';
 import {
   CalendarIcon,
   Cog6ToothIcon,
@@ -25,17 +26,17 @@ import { SidebarProfileMenu } from './sidebar-profile-menu';
 const items = [
   {
     title: 'Dashboard',
-    url: '/',
+    url: AdminRoutes.DASHBOARD,
     icon: HomeIcon,
   },
   {
     title: 'Veranstaltungen',
-    url: '/event',
+    url: AdminRoutes.EVENTS,
     icon: CalendarIcon,
   },
   {
     title: 'Nutzerverwaltung',
-    url: '/users',
+    url: AdminRoutes.USERS,
     icon: UsersIcon,
   },
   {
@@ -61,7 +62,7 @@ export async function AdminSidebar({}: React.ComponentProps<
         </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu base="/admin">
+            <SidebarMenu base="">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuLink href={item.url}>
