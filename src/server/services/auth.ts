@@ -291,6 +291,8 @@ export async function getCurrentRole(): Promise<ServiceResult<Role>> {
 interface UpdateOwnSettingsArgs {
   firstName: string;
   lastName: string;
+  notifyMe: boolean;
+  emailReminders: boolean;
 }
 
 /**
@@ -305,6 +307,8 @@ interface UpdateOwnSettingsArgs {
 export async function updateOwnSettings({
   firstName,
   lastName,
+  notifyMe,
+  emailReminders,
 }: UpdateOwnSettingsArgs): Promise<ServiceResult<void>> {
   try {
     const session = await auth.api.getSession({
@@ -315,12 +319,21 @@ export async function updateOwnSettings({
       throw new Error('User is not authenticated.');
     }
 
-    await auth.api.updateUser({
+    const res = await auth.api.updateUser({
+      headers: await headers(),
       body: {
         firstName,
         lastName,
+        notifyMe,
+        emailReminders,
       },
     });
+
+    if (!res) {
+      throw new Error('Failed to update user.');
+    }
+
+    console.log(res);
 
     return {
       ok: true,
@@ -330,7 +343,7 @@ export async function updateOwnSettings({
     if (error instanceof Error) {
       return {
         ok: false,
-        error: error.message,
+        error: error.message ?? 'Ein unbekannter Fehler ist aufgetreten.',
       };
     }
 

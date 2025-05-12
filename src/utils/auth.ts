@@ -22,6 +22,20 @@ export const auth = betterAuth({
       });
     },
   },
+  session: {
+    additionalFields: {
+      firstName: {
+        type: 'string',
+        required: true,
+        input: true,
+      },
+      lastName: {
+        type: 'string',
+        required: true,
+        input: true,
+      },
+    },
+  },
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
@@ -78,3 +92,5 @@ export const auth = betterAuth({
     nextCookies(),
   ],
 });
+
+export type Session = typeof auth.$Infer.Session;

@@ -7,3 +7,7 @@ export const AdminRoutes = {
 export const CompanyRoutes = {
   DASHBOARD: '/company',
 } as const;
+
+export const GeneralRoutes = {
+  PERSONAL_SETTINGS: '/personal-settings',
+} as const;
