@@ -9,3 +9,6 @@ docs/.vitepress/cache
 .turbo
 
 drizzle
+
+src/generated/**/*
+src/generated
