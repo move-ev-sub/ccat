@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   SidebarMenuLink,
 } from '@/components/ui/sidebar';
-import { AdminRoutes } from '@/contants/routes';
+import { AdminRoutes } from '@/constants/routes';
 import {
   CalendarIcon,
   Cog6ToothIcon,
