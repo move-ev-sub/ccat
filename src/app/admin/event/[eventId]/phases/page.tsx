@@ -1,8 +1,8 @@
 import { PhaseSetupForm } from '@/components/forms/phase-setup-form';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { Phase, PhaseType } from '@/generated/prisma/client';
 import { fetchPhasesForEvent } from '@/server/services/phase';
-import { Phase, PhaseType } from '@prisma/client';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

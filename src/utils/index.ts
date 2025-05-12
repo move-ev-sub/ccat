@@ -3,7 +3,7 @@ import {
   Gender,
   SubApplicationPrioritzation,
   SubApplicationStatus,
-} from '@prisma/client';
+} from '@/generated/prisma/client';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

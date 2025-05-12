@@ -16,8 +16,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Event } from '@/generated/prisma/client';
 import { createSlot } from '@/server/services/slot';
-import { Event } from '@prisma/client';
 import { addMinutes } from 'date-fns';
 import React from 'react';
 import { toast } from 'sonner';

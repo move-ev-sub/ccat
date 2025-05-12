@@ -1,4 +1,4 @@
-import { Application, SubApplication } from '@prisma/client';
+import { Application, SubApplication } from '@/generated/prisma/client';
 
 /**
  * A sub-application for a sub-event with the main application included

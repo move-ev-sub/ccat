@@ -9,9 +9,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { SubEvent } from '@/generated/prisma/client';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubEvent } from '@prisma/client';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';

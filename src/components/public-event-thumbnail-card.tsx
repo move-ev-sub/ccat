@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Event, Phase } from '@/generated/prisma/client';
 import { cn } from '@/utils';
 import {
   ArrowUpRightIcon,
   InformationCircleIcon,
 } from '@heroicons/react/16/solid';
-import { Event, Phase } from '@prisma/client';
 import { format } from 'date-fns';
 import Link from 'next/link';
 

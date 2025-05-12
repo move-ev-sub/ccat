@@ -24,6 +24,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Phase, PhaseType } from '@/generated/prisma/client';
 import {
   fetchPhasesForEvent,
   isPhasesSetupCompleted,
@@ -35,7 +36,6 @@ import {
   ClockIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/16/solid';
-import { Phase, PhaseType } from '@prisma/client';
 import { format } from 'date-fns';
 import { Suspense } from 'react';
 

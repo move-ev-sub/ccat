@@ -2,10 +2,9 @@
 
 import { SubEventsList } from '@/components/application/components/sub-events-list';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
-import { SubEvent } from '@prisma/client';
+import { SubEvent } from '@/generated/prisma/client';
 
 const base: SubEvent = {
-  companyProfileId: '1',
   coverLetterRequirement: 'OPTIONAL',
   createdAt: new Date(),
   createdById: '1',
@@ -14,7 +13,6 @@ const base: SubEvent = {
   id: '1',
   maxParticipants: 10,
   name: 'Interview mit viadee',
-  profileId: '1',
   slotId: '1',
   startDate: new Date(),
   endDate: new Date(),

@@ -1,6 +1,6 @@
 import { PageContainer } from '@/components/page-container';
+import { Slot } from '@/generated/prisma/client';
 import { ComputerDesktopIcon } from '@heroicons/react/24/outline';
-import { Slot } from '@prisma/client';
 
 import { StepNavigation } from '@/components/application/components/step-navigation';
 import {

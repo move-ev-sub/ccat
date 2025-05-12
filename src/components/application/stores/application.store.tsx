@@ -18,7 +18,7 @@
 'use client';
 
 import { generalFormSchema } from '@/components/application/forms/general-form';
-import { CoverLetterRequirement, Prisma } from '@prisma/client';
+import { CoverLetterRequirement, Prisma } from '@/generated/prisma/client';
 import React from 'react';
 import { z } from 'zod';
 import { createStore, StateCreator, useStore } from 'zustand';

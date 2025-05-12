@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardLink } from '@/components/ui/card';
+import { Event } from '@/generated/prisma/client';
 import { cn } from '@/utils';
 import { CalendarIcon } from '@heroicons/react/16/solid';
-import { Event } from '@prisma/client';
 import { format } from 'date-fns';
 import React from 'react';
 import { Pinger } from '../pinger';

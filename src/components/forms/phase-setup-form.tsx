@@ -13,11 +13,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Phase, PhaseType } from '@/generated/prisma/client';
 import { createPhase, updatePhase } from '@/server/services/phase';
 import { cn } from '@/utils';
 import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Phase, PhaseType } from '@prisma/client';
 import { addDays } from 'date-fns';
 import React from 'react';
 import { useForm } from 'react-hook-form';

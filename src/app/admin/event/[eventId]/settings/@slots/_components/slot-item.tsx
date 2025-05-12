@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { ConfirmDestructive } from '@/components/ui/confirm-destructive';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Slot } from '@/generated/prisma/client';
 import { cn } from '@/utils';
 import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/16/solid';
-import { Slot } from '@prisma/client';
 import { format } from 'date-fns';
 import React from 'react';
 
