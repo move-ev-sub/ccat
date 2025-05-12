@@ -1,11 +1,11 @@
+import { CreateEventDialog } from '@/components/create-event-dialog';
 import { EventStatusToIcon } from '@/components/event-status-to-icon';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { messages as t } from '@/i18n';
-import { ListBulletIcon, PlusIcon } from '@heroicons/react/16/solid';
+import { ListBulletIcon } from '@heroicons/react/16/solid';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { EventsList } from './_components/events-list';
@@ -28,9 +28,7 @@ export default async function AdminOverviewPage() {
             <PageDesc>{t.pages.events.description()}</PageDesc>
           </div>
           {/* @TODO: Link to CreateNewEvent Page */}
-          <Button variant={'accent'}>
-            {t.pages.events.createEvent()} <PlusIcon />
-          </Button>
+          <CreateEventDialog />
         </div>
       </PageHeader>
       {/* <div className="bg-border mt-6 h-px w-full" /> */}

@@ -6,6 +6,9 @@ import {
   SubEventsListSkeleton,
 } from './_components/sub-events-list';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export default async function CompanyOverviewPage() {
   return (
     <PageContainer>

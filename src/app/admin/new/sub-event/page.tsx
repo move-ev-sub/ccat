@@ -1,11 +1,11 @@
-import { CreateNewSubEventForm } from '@/components/forms/create-sub-event';
+import { CreateSubEventForm } from '@/components/forms/create-sub-event-form';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { Slot } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { fetchCompanyProfiles } from '@/server/services/profile';
-import { fetchSlotsForEvent } from '@/server/services/slot';
-import { FullCompanyProfile } from '@/server/types/profile';
+import { getAllCompanies } from '@/server/services/company';
+import { getSlotsForEvent } from '@/server/services/slot';
 import { ServiceResult } from '@/server/types/serviceResult';
-import { Slot } from '@prisma/client';
+import { User as AuthUser } from 'better-auth';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -24,18 +24,18 @@ async function hasIdParam({
 
 async function fetchData({ eventId }: { eventId: string }): Promise<
   ServiceResult<{
-    companies: FullCompanyProfile[];
+    companies: AuthUser[];
     slots: Slot[];
   }>
 > {
-  const companiesRes = await fetchCompanyProfiles();
+  const companiesRes = await getAllCompanies();
 
   // TODO: Better error handling
   if (!companiesRes.ok) {
     return companiesRes;
   }
 
-  const slotsRes = await fetchSlotsForEvent(eventId);
+  const slotsRes = await getSlotsForEvent(eventId);
 
   if (!slotsRes.ok) {
     return slotsRes;
@@ -100,7 +100,7 @@ export default async function NewSubEventPage({
         <PageDesc>{t.pages.newSubEvent.description()}</PageDesc>
       </PageHeader>
       <div className="mt-to-header">
-        <CreateNewSubEventForm
+        <CreateSubEventForm
           companies={companies}
           slots={slots}
           eventId={eventId}

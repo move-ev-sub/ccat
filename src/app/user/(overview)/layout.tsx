@@ -1,6 +1,7 @@
 import { UserProfileMenu } from '@/components/profile-dropdown-menu/user-profile-menu';
-import { fetchCurrentProfile } from '@/server/services/profile';
+import { auth } from '@/utils/auth';
 import { Metadata } from 'next';
+import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -16,13 +17,15 @@ export const metadata: Metadata = {
 export default async function UserLayout({
   children,
 }: React.PropsWithChildren) {
-  const profileRes = await fetchCurrentProfile();
+  const sessionRes = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (!profileRes.ok) {
-    return <p>Error: {profileRes.error}</p>;
+  if (!sessionRes) {
+    throw new Error('User not authenticated');
   }
 
-  const profile = profileRes.data;
+  const user = sessionRes.user;
 
   return (
     <main>
@@ -36,7 +39,7 @@ export default async function UserLayout({
         >
           Veranstaltungen
         </Link>
-        <UserProfileMenu profile={profile} className="ml-auto" />
+        <UserProfileMenu profile={user} className="ml-auto" />
       </nav>
       {children}
     </main>

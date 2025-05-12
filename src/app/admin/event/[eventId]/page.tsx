@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { getEvent } from '@/server/actions/event';
+import { getEventById } from '@/server/services/event';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import { PhasesCard } from './_components/phases-card';
 
@@ -14,15 +14,10 @@ export default async function AdminEventOverviewPage({
 }) {
   const eventId = (await params).eventId;
 
-  const res = await getEvent(eventId);
+  const res = await getEventById(eventId);
 
-  if (res.error || !res.data) {
-    return (
-      <p>
-        Not found
-        {JSON.stringify(res.error)}
-      </p>
-    );
+  if (!res.ok) {
+    throw new Error(res.error);
   }
 
   const { name } = res.data;

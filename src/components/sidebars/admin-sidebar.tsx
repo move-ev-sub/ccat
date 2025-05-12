@@ -12,7 +12,6 @@ import {
   SidebarMenuLink,
 } from '@/components/ui/sidebar';
 import {
-  BuildingOfficeIcon,
   CalendarIcon,
   Cog6ToothIcon,
   DocumentCheckIcon,
@@ -35,14 +34,9 @@ const items = [
     icon: CalendarIcon,
   },
   {
-    title: 'Nutzer',
-    url: '/settings/users',
+    title: 'Nutzerverwaltung',
+    url: '/users',
     icon: UsersIcon,
-  },
-  {
-    title: 'Unternehmen',
-    url: '/settings/companies',
-    icon: BuildingOfficeIcon,
   },
   {
     title: 'Settings',

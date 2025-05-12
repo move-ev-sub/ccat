@@ -14,7 +14,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { FullUnknownProfile } from '@/server/services/profile';
 import { cn } from '@/utils';
 import { createClient } from '@/utils/supabase/client';
 import {
@@ -23,6 +22,7 @@ import {
   MoonIcon,
   SunIcon,
 } from '@heroicons/react/16/solid';
+import { User } from 'better-auth';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -32,7 +32,7 @@ export function UserProfileMenu({
   className,
   ...props
 }: React.ComponentProps<typeof DropdownMenu> & {
-  profile: FullUnknownProfile;
+  profile: User;
   className?: string;
 }) {
   const supabase = createClient();
