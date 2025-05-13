@@ -1,6 +1,6 @@
 import { AUTH_ERROR_CODES, GENERAL_ERROR_CODES } from '@/error/codes';
+import { statement } from '@/shared/auth/permissions';
 import { adminOpts, auth, Session } from '@/utils/auth';
-import { statement } from '@/utils/auth/permissions';
 import { InferAdminRolesFromOption } from 'better-auth/plugins';
 import { headers } from 'next/headers';
 import { ServiceResult } from './types/serviceResult';

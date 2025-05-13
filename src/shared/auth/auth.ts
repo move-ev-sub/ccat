@@ -1,13 +1,13 @@
+import prisma from '@/shared/api/prisma';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { admin as adminPlugin } from 'better-auth/plugins';
-import prisma from '../server/db';
 import {
   sendConfirmEmail,
   sendResetPasswordEmail,
-} from '../server/services/email';
-import { ac, admin, company, user } from '../shared/auth/permissions';
+} from '../../server/services/email';
+import { ac, admin, company, user } from './permissions';
 
 export const adminOpts = {
   adminRoles: ['admin'],
