@@ -6,4 +6,5 @@ export const AUTH_ERROR_CODES = {
 
 export const GENERAL_ERROR_CODES = {
   UNKNOWN_ERROR: 'Ein unbekannter Fehler ist aufgetreten.',
+  INVALID_CUID: 'Die angegebene CUID ist ungültig.',
 };

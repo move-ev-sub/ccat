@@ -1,12 +1,11 @@
+import { Pinger } from '@/components/pinger';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardLink } from '@/components/ui/card';
 import { Event } from '@/generated/prisma/client';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { CalendarIcon } from '@heroicons/react/16/solid';
 import { format } from 'date-fns';
 import React from 'react';
-import { Pinger } from '../pinger';
-
 /**
  * The EventThumbnailCard component displays a preview of an event which
  * is used in the admin dashboard to give a quick overview of all the events.
