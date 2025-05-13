@@ -1,10 +1,27 @@
 'use server';
 
-import { Phase, PhaseType, Prisma } from '@/generated/prisma/client';
+import { Phase, PhaseType } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { toEndOfDay, toStartOfDay } from '@/utils/date';
-import prisma from '../db';
-import { withAuth } from '../helpers';
+import prisma from '@/lib/api/prisma';
+import { withAuth } from '@/lib/helpers/withAuth';
+import { toEndOfDay, toStartOfDay } from '@/lib/utils/date';
+import {
+  CreatePhaseArgs,
+  ExistsPhaseArgs,
+  FetchPhasesForEventArgs,
+  GetCurrentPhaseArgs,
+  IsPhasesSetupCompletedArgs,
+  UpdatePhaseArgs,
+} from '../types';
+import { containsPhaseType } from '../utils/contains-phase-type';
+import {
+  createPhaseSchema,
+  existsPhaseSchema,
+  fetchPhasesForEventSchema,
+  getCurrentPhaseSchema,
+  isPhasesSetupCompletedSchema,
+  updatePhaseSchema,
+} from '../validations';
 
 /**
  * Updates a phase for an event. If the id is not provided, a new phase will be
@@ -17,30 +34,16 @@ import { withAuth } from '../helpers';
  *
  * @returns The updated or created phase.
  */
-export const updatePhase = withAuth<
-  [
-    {
-      /**
-       * The id of the phase
-       */
-      id?: string;
+export const updatePhase = withAuth<[UpdatePhaseArgs], Phase>(
+  async ({ args: [arg0] }) => {
+    const parseRes = await updatePhaseSchema.safeParseAsync(arg0);
 
-      /**
-       * The start date of the phase. This should be in the future. Start dates will
-       * always be formatted to start at 00:00:00.
-       */
-      from: Date;
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
 
-      /**
-       * The end date of the phase. This should be in the future. End dates will always
-       * be formatted to end at 23:59:59.
-       */
-      to: Date;
-    },
-  ],
-  Phase
->(
-  async ({ args: [{ id, from, to }] }) => {
+    const { id, from, to } = parseRes.data;
+
     // All event phases must start in the future when editing them.
     if (from < new Date()) {
       throw new Error(t.errors.dateNotInFuture());
@@ -93,35 +96,16 @@ export const updatePhase = withAuth<
  *
  * @returns The created or updated phase.
  */
-export const createPhase = withAuth<
-  [
-    {
-      /**
-       * The id of the event the phase belongs to.
-       */
-      eventId: string;
+export const createPhase = withAuth<[CreatePhaseArgs], Phase>(
+  async ({ args: [arg0], session }) => {
+    const parseRes = await createPhaseSchema.safeParseAsync(arg0);
 
-      /**
-       * The start date of the phase. This should be in the future. Start dates will
-       * always be formatted to start at 00:00:00.
-       */
-      from: Date;
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
 
-      /**
-       * The end date of the phase. This should be in the future. End dates will always
-       * be formatted to end at 23:59:59.
-       */
-      to: Date;
+    const { eventId, from, to, type } = parseRes.data;
 
-      /**
-       * The type of the phase. This can not be changed once the phase has been created.
-       */
-      type: PhaseType;
-    },
-  ],
-  Phase
->(
-  async ({ args: [{ eventId, from, to, type }], session }) => {
     // Check if a phase of the given type already exists for the selected event
     const exists = await existsPhase({ eventId, type });
 
@@ -186,23 +170,16 @@ export const createPhase = withAuth<
  * @returns True if the phase exists, false otherwise.
  */
 
-export const existsPhase = withAuth<
-  [
-    {
-      /**
-       * The id of the event the phase belongs to.
-       */
-      eventId: string;
+export const existsPhase = withAuth<[ExistsPhaseArgs], boolean>(
+  async ({ args: [arg0] }) => {
+    const parseRes = await existsPhaseSchema.safeParseAsync(arg0);
 
-      /**
-       * The type of the phase which should be checked.
-       */
-      type: PhaseType;
-    },
-  ],
-  boolean
->(
-  async ({ args: [{ eventId, type }] }) => {
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { eventId, type } = parseRes.data;
+
     const res = await prisma.phase.findFirst({
       where: {
         eventId,
@@ -236,22 +213,18 @@ export const existsPhase = withAuth<
  */
 
 export const fetchPhasesForEvent = withAuth<
-  [
-    {
-      /**
-       * The id of the event the phases belong to.
-       */
-      eventId: string;
-
-      /**
-       * The sort order of the phases.
-       */
-      sort?: Prisma.PhaseFindManyArgs['orderBy'];
-    },
-  ],
+  [FetchPhasesForEventArgs],
   Omit<Phase, 'createdById'>[]
 >(
-  async ({ args: [{ eventId, sort }] }) => {
+  async ({ args: [arg0] }) => {
+    const parseRes = await fetchPhasesForEventSchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { eventId } = parseRes.data;
+
     const res = await prisma.phase.findMany({
       where: {
         eventId: eventId,
@@ -259,7 +232,9 @@ export const fetchPhasesForEvent = withAuth<
       omit: {
         createdById: true,
       },
-      orderBy: sort,
+      orderBy: {
+        startDate: 'asc',
+      },
     });
 
     if (!res) {
@@ -291,14 +266,18 @@ export const fetchPhasesForEvent = withAuth<
  * @returns True if the phases are setup, false otherwise.
  */
 export const isPhasesSetupCompleted = withAuth<
-  [
-    {
-      eventId: string;
-    },
-  ],
+  [IsPhasesSetupCompletedArgs],
   boolean
 >(
-  async ({ args: [{ eventId }] }) => {
+  async ({ args: [arg0] }) => {
+    const parseRes = await isPhasesSetupCompletedSchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { eventId } = parseRes.data;
+
     const res = await prisma.phase.findMany({
       where: {
         eventId,
@@ -335,18 +314,6 @@ export const isPhasesSetupCompleted = withAuth<
 );
 
 /**
- * Checks if a list of phases contains a phase of a specific type.
- *
- * @returns True if the list contains a phase of the specified type, false otherwise.
- */
-async function containsPhaseType(
-  phases: Partial<Phase>[],
-  type: PhaseType
-): Promise<boolean> {
-  return phases.some((phase) => phase.type === type);
-}
-
-/**
  * Fetches the current phase for an event. The current phase is the phase that
  * is currently active. The user must be authenticated to perform this action.
  *
@@ -358,15 +325,16 @@ async function containsPhaseType(
  * @returns The current phase for the event.
  */
 
-export const getCurrentPhase = withAuth<
-  [
-    {
-      eventId: string;
-    },
-  ],
-  Phase | null
->(
-  async ({ args: [{ eventId }] }) => {
+export const getCurrentPhase = withAuth<[GetCurrentPhaseArgs], Phase | null>(
+  async ({ args: [arg0] }) => {
+    const parseRes = await getCurrentPhaseSchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { eventId } = parseRes.data;
+
     const res = await prisma.phase.findFirst({
       where: {
         eventId,

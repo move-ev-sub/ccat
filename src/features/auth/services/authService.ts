@@ -42,13 +42,6 @@ export async function signUpWithEmail(
     };
   }
 
-  if (!firstName || !lastName || !email || !password) {
-    return {
-      ok: false,
-      error: 'Your full Name, email and password are required for signup.',
-    };
-  }
-
   try {
     await auth.api.signUpEmail({
       body: {
