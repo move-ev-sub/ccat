@@ -12,6 +12,7 @@ import {
   SidebarMenuLink,
 } from '@/components/ui/sidebar';
 import { AdminRoutes } from '@/constants/routes';
+import { auth } from '@/utils/auth';
 import {
   CalendarIcon,
   Cog6ToothIcon,
@@ -19,6 +20,7 @@ import {
   HomeIcon,
   UsersIcon,
 } from '@heroicons/react/16/solid';
+import { headers } from 'next/headers';
 import React from 'react';
 import { SidebarProfileMenu } from './sidebar-profile-menu';
 
@@ -41,7 +43,7 @@ const items = [
   },
   {
     title: 'Settings',
-    url: '/settings/general',
+    url: AdminRoutes.PERSONAL_SETTINGS,
     icon: Cog6ToothIcon,
   },
 ];
@@ -49,6 +51,14 @@ const items = [
 export async function AdminSidebar({}: React.ComponentProps<
   typeof Sidebar
 > & {}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    throw new Error('User is not authenticated.');
+  }
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -76,16 +86,7 @@ export async function AdminSidebar({}: React.ComponentProps<
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarProfileMenu
-          user={{
-            id: '',
-            email: 'christoph.langer100@gmail.com',
-            app_metadata: {},
-            user_metadata: {},
-            aud: '',
-            created_at: 'new Date(),',
-          }}
-        />
+        <SidebarProfileMenu session={session} />
       </SidebarFooter>
     </Sidebar>
   );
