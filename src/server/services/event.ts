@@ -25,6 +25,7 @@ export async function getPublishedEvents(): Promise<
       },
     },
   });
+
   if (!hasPermission.success) {
     return {
       ok: false,
@@ -261,13 +262,22 @@ export async function getAllNonArchivedEvents(): Promise<
   ServiceResult<Event[]>
 > {
   try {
-    console.log('Fetching all non-archived events');
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      throw new Error('User is not authenticated');
+    }
+
     const hasPermission = await auth.api.userHasPermission({
       body: {
+        role: 'admin',
         permissions: {
           event: ['fetchAll'],
         },
       },
+      headers: await headers(),
     });
     console.log('Has permission', hasPermission);
 

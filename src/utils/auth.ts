@@ -10,6 +10,12 @@ import {
 import { ac, admin, company, user } from './auth/permissions';
 
 export const auth = betterAuth({
+  logger: {
+    level: 'debug',
+  },
+  rateLimit: {
+    enabled: false,
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -20,20 +26,6 @@ export const auth = betterAuth({
           url,
         },
       });
-    },
-  },
-  session: {
-    additionalFields: {
-      firstName: {
-        type: 'string',
-        required: true,
-        input: true,
-      },
-      lastName: {
-        type: 'string',
-        required: true,
-        input: true,
-      },
     },
   },
   emailVerification: {

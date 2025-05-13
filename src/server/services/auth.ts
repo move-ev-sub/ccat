@@ -5,7 +5,10 @@ import { auth } from '@/utils/auth';
 import { createClient } from '@/utils/supabase/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { User } from 'better-auth';
+import { CCATError, UnauthenticatedError, UnauthorizedError } from '@/error';
+import { GENERAL_ERROR_CODES } from '@/error/codes';
+import { statement } from '@/utils/auth/permissions';
+import { Session, User } from 'better-auth';
 import { UserWithRole } from 'better-auth/plugins';
 import { randomBytes } from 'crypto';
 import { headers } from 'next/headers';
@@ -19,6 +22,90 @@ interface SignUpWithEmailArgs {
   email: string;
   password: string;
   acceptLegal: boolean;
+}
+
+// Can you create a dynamic typescript type for the statement object?
+type Statement = keyof typeof statement;
+
+interface UserHasPermissionArgs {
+  session?: { user: User; session: Session };
+  permissions: {
+    [key in Statement]?: (typeof statement)[key][number][];
+  };
+}
+
+export async function isAuthenticated(): Promise<
+  ServiceResult<{ user: User; session: Session }>
+> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session)
+    return {
+      ok: false,
+      error: 'User is not authenticated.',
+    };
+
+  return { ok: true, data: session };
+}
+
+/**
+ * Checks if the currently logged in user has a given set of permissions.
+ */
+export async function userHasPermission({
+  session: _session,
+  permissions,
+}: UserHasPermissionArgs): Promise<
+  ServiceResult<{ user: User; session: Session }>
+> {
+  try {
+    let hasPermission: boolean = false;
+
+    let session = _session;
+
+    if (!session) {
+      const authenticated = await isAuthenticated();
+
+      if (!authenticated.ok) {
+        throw new UnauthenticatedError();
+      }
+
+      session = authenticated.data;
+    }
+
+    const id = session.user.id;
+
+    hasPermission = (
+      await auth.api.userHasPermission({
+        body: {
+          userId: id,
+          permissions,
+        },
+      })
+    ).success;
+
+    if (!hasPermission) {
+      const flatPermissions = Object.values(permissions).flat();
+      throw new UnauthorizedError(
+        `Missing at least one of the following permissions: ${flatPermissions.toLocaleString()}`
+      );
+    }
+
+    return { ok: true, data: session };
+  } catch (error) {
+    if (error instanceof Error)
+      return {
+        ok: false,
+        error: error.message,
+        cause: error.cause,
+      };
+
+    return {
+      ok: false,
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
+    };
+  }
 }
 
 /**
@@ -182,18 +269,6 @@ export async function getUser(): Promise<User | null> {
   }
 
   return session.user;
-}
-
-/**
- * Checks if the current user is authenticated by checking if the
- * supabase auth client returns a valid user object.
- *
- * @returns boolean - `false` if the user is not authenticated, `true` if the user is authenticated.
- */
-export async function isAuthenticated(): Promise<boolean> {
-  const user = await getUser();
-
-  return user !== null && user.id !== null;
 }
 
 /**
@@ -442,23 +517,29 @@ export async function getUserById({
 
 export async function getUsers(): Promise<ServiceResult<PrismaUser[]>> {
   try {
-    const hasPermission = await auth.api.userHasPermission({
-      body: {
-        role: 'admin',
-        permissions: {
-          userProfile: ['fetchAll'],
-        },
+    // Authenticate the user
+    const authenticated = await isAuthenticated();
+    if (!authenticated.ok) {
+      return authenticated;
+    }
+
+    // Authorize the user
+    const session = authenticated.data;
+    const hasPermission = await userHasPermission({
+      session,
+      permissions: {
+        userProfile: ['fetchAll'],
       },
     });
 
-    if (!hasPermission.success) {
-      throw new Error('User does not have permission to fetch users.');
+    if (!hasPermission.ok) {
+      return hasPermission;
     }
 
     const res = await prisma.user.findMany();
 
     if (!res) {
-      throw new Error('An unkown error occurred while fetching users.');
+      throw new CCATError(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
     }
 
     return {
@@ -470,6 +551,7 @@ export async function getUsers(): Promise<ServiceResult<PrismaUser[]>> {
       return {
         ok: false,
         error: error.message,
+        cause: error.cause,
       };
     }
 
