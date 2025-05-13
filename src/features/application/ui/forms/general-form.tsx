@@ -25,11 +25,6 @@ import { Separator } from '@/components/ui/separator';
 import { Degree, Gender } from '@/generated/prisma/client';
 import { ApplicationRoutes } from '@/lib/consts/routes';
 import { cn } from '@/lib/utils/cn';
-import {
-  ACCEPTED_FILE_TYPES,
-  MAX_FILE_COUNT,
-  MAX_FILE_SIZE,
-} from '@/server/schemas/application';
 import { translateDegree, translateGender } from '@/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
@@ -38,6 +33,7 @@ import React from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
 import { z } from 'zod';
+import { FILE_CONSTRAINTS } from '../../consts/file';
 import { useApplicationStore } from '../../stores/application.store';
 import { PageNavigation } from '../page-navigation';
 
@@ -185,9 +181,9 @@ export function ApplicationGeneralForm() {
                       <FileUpload
                         value={field.value}
                         onValueChange={field.onChange}
-                        accept={ACCEPTED_FILE_TYPES}
-                        maxFileCount={MAX_FILE_COUNT}
-                        maxSize={MAX_FILE_SIZE}
+                        accept={FILE_CONSTRAINTS.ACCEPTED_FILE_TYPES}
+                        maxFileCount={FILE_CONSTRAINTS.MAX_FILE_COUNT}
+                        maxSize={FILE_CONSTRAINTS.MAX_FILE_SIZE}
                         ref={field.ref}
                       />
                     </FormControl>
