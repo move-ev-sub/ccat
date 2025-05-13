@@ -1,5 +1,7 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { EyeIcon } from '@heroicons/react/16/solid';
+import { auth } from '@/lib/api/auth';
+import { AdminRoutes, CompanyRoutes, UserRoutes } from '@/lib/consts/routes';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 /**
  * Redirecting users to the correct page would traditionally be done in a
@@ -16,53 +18,23 @@ import { EyeIcon } from '@heroicons/react/16/solid';
  * @returns
  */
 export default async function RedirectPage() {
-  // if (!(await isAuthenticated())) {
-  //   redirect('/auth/login');
-  // }
-  // const user = await getUser();
-  // If the user is not logged in, redirect them to the login page
-  // if (user === null) {
-  //   return redirect('/auth/login');
-  // }
-  // Get the users role
-  // const res = await getCurrentRole();
-  // If no profile is present, redirect to login page
-  // TODO: Better error handling
-  // if (!res.ok) {
-  //   return redirect('/auth/login');
-  // }
-  // const { data: role } = res;
-  // // redirect admins to `/admin`
-  // if (role == 'ADMIN') {
-  //   return redirect('/admin');
-  // }
-  // // redirect companies to `/company`
-  // if (role == 'COMPANY') {
-  //   return redirect('/company');
-  // }
-  // // Return all other users to `/user`
-  // return redirect('/user');
-  return (
-    <div className="py-32">
-      <div className="md:px-8">
-        <Tabs defaultValue="tab1">
-          <TabsList
-            className="pl-8 md:px-0"
-            style={{
-              scrollbarWidth: 'thin',
-            }}
-          >
-            <TabsTrigger value="tab1">Alle Veranstaltungen</TabsTrigger>
-            <TabsTrigger value="tab2">
-              <EyeIcon />
-              Veröffentlichte Veranstaltungen
-            </TabsTrigger>
-            <TabsTrigger value="tab3">Entwürfe</TabsTrigger>
-            <TabsTrigger value="tab4">Einladungen</TabsTrigger>
-            <TabsTrigger value="tab5">Abgelehnte Veranstaltungen</TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
-    </div>
-  );
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return redirect('/auth/login');
+  }
+
+  const role = session.user.role;
+
+  if (role === 'admin') {
+    return redirect(AdminRoutes.DASHBOARD);
+  }
+
+  if (role === 'company') {
+    return redirect(CompanyRoutes.DASHBOARD);
+  }
+
+  return redirect(UserRoutes.DASHBOARD);
 }

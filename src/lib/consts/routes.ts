@@ -19,5 +19,6 @@ export const CompanyRoutes = {
 } as const;
 
 export const UserRoutes = {
+  DASHBOARD: '/user',
   PERSONAL_SETTINGS: '/user/personal-settings',
 } as const;

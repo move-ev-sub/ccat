@@ -28,7 +28,10 @@ export const signUpWithEmailSchema = z.object({
   lastName: z.string().min(1),
   email: z.string().email(),
   password: passwordSchema,
-  acceptLegal: z.boolean(),
+  acceptLegal: z.boolean().refine((val) => val, {
+    message:
+      'Du musst die Nutzungsbedingungen akzeptieren, um dich zu registrieren.',
+  }),
 });
 
 export const registerFormSchema = signUpWithEmailSchema

@@ -12,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils/cn';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -24,6 +25,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<'form'>) {
   const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof signInWithPasswordSchema>>({
     resolver: zodResolver(signInWithPasswordSchema),
@@ -44,6 +46,7 @@ export function LoginForm({
       toast.error(res.error);
     }
 
+    router.push('/');
     setLoading(false);
   }
 
