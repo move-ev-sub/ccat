@@ -1,9 +1,9 @@
+import { Button } from '@/components/ui/button';
 import {
   AuthDescription,
   AuthHeader,
   AuthTitle,
-} from '@/components/auth/auth-header';
-import { Button } from '@/components/ui/button';
+} from '@/features/auth/ui/auth-header';
 import { ArrowRightIcon } from '@heroicons/react/16/solid';
 import Link from 'next/link';
 

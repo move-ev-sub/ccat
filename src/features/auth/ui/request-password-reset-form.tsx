@@ -11,13 +11,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils/cn';
-import { requestPasswordReset } from '@/server/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { requestPasswordReset } from '../services/authService';
 
 const requestPasswordResetFormSchema = z.object({
   email: z

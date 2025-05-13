@@ -11,12 +11,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils/cn';
-import { signInWithPassword } from '@/server/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { signInWithPassword } from '../services/authService';
 import { signInWithPasswordSchema } from '../validations';
 
 export function LoginForm({
@@ -36,7 +36,9 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof signInWithPasswordSchema>) {
     setLoading(true);
 
-    const res = await signInWithPassword(values.email, values.password);
+    const res = await signInWithPassword({
+      ...values,
+    });
 
     if (!res.ok) {
       toast.error(res.error);

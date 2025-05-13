@@ -2,8 +2,8 @@ import {
   AuthDescription,
   AuthHeader,
   AuthTitle,
-} from '@/components/auth/auth-header';
-import { RequestPasswordResetForm } from '@/components/auth/forms/request-password-reset-form';
+} from '@/features/auth/ui/auth-header';
+import { RequestPasswordResetForm } from '@/features/auth/ui/request-password-reset-form';
 import { cn } from '@/lib/utils/cn';
 import Link from 'next/link';
 

@@ -1,12 +1,12 @@
-import prisma from '@/shared/api/prisma';
+import {
+  sendConfirmEmail,
+  sendResetPasswordEmail,
+} from '@/features/email/services/emailService';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { admin as adminPlugin } from 'better-auth/plugins';
-import {
-  sendConfirmEmail,
-  sendResetPasswordEmail,
-} from '../../server/services/email';
+import prisma from '../prisma';
 import { ac, admin, company, user } from './permissions';
 
 export const adminOpts = {

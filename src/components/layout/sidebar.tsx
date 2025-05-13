@@ -1,8 +1,7 @@
-'use server';
+'use client';
 
 import * as SidebarPrimitive from '@/components/ui/sidebar';
 import { signOut } from '@/features/auth/services/authService';
-import { auth } from '@/lib/api/auth';
 import { SiteConfig } from '@/lib/config/site';
 import { AdminRoutes, CompanyRoutes, UserRoutes } from '@/lib/consts/routes';
 import { Session } from '@/types/auth';
@@ -16,7 +15,6 @@ import {
   SunIcon,
 } from '@heroicons/react/16/solid';
 import { useTheme } from 'next-themes';
-import { headers } from 'next/headers';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -66,17 +64,10 @@ interface SidebarProps
     icon: React.ElementType;
     type?: 'admin' | 'user';
   }[];
+  session: Session;
 }
 
-export async function Sidebar({ items, ...props }: SidebarProps) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    throw new Error('User is not authenticated.');
-  }
-
+export async function Sidebar({ items, session, ...props }: SidebarProps) {
   return (
     <SidebarPrimitive.Sidebar {...props}>
       <SidebarPrimitive.SidebarContent>
