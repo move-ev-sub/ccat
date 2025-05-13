@@ -22,13 +22,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils/cn';
-import { createUser } from '@/server/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { createUser } from '../../services/userService';
 import { createUserSchema } from '../../validations';
 
 export function CreateUserForm({

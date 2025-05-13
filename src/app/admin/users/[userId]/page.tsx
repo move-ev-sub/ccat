@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { getUserById } from '@/server/services/auth';
+import { getUserById } from '@/features/user/services/userService';
 import { format } from 'date-fns';
 
 export default async function AdminUserPage({

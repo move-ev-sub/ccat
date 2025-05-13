@@ -1,9 +1,9 @@
 'use server';
 
 import { messages as t } from '@/i18n';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/api/supabase/server';
+import { ServiceResult } from '@/types';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { ServiceResult } from '../types/serviceResult';
 
 /**
  * Checks if a bucket exists in the storage.

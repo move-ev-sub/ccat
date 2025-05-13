@@ -13,3 +13,10 @@ export const createUserSchema = z.object({
 export const getUserByIdSchema = z.object({
   id: cuidSchema,
 });
+
+export const updateOwnSettingsSchema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  notifyMe: z.boolean(),
+  emailReminders: z.boolean(),
+});

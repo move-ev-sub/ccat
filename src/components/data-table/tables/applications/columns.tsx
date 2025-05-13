@@ -1,9 +1,9 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { FullSubApplication } from '@/server/types/sub-application';
+import { FullSubApplication } from '@/features/sub-application/types';
+import { cn } from '@/lib/utils/cn';
 import {
-  cn,
   translateDegree,
   translatePriorization,
   translateStatus,

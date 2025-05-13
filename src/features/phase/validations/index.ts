@@ -21,7 +21,7 @@ export const updatePhaseSchema = z.object({
   to: z.date(),
 });
 
-export const createPhaseSchema = updatePhaseSchema.extend({
+export const createPhaseSchema = z.object({
   /**
    * The id of the event the phase belongs to.
    */

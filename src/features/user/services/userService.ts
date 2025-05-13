@@ -1,3 +1,5 @@
+'use server';
+
 import { User as PrismaUser } from '@/generated/prisma/client';
 import { auth } from '@/lib/api/auth';
 import prisma from '@/lib/api/prisma';
@@ -5,8 +7,17 @@ import { CCATError } from '@/lib/error';
 import { GENERAL_ERROR_CODES } from '@/lib/error/codes';
 import { withAuth } from '@/lib/helpers/withAuth';
 import { UserWithRole } from 'better-auth/plugins';
-import { CreateUserArgs, GetUserByIdArgs } from '../types';
-import { createUserSchema, getUserByIdSchema } from '../validations';
+import { headers } from 'next/headers';
+import {
+  CreateUserArgs,
+  GetUserByIdArgs,
+  UpdateOwnSettingsArgs,
+} from '../types';
+import {
+  createUserSchema,
+  getUserByIdSchema,
+  updateOwnSettingsSchema,
+} from '../validations';
 /**
  * Returns the user with the given id. Throws an error if no user with the given
  * id exists.
@@ -126,5 +137,47 @@ export const createUser = withAuth<[CreateUserArgs], UserWithRole>(
     permissions: {
       user: ['create'],
     },
+  }
+);
+
+/**
+ * Updates the first name, last name, notify me and email reminders of the
+ * current user.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * is authenticated.
+ *
+ * @requires {permission} [authenticated]
+ *
+ * @returns A ServiceResult with the status of the update.
+ */
+export const updateOwnSettings = withAuth<[UpdateOwnSettingsArgs], void>(
+  async ({ args: [arg0] }) => {
+    const parseRes = updateOwnSettingsSchema.safeParse(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { firstName, lastName, notifyMe, emailReminders } = parseRes.data;
+
+    const res = await auth.api.updateUser({
+      headers: await headers(),
+      body: {
+        firstName,
+        lastName,
+        notifyMe,
+        emailReminders,
+      },
+    });
+
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
+    return {
+      ok: true,
+      data: undefined,
+    };
   }
 );

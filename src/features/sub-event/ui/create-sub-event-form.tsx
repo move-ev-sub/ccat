@@ -30,7 +30,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { SlotSelector } from '@/features/slot/ui/slot-selector';
 import { Slot } from '@/generated/prisma/client';
 import { cn } from '@/lib/utils/cn';
-import { createSubEvent } from '@/server/services/sub-event';
 import { CalendarIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User as AuthUser } from 'better-auth';
@@ -40,6 +39,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { createSubEvent } from '../services/subEventService';
 import { createSubEventSchema } from '../validations';
 
 export function CreateSubEventForm({

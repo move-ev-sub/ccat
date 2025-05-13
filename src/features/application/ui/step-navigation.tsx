@@ -1,7 +1,7 @@
 'use client';
 
+import { ApplicationRoutes } from '@/lib/consts/routes';
 import { cn } from '@/lib/utils/cn';
-import { ApplicationRoutes } from '@/utils/consts';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';

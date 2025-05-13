@@ -1,4 +1,5 @@
-import { cn, formatBytes } from '@/utils';
+import { cn } from '@/lib/utils/cn';
+import { formatBytes } from '@/lib/utils/format-bytes';
 import React from 'react';
 
 /**

@@ -2,11 +2,11 @@ import { PageContainer } from '@/components/page-container';
 import { Slot } from '@/generated/prisma/client';
 import { ComputerDesktopIcon } from '@heroicons/react/24/outline';
 
-import { StepNavigation } from '@/features/application/components/step-navigation';
 import {
   ApplicationStoreProvider,
   SlotEntry,
 } from '@/features/application/stores/application.store';
+import { StepNavigation } from '@/features/application/ui/step-navigation';
 
 async function getSlots(): Promise<Slot[]> {
   return [

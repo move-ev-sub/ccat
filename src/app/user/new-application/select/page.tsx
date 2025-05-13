@@ -1,7 +1,7 @@
 'use client';
 
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
-import { SubEventsList } from '@/features/application/components/sub-events-list';
+import { SubEventsList } from '@/features/application/ui/sub-events-list';
 import { SubEvent } from '@/generated/prisma/client';
 
 const base: SubEvent = {

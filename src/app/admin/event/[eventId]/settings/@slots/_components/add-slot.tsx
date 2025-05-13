@@ -1,9 +1,9 @@
 'use client';
 
-import { CreateNewSlotForm } from '@/components/forms/create-slot';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { CreateNewSlotForm } from '@/features/slot/ui/create-slot-form';
 import { useEventId } from '@/hooks/use-event-id';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import React from 'react';

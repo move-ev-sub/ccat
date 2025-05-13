@@ -1,9 +1,9 @@
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { getSlotsForEvent } from '@/features/slot/services/slotService';
 import { CreateSubEventForm } from '@/features/sub-event/ui/create-sub-event-form';
+import { getAllCompanies } from '@/features/user/services/companyService';
 import { Slot } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { getAllCompanies } from '@/server/services/company';
 import { ServiceResult } from '@/types';
 
 import { User as AuthUser } from 'better-auth';

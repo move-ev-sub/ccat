@@ -8,10 +8,12 @@ import {
   DescriptionListTerm,
 } from '@/components/ui/description-list';
 import { Separator } from '@/components/ui/separator';
-import { SelectionsReviewGroup } from '@/features/application/components/selections-review-group';
-import { UploadedFileCard } from '@/features/application/components/uploaded-file';
+
 import { useApplicationStore } from '@/features/application/stores/application.store';
-import { cn, translateDegree, translateGender } from '@/utils';
+import { SelectionsReviewGroup } from '@/features/application/ui/selections-review-group';
+import { UploadedFileCard } from '@/features/application/ui/uploaded-file';
+import { cn } from '@/lib/utils/cn';
+import { translateDegree, translateGender } from '@/utils';
 import { format } from 'date-fns';
 import React from 'react';
 

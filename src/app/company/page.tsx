@@ -48,7 +48,7 @@ export default async function CompanyOverviewPage() {
   );
 }
 
-export function SubEventsListEmpty({
+function SubEventsListEmpty({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
