@@ -1,5 +1,25 @@
-'use client';
+'use server';
 
+import * as SidebarPrimitive from '@/components/ui/sidebar';
+import { signOut } from '@/features/auth/services/authService';
+import { auth } from '@/lib/api/auth';
+import { SiteConfig } from '@/lib/config/site';
+import { AdminRoutes, CompanyRoutes, UserRoutes } from '@/lib/consts/routes';
+import { Session } from '@/types/auth';
+import {
+  ArrowUpRightIcon,
+  CheckIcon,
+  ChevronUpDownIcon,
+  ComputerDesktopIcon,
+  DocumentCheckIcon,
+  MoonIcon,
+  SunIcon,
+} from '@heroicons/react/16/solid';
+import { useTheme } from 'next-themes';
+import { headers } from 'next/headers';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,21 +32,83 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { AdminRoutes, CompanyRoutes, UserRoutes } from '@/constants/routes';
-import { Session } from '@/utils/auth';
-import { createClient } from '@/utils/supabase/client';
-import {
-  ArrowUpRightIcon,
-  CheckIcon,
-  ChevronUpDownIcon,
-  ComputerDesktopIcon,
-  MoonIcon,
-  SunIcon,
-} from '@heroicons/react/16/solid';
-import { useTheme } from 'next-themes';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+} from '../ui/dropdown-menu';
+
+// Menu items.
+// const items = [
+//   {
+//     title: 'Dashboard',
+//     url: AdminRoutes.DASHBOARD,
+//     icon: HomeIcon,
+//   },
+//   {
+//     title: 'Veranstaltungen',
+//     url: AdminRoutes.EVENTS,
+//     icon: CalendarIcon,
+//   },
+//   {
+//     title: 'Nutzerverwaltung',
+//     url: AdminRoutes.USERS,
+//     icon: UsersIcon,
+//   },
+//   {
+//     title: 'Settings',
+//     url: AdminRoutes.PERSONAL_SETTINGS,
+//     icon: Cog6ToothIcon,
+//   },
+// ];
+
+interface SidebarProps
+  extends React.ComponentProps<typeof SidebarPrimitive.Sidebar> {
+  items: {
+    title: string;
+    url: string;
+    icon: React.ElementType;
+    type?: 'admin' | 'user';
+  }[];
+}
+
+export async function Sidebar({ items, ...props }: SidebarProps) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    throw new Error('User is not authenticated.');
+  }
+
+  return (
+    <SidebarPrimitive.Sidebar {...props}>
+      <SidebarPrimitive.SidebarContent>
+        <SidebarPrimitive.SidebarHeader>
+          <div className="flex items-center justify-start gap-4 p-2">
+            <div className="bg-background border-border-secondary rounded-md border p-2">
+              <DocumentCheckIcon className="text-accent size-4" />
+            </div>
+            <p className="text-foreground font-medium">CCAT</p>
+          </div>
+        </SidebarPrimitive.SidebarHeader>
+        <SidebarPrimitive.SidebarGroup>
+          <SidebarPrimitive.SidebarGroupContent>
+            <SidebarPrimitive.SidebarMenu base="">
+              {items.map((item) => (
+                <SidebarPrimitive.SidebarMenuItem key={item.title}>
+                  <SidebarPrimitive.SidebarMenuLink href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </SidebarPrimitive.SidebarMenuLink>
+                </SidebarPrimitive.SidebarMenuItem>
+              ))}
+            </SidebarPrimitive.SidebarMenu>
+          </SidebarPrimitive.SidebarGroupContent>
+        </SidebarPrimitive.SidebarGroup>
+      </SidebarPrimitive.SidebarContent>
+      <SidebarPrimitive.SidebarFooter>
+        <SidebarProfileMenu session={session} />
+      </SidebarPrimitive.SidebarFooter>
+    </SidebarPrimitive.Sidebar>
+  );
+}
 
 export function SidebarProfileMenu({
   session,
@@ -34,12 +116,11 @@ export function SidebarProfileMenu({
 }: React.ComponentProps<typeof DropdownMenu> & {
   session: Session;
 }) {
-  const supabase = createClient();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
 
   const onLogout = async () => {
-    supabase.auth.signOut();
+    await signOut();
     router.push('/auth/login');
   };
 
@@ -101,16 +182,13 @@ export function SidebarProfileMenu({
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link href={'https://docs.consultingcontact.de'} target="_blank">
+              <Link href={SiteConfig.links.docs} target="_blank">
                 Dokumentation
                 <ArrowUpRightIcon className="ml-auto" />
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link
-                href={'https://github.com/move-ev-sub/ccat/releases'}
-                target="_blank"
-              >
+              <Link href={SiteConfig.links.changelog} target="_blank">
                 Changelog
                 <ArrowUpRightIcon className="ml-auto" />
               </Link>
