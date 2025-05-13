@@ -6,6 +6,7 @@ import { auth } from '@/utils/auth';
 import { headers } from 'next/headers';
 import { validate } from 'uuid';
 import prisma from '../db';
+import { withAuth } from '../helpers';
 import { NewEventData } from '../schemas/event';
 import { ServiceResult } from '../types/serviceResult';
 
@@ -258,7 +259,33 @@ export async function getEventById(
   }
 }
 
-export async function getAllNonArchivedEvents(): Promise<
+export const getAllNonArchivedEvents = withAuth<[], Event[]>(
+  async () => {
+    const res = await prisma.event.findMany({
+      where: {
+        NOT: {
+          status: 'ARCHIVED',
+        },
+      },
+    });
+
+    if (!res) {
+      throw new Error('Failed to fetch Events.');
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      event: ['fetchAll'],
+    },
+  }
+);
+
+export async function getAllNonArchivedEventsDeprecated(): Promise<
   ServiceResult<Event[]>
 > {
   try {

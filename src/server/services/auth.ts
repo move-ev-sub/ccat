@@ -2,17 +2,16 @@
 
 import { User as PrismaUser, Role } from '@/generated/prisma/client';
 import { auth } from '@/utils/auth';
-import { createClient } from '@/utils/supabase/server';
-import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { CCATError, UnauthenticatedError, UnauthorizedError } from '@/error';
+import { CCATError } from '@/error';
 import { GENERAL_ERROR_CODES } from '@/error/codes';
-import { statement } from '@/utils/auth/permissions';
-import { Session, User } from 'better-auth';
+import { User } from 'better-auth';
 import { UserWithRole } from 'better-auth/plugins';
 import { randomBytes } from 'crypto';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import prisma from '../db';
+import { withAuth } from '../helpers';
 import { passwordSchema } from '../schemas/auth';
 import { ServiceResult } from '../types/serviceResult';
 
@@ -22,90 +21,6 @@ interface SignUpWithEmailArgs {
   email: string;
   password: string;
   acceptLegal: boolean;
-}
-
-// Can you create a dynamic typescript type for the statement object?
-type Statement = keyof typeof statement;
-
-interface UserHasPermissionArgs {
-  session?: { user: User; session: Session };
-  permissions: {
-    [key in Statement]?: (typeof statement)[key][number][];
-  };
-}
-
-export async function isAuthenticated(): Promise<
-  ServiceResult<{ user: User; session: Session }>
-> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session)
-    return {
-      ok: false,
-      error: 'User is not authenticated.',
-    };
-
-  return { ok: true, data: session };
-}
-
-/**
- * Checks if the currently logged in user has a given set of permissions.
- */
-export async function userHasPermission({
-  session: _session,
-  permissions,
-}: UserHasPermissionArgs): Promise<
-  ServiceResult<{ user: User; session: Session }>
-> {
-  try {
-    let hasPermission: boolean = false;
-
-    let session = _session;
-
-    if (!session) {
-      const authenticated = await isAuthenticated();
-
-      if (!authenticated.ok) {
-        throw new UnauthenticatedError();
-      }
-
-      session = authenticated.data;
-    }
-
-    const id = session.user.id;
-
-    hasPermission = (
-      await auth.api.userHasPermission({
-        body: {
-          userId: id,
-          permissions,
-        },
-      })
-    ).success;
-
-    if (!hasPermission) {
-      const flatPermissions = Object.values(permissions).flat();
-      throw new UnauthorizedError(
-        `Missing at least one of the following permissions: ${flatPermissions.toLocaleString()}`
-      );
-    }
-
-    return { ok: true, data: session };
-  } catch (error) {
-    if (error instanceof Error)
-      return {
-        ok: false,
-        error: error.message,
-        cause: error.cause,
-      };
-
-    return {
-      ok: false,
-      error: 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
 }
 
 /**
@@ -182,9 +97,11 @@ export async function signInWithPassword(
     };
   }
 
-  // TODO: Check if the supabase client exists -> Optional
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (await isAuthenticated()) {
+  if (session) {
     return {
       ok: false,
       error: 'User is already authenticated.',
@@ -235,21 +152,17 @@ export async function signInWithPassword(
 
 /**
  * Signs the current user out.
- *
- * @param client
- * @returns
  */
-export async function signOut(client?: SupabaseClient): Promise<undefined> {
-  if (!client) {
-    client = await createClient();
-  }
+export async function signOut(): Promise<undefined> {
+  try {
+    await auth.api.signOut({
+      headers: await headers(),
+    });
 
-  // Only authenticated users can sign out
-  if (!(await isAuthenticated())) {
-    return;
+    redirect('/auth/login');
+  } catch (error) {
+    console.error(error);
   }
-
-  client.auth.signOut();
 }
 
 /**
@@ -364,36 +277,37 @@ export async function getCurrentRole(): Promise<ServiceResult<Role>> {
 }
 
 interface UpdateOwnSettingsArgs {
+  /**
+   * The first name of the user.
+   */
   firstName: string;
+  /**
+   * The last name of the user.
+   */
   lastName: string;
+  /**
+   * Whether the user wants to receive email reminders.
+   */
   notifyMe: boolean;
+  /**
+   * Whether the user wants to receive email reminders.
+   */
   emailReminders: boolean;
 }
 
 /**
- * Updates the first name and last name fields of the current user.
+ * Updates the first name, last name, notify me and email reminders of the
+ * current user.
  *
- * @param firstName - The first name of the user.
- * @param lastName - The last name of the user.
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * is authenticated.
  *
- * @returns A promise with the status of the update. True if the update was
- * successful, false otherwise.
+ * @requires {permission} [authenticated]
+ *
+ * @returns A ServiceResult with the status of the update.
  */
-export async function updateOwnSettings({
-  firstName,
-  lastName,
-  notifyMe,
-  emailReminders,
-}: UpdateOwnSettingsArgs): Promise<ServiceResult<void>> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session) {
-      throw new Error('User is not authenticated.');
-    }
-
+export const updateOwnSettings = withAuth<[UpdateOwnSettingsArgs], void>(
+  async ({ firstName, lastName, notifyMe, emailReminders }) => {
     const res = await auth.api.updateUser({
       headers: await headers(),
       body: {
@@ -405,29 +319,15 @@ export async function updateOwnSettings({
     });
 
     if (!res) {
-      throw new Error('Failed to update user.');
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
     }
-
-    console.log(res);
 
     return {
       ok: true,
       data: undefined,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: error.message ?? 'Ein unbekannter Fehler ist aufgetreten.',
-      };
-    }
-
-    return {
-      ok: false,
-      error: 'Ein unbekannter Fehler ist aufgetreten.',
-    };
   }
-}
+);
 
 interface RequestPasswordResetArgs {
   email: string;
@@ -436,106 +336,81 @@ interface RequestPasswordResetArgs {
 /**
  * Sends a link to the user's email with which they can log back into their account and
  * reset their password.
+ *
+ * @deprecated
  */
-export async function requestPasswordReset({
-  email,
-}: RequestPasswordResetArgs): Promise<ServiceResult<void>> {
-  const client = await createClient();
+export async function requestPasswordReset({}: RequestPasswordResetArgs): Promise<
+  ServiceResult<void>
+> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (await isAuthenticated()) {
+  if (session) {
     return {
       ok: false,
       error: 'User is already authenticated.',
     };
   }
 
-  const { error } = await client.auth.resetPasswordForEmail(email);
-
-  if (error) {
-    return {
-      ok: false,
-      error: error.message ?? 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
-
-  return { ok: true, data: undefined };
-}
-
-interface GetUserByIdArgs {
-  id: string;
+  return { ok: false, error: 'Feature not implemented.' };
 }
 
 /**
- * Returns the database user object for the given id. Only users with the
- * `admin` role and the `userProfile:fetchAll` permission can fetch the user.
+ * Returns the user with the given id. Throws an error if no user with the given
+ * id exists.
  *
- * @param id - The id of the user to get.
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
  *
- * @returns The database user object if the user has permission to fetch the user.
+ * @requires {permission} [userProfile:fetchAll]
+ *
+ * @returns A ServiceResult with the user.
  */
-export async function getUserById({
-  id,
-}: GetUserByIdArgs): Promise<ServiceResult<PrismaUser>> {
-  try {
-    const hasPermission = await auth.api.userHasPermission({
-      body: {
-        role: 'admin',
-        permissions: {
-          userProfile: ['fetchAll'],
-        },
-      },
-    });
-
-    if (!hasPermission.success) {
-      throw new Error('User does not have permission to fetch user by id.');
-    }
-
+export const getUserById = withAuth<
+  [
+    {
+      /**
+       * The id of the user to get.
+       */
+      id: string;
+    },
+  ],
+  PrismaUser
+>(
+  async ({ id }) => {
     const res = await prisma.user.findUniqueOrThrow({
-      where: {
-        id,
-      },
+      where: { id },
     });
+
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
 
     return {
       ok: true,
       data: res,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: error.message,
-      };
-    }
-
-    return {
-      ok: false,
-      error: 'Ein unbekannter Fehler ist aufgetreten.',
-    };
+  },
+  {
+    permissions: {
+      userProfile: ['fetchAll'],
+    },
   }
-}
+);
 
-export async function getUsers(): Promise<ServiceResult<PrismaUser[]>> {
-  try {
-    // Authenticate the user
-    const authenticated = await isAuthenticated();
-    if (!authenticated.ok) {
-      return authenticated;
-    }
-
-    // Authorize the user
-    const session = authenticated.data;
-    const hasPermission = await userHasPermission({
-      session,
-      permissions: {
-        userProfile: ['fetchAll'],
-      },
-    });
-
-    if (!hasPermission.ok) {
-      return hasPermission;
-    }
-
+/**
+ * Returns all users from the database.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [userProfile:fetchAll]
+ *
+ * @returns A ServiceResult with the users from the database.
+ */
+export const getUsers = withAuth<[], PrismaUser[]>(
+  async () => {
     const res = await prisma.user.findMany();
 
     if (!res) {
@@ -546,51 +421,51 @@ export async function getUsers(): Promise<ServiceResult<PrismaUser[]>> {
       ok: true,
       data: res,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: error.message,
-        cause: error.cause,
-      };
-    }
-
-    return {
-      ok: false,
-      error: 'Ein unbekannter Fehler ist aufgetreten.',
-    };
+  },
+  {
+    permissions: {
+      userProfile: ['fetchAll'],
+    },
   }
-}
+);
 
 interface CreateUserArgs {
-  firstName: string;
-  lastName: string;
+  /**
+   * The email of the user.
+   */
   email: string;
+  /**
+   * The first name of the user.
+   */
+  firstName: string;
+  /**
+   * The last name of the user.
+   */
+  lastName: string;
+  /**
+   * The password of the user.
+   */
   password: string;
+  /**
+   * The role of the user.
+   *
+   * @default 'user'
+   */
   role: 'user' | 'company';
 }
 
-export async function createUser({
-  email,
-  firstName,
-  lastName,
-  role,
-  password,
-}: CreateUserArgs): Promise<ServiceResult<UserWithRole>> {
-  try {
-    const hasPermission = await auth.api.userHasPermission({
-      body: {
-        role: 'admin',
-        permissions: {
-          user: ['create'],
-        },
-      },
-    });
-
-    if (!hasPermission.success) {
-      throw new Error('No permission to create user');
-    }
-
+/**
+ * Creates a new user with the given email, first name, last name, role and password.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [user:create]
+ *
+ * @returns A ServiceResult with the created user.
+ */
+export const createUser = withAuth<[CreateUserArgs], UserWithRole>(
+  async ({ email, firstName, lastName, role, password }) => {
     const res = await auth.api.createUser({
       body: {
         email,
@@ -607,24 +482,17 @@ export async function createUser({
     });
 
     if (!res) {
-      throw new Error('Failed to create user');
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
     }
 
     return {
       ok: true,
       data: res.user,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: error.message,
-      };
-    }
-
-    return {
-      ok: false,
-      error: 'An error occurred while creating the user',
-    };
+  },
+  {
+    permissions: {
+      user: ['create'],
+    },
   }
-}
+);

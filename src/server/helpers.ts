@@ -1,5 +1,3 @@
-'use server';
-
 import { AUTH_ERROR_CODES, GENERAL_ERROR_CODES } from '@/error/codes';
 import { adminOpts, auth, Session } from '@/utils/auth';
 import { statement } from '@/utils/auth/permissions';
@@ -39,8 +37,8 @@ type AuthorizationModeOptions =
  * @template TArgs - Tuple type of the arguments that the handler function accepts
  * @template TReturn - The return type of the handler function
  *
- * @param handler - The server action function to wrap. It receives the session as its first argument
- *                 followed by any additional arguments passed to the wrapped function.
+ * @param handler - The server action function to wrap. It receives any arguments passed to the wrapped function
+ *                 followed by the session as its last argument.
  *
  * @param authz - Optional authorization configuration:
  *   - `permissions`: Object specifying required permissions for each permission type
@@ -58,14 +56,14 @@ type AuthorizationModeOptions =
  *
  * @example
  * // Basic usage with authentication only
- * const getData = withAuth<[string], { name: string }>(async (session, id) => {
+ * const getData = withAuth<[string], { name: string }>(async (id, session) => {
  *   return { ok: true, data: { name: 'test' } };
  * });
  *
  * @example
  * // With permission requirements
  * const createCompany = withAuth<[CompanyData], Company>(
- *   async (session, data) => {
+ *   async (data, session) => {
  *     return { ok: true, data: await createCompany(data) };
  *   },
  *   { permissions: { company: ['create'] } }
@@ -74,7 +72,7 @@ type AuthorizationModeOptions =
  * @example
  * // With role-based authorization
  * const adminAction = withAuth<[AdminData], AdminResult>(
- *   async (session, data) => {
+ *   async (data, session) => {
  *     return { ok: true, data: await performAdminAction(data) };
  *   },
  *   {
@@ -88,72 +86,68 @@ type AuthorizationModeOptions =
  * );
  */
 export function withAuth<TArgs extends unknown[], TReturn>(
-  handler: (
-    session: Session,
-    ...args: TArgs
-  ) => Promise<ServiceResult<TReturn>>,
+  handler: (...args: [...TArgs, Session]) => Promise<ServiceResult<TReturn>>,
   authz?: AuthorizationOptions & AuthorizationModeOptions
 ) {
-  return async function (...args: TArgs): Promise<ServiceResult<TReturn>> {
-    try {
-      const session = await auth.api.getSession({
-        headers: await headers(),
-      });
-
-      if (!session) {
-        return {
-          ok: false,
-          error: AUTH_ERROR_CODES.USER_NOT_AUTHENTICATED,
-        };
-      }
-
-      // 2. Authorization check (if permissions required)
-      if (authz) {
-        const id = session.user.id;
-
-        const authorized = await auth.api.userHasPermission({
-          body: {
-            ...(authz.mode === 'user'
-              ? { userId: authz.userId ?? id }
-              : authz.mode === 'role'
-                ? { role: authz.role ?? 'user' }
-                : { userId: id }),
-            permissions: authz.permissions,
-          },
-          // TODO: We might need to add headers here
-          // headers: await headers(),
+  // Return a regular function (not async) that returns a Promise
+  return function (...args: TArgs): Promise<ServiceResult<TReturn>> {
+    // Create an async IIFE to handle the async operations
+    return (async () => {
+      try {
+        const headersList = await headers();
+        const session = await auth.api.getSession({
+          headers: headersList,
         });
 
-        if (!authorized.success) {
+        if (!session) {
           return {
             ok: false,
-            error: AUTH_ERROR_CODES.USER_NOT_AUTHORIZED,
+            error: AUTH_ERROR_CODES.USER_NOT_AUTHENTICATED,
           };
         }
-      }
 
-      return await handler(session, ...args);
-    } catch (error) {
-      if (error instanceof Error) {
+        // 2. Authorization check (if permissions required)
+        if (authz) {
+          const id = session.user.id;
+          const headersList = await headers();
+
+          const authorized = await auth.api.userHasPermission({
+            body: {
+              ...(authz.mode === 'user'
+                ? { userId: authz.userId ?? id }
+                : authz.mode === 'role'
+                  ? { role: authz.role ?? 'user' }
+                  : { userId: id }),
+              permissions: authz.permissions,
+            },
+            headers: headersList,
+          });
+
+          if (!authorized.success) {
+            return {
+              ok: false,
+              error: AUTH_ERROR_CODES.USER_NOT_AUTHORIZED,
+            };
+          }
+        }
+
+        return await handler(...args, session);
+      } catch (error) {
+        console.error('withAuth error:', error);
+
+        if (error instanceof Error) {
+          return {
+            ok: false,
+            error: error.message,
+            cause: error.cause,
+          };
+        }
+
         return {
           ok: false,
-          error: error.message,
-          cause: error.cause,
+          error: GENERAL_ERROR_CODES.UNKNOWN_ERROR,
         };
       }
-
-      if (error instanceof Error) {
-        return {
-          ok: false,
-          error: error.message,
-          cause: error.cause,
-        };
-      }
-
-      return {
-        ok: false,
-        error: GENERAL_ERROR_CODES.UNKNOWN_ERROR,
-      };
-    }
+    })();
   };
 }
