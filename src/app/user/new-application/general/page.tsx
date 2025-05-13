@@ -1,5 +1,5 @@
-import { ApplicationGeneralForm } from '@/components/application/forms/general-form';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { ApplicationGeneralForm } from '@/features/application/ui/forms/general-form';
 
 export default function NewApplicationGeneralPage() {
   return (

@@ -1,7 +1,7 @@
 'use client';
 
-import { PrioritizeForm } from '@/components/application/forms/prioritize-form';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { PrioritizeForm } from '@/features/application/ui/forms/prioritize-form';
 
 export default function NewApplicationPrioritizePage() {
   return (

@@ -1,8 +1,5 @@
 'use client';
 
-import { SelectionsReviewGroup } from '@/components/application/components/selections-review-group';
-import { UploadedFileCard } from '@/components/application/components/uploaded-file';
-import { useApplicationStore } from '@/components/application/stores/application.store';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import {
   DescriptionList,
@@ -11,6 +8,9 @@ import {
   DescriptionListTerm,
 } from '@/components/ui/description-list';
 import { Separator } from '@/components/ui/separator';
+import { SelectionsReviewGroup } from '@/features/application/components/selections-review-group';
+import { UploadedFileCard } from '@/features/application/components/uploaded-file';
+import { useApplicationStore } from '@/features/application/stores/application.store';
 import { cn, translateDegree, translateGender } from '@/utils';
 import { format } from 'date-fns';
 import React from 'react';

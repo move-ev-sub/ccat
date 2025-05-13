@@ -12,14 +12,15 @@ import {
 } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { ApplicationRoutes } from '@/utils/consts';
+import { ApplicationRoutes } from '@/lib/consts/routes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { PageNavigation } from '../components/page-navigation';
-import { Selection, useApplicationStore } from '../stores/application.store';
+import { Selection, useApplicationStore } from '../../stores/application.store';
+import { PageNavigation } from '../page-navigation';
+
 // #region Form Schema
 // ======================================================================================
 

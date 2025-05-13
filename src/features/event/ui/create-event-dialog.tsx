@@ -1,16 +1,16 @@
 'use client';
 
-import { PlusIcon } from '@heroicons/react/16/solid';
-import React from 'react';
-import { CreateEventForm } from './forms/create-event-form';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from '@/components/ui/dialog';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import React from 'react';
+import { CreateEventForm } from './forms/create-event-form';
 
 export function CreateEventDialog({
   className,

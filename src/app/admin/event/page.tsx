@@ -1,8 +1,8 @@
-import { CreateEventDialog } from '@/components/create-event-dialog';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getAllNonArchivedEvents } from '@/features/event/services/eventService';
+import { CreateEventDialog } from '@/features/event/ui/create-event-dialog';
 import { EventsList } from '@/features/event/ui/event-list';
 import { EventStatusToIcon } from '@/features/event/ui/event-status-to-icon';
 import { messages as t } from '@/i18n';

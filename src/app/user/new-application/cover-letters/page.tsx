@@ -1,8 +1,8 @@
 'use client';
 
-import { CoverLettersForm } from '@/components/application/forms/cover-letters-form';
-import { useApplicationStore } from '@/components/application/stores/application.store';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { useApplicationStore } from '@/features/application/stores/application.store';
+import { CoverLettersForm } from '@/features/application/ui/forms/cover-letters-form';
 
 export default function NewApplicationCoverLettersPage() {
   const { slots } = useApplicationStore((state) => state);

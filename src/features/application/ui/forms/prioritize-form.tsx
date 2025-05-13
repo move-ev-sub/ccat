@@ -9,16 +9,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
-import { ApplicationRoutes } from '@/utils/consts';
+import { ApplicationRoutes } from '@/lib/consts/routes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { PageNavigation } from '../components/page-navigation';
-import { PrioritizeGroup } from '../components/prioritize-group';
-import { SlotEntry, useApplicationStore } from '../stores/application.store';
+import { SlotEntry, useApplicationStore } from '../../stores/application.store';
+import { PageNavigation } from '../page-navigation';
+import { PrioritizeGroup } from '../prioritize-group';
 
 // #region Form Schema
 // ======================================================================================

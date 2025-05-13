@@ -23,13 +23,14 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Degree, Gender } from '@/generated/prisma/client';
+import { ApplicationRoutes } from '@/lib/consts/routes';
+import { cn } from '@/lib/utils/cn';
 import {
   ACCEPTED_FILE_TYPES,
   MAX_FILE_COUNT,
   MAX_FILE_SIZE,
 } from '@/server/schemas/application';
-import { cn, translateDegree, translateGender } from '@/utils';
-import { ApplicationRoutes } from '@/utils/consts';
+import { translateDegree, translateGender } from '@/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -37,8 +38,8 @@ import React from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
 import { z } from 'zod';
-import { PageNavigation } from '../components/page-navigation';
-import { useApplicationStore } from '../stores/application.store';
+import { useApplicationStore } from '../../stores/application.store';
+import { PageNavigation } from '../page-navigation';
 
 /**
  * Not really a clean solution, but it works for now
