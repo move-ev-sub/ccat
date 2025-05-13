@@ -4,7 +4,7 @@ import {
   AuthTitle,
 } from '@/components/auth/auth-header';
 import { RegisterForm } from '@/components/auth/forms/register-form';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import Link from 'next/link';
 
 export default async function RegisterPage() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { useFormField } from './form.context';
 
 export function FormDescription({

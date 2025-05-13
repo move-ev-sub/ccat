@@ -14,7 +14,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { createClient } from '@/utils/supabase/client';
 import {
   CheckIcon,

@@ -4,7 +4,7 @@ import {
   AuthTitle,
 } from '@/components/auth/auth-header';
 import { LoginForm } from '@/components/auth/forms/login-form';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import Link from 'next/link';
 
 export default async function LoginPage() {

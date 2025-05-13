@@ -1,5 +1,5 @@
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 
 export function PageHeader({
   className,

@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { format } from 'date-fns';
 import React from 'react';
 import { Selection, SlotEntry } from '../stores/application.store';

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { DayPicker } from 'react-day-picker';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/16/solid';
 import { buttonVariants } from '../button';
 

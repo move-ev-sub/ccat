@@ -4,7 +4,7 @@
 
 import { Input } from '@/components/ui/input';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import React from 'react';
 import {
   Period,

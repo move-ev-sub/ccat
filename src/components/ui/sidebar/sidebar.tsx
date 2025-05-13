@@ -9,7 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { SIDEBAR_WIDTH_MOBILE } from './sidebar.consts';
 import { useSidebar } from './sidebar.context';
 

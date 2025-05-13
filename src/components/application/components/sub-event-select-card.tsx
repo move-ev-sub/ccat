@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { SubEvent } from '@/generated/prisma/client';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import {
   CalendarIcon,
   ClockIcon,

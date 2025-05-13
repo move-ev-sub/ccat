@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { Input } from '../input';
 
 export function SidebarInput({

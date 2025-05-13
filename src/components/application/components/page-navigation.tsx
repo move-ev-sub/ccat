@@ -1,5 +1,5 @@
 import { Button, buttonVariants } from '@/components/ui/button';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/16/solid';
 import Link from 'next/link';
 import React from 'react';

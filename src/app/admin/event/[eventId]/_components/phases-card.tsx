@@ -25,11 +25,11 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Phase, PhaseType } from '@/generated/prisma/client';
+import { cn } from '@/lib/utils/cn';
 import {
   fetchPhasesForEvent,
   isPhasesSetupCompleted,
 } from '@/server/services/phase';
-import { cn } from '@/utils';
 import {
   BoltIcon,
   CheckIcon,

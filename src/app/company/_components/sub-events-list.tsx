@@ -1,7 +1,7 @@
 import { Spinner } from '@/components/spinner';
 import { SubEventThumbnailCard } from '@/components/sub-event-thumbnail-card';
+import { cn } from '@/lib/utils/cn';
 import { getOwnSubEvents } from '@/server/services/sub-event';
-import { cn } from '@/utils';
 import { ArchiveBoxIcon } from '@heroicons/react/24/outline';
 
 export async function SubEventsList({

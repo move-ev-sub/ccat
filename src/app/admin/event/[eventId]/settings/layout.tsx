@@ -1,6 +1,6 @@
 import { PageContainer } from '@/components/page-container';
 import { PageHeader, PageTitle } from '@/components/page-header';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import {
   AdjustmentsHorizontalIcon,
   CalendarIcon,

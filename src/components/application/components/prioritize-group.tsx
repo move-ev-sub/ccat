@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import React from 'react';
 import { Selection, SlotEntry } from '../stores/application.store';

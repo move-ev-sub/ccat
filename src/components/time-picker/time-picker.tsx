@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { ClockIcon } from '@heroicons/react/16/solid';
 import * as React from 'react';
 import { TimePickerInput } from './time-picker-input';

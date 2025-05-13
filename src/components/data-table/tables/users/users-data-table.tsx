@@ -11,7 +11,7 @@ import {
 import * as React from 'react';
 
 import { DataTablePagination } from '@/components/data-table/data-table-pagination';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import {
   ColumnDef,
   flexRender,

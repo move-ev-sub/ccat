@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { Slot } from '@radix-ui/react-slot';
 import { VariantProps } from 'class-variance-authority';
 import Link from 'next/link';

@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import React from 'react';
 
 export function PageDesc({ className, ...props }: React.ComponentProps<'h2'>) {

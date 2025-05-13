@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Button } from '../button';
 import { useSidebar } from './sidebar.context';

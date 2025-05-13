@@ -1,9 +1,9 @@
 'use client';
 
-import * as React from 'react';
-import * as MenubarPrimitive from '@radix-ui/react-menubar';
+import { cn } from '@/lib/utils/cn';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
-import { cn } from '@/utils';
+import * as MenubarPrimitive from '@radix-ui/react-menubar';
+import * as React from 'react';
 
 export function MenubarSubTrigger({
   className,

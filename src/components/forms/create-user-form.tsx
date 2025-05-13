@@ -1,7 +1,7 @@
 'use client';
 
+import { cn } from '@/lib/utils/cn';
 import { createUser } from '@/server/services/auth';
-import { cn } from '@/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import React from 'react';

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { FormItemContext } from './form.context';
 
 export function FormItem({ className, ...props }: React.ComponentProps<'div'>) {

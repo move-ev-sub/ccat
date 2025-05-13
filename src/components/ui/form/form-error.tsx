@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { ExclamationTriangleIcon } from '@heroicons/react/16/solid';
 
 interface FormErrorProps extends React.ComponentProps<'div'> {
