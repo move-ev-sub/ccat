@@ -1,18 +1,18 @@
 import { NoEvents, NoEventsForFilter } from '@/components/no-events';
 import { TabsContent } from '@/components/ui/tabs';
-import { getAllNonArchivedEvents } from '@/features/event/services/eventService';
 import { EventThumbnailCard } from '@/features/event/ui/event-card';
+import { Event } from '@/generated/prisma/client';
+import { cn } from '@/lib/utils/cn';
 
-export async function EventsList() {
-  const res = await getAllNonArchivedEvents();
+interface EventsListProps extends React.ComponentProps<'div'> {
+  events: Event[];
+}
 
-  if (!res.ok) {
-    // @TODO: Add error handling
-    return <p>Error when fetching events</p>;
-  }
-
-  const { data: events } = res;
-
+export async function EventsList({
+  events,
+  className,
+  ...props
+}: EventsListProps) {
   const publishedEvents = events.filter(
     (event) => event.status === 'PUBLISHED'
   );
@@ -27,7 +27,7 @@ export async function EventsList() {
   }
 
   return (
-    <div className="container pt-8">
+    <div className={cn('container pt-8', className)} {...props}>
       <TabsContent asChild value="all">
         <div className="relative isolate grid gap-8 lg:grid-cols-2">
           {events.map((event) => (

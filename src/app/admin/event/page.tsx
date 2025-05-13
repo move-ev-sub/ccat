@@ -1,14 +1,13 @@
 import { CreateEventDialog } from '@/components/create-event-dialog';
-import { EventStatusToIcon } from '@/components/event-status-to-icon';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getAllNonArchivedEvents } from '@/features/event/services/eventService';
+import { EventsList } from '@/features/event/ui/event-list';
+import { EventStatusToIcon } from '@/features/event/ui/event-status-to-icon';
 import { messages as t } from '@/i18n';
 import { ListBulletIcon } from '@heroicons/react/16/solid';
 import { Metadata } from 'next';
-import { Suspense } from 'react';
-import { EventsList } from './_components/events-list';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +20,14 @@ export const metadata: Metadata = {
  * The admin overview page where all events are displayed.
  */
 export default async function AdminOverviewPage() {
+  const res = await getAllNonArchivedEvents();
+
+  if (!res.ok) {
+    throw new Error(res.error);
+  }
+
+  const events = res.data;
+
   return (
     <PageContainer>
       <PageHeader>
@@ -50,18 +57,8 @@ export default async function AdminOverviewPage() {
             </TabsTrigger>
           </TabsList>
         </div>
-        <Suspense
-          fallback={
-            <div className="mt-to-header container grid grid-cols-2 gap-8">
-              <Skeleton className="h-48" />
-              <Skeleton className="h-48" />
-              <Skeleton className="h-48" />
-              <Skeleton className="h-48" />
-            </div>
-          }
-        >
-          <EventsList />
-        </Suspense>
+
+        <EventsList events={events} />
       </Tabs>
     </PageContainer>
   );
