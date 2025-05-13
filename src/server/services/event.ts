@@ -1,7 +1,7 @@
 'use server';
 
 import { AUTH_ERROR_CODES, GENERAL_ERROR_CODES } from '@/error/codes';
-import { Event, Phase } from '@/generated/prisma/client';
+import { Event, EventStatus, Phase } from '@/generated/prisma/client';
 import { auth } from '@/utils/auth';
 import prisma from '../db';
 import { withAuth } from '../helpers';
@@ -89,7 +89,8 @@ export const createEvent = withAuth<
   [
     {
       name: string;
-      description: string;
+      description?: string;
+      status?: EventStatus;
     },
   ],
   Event

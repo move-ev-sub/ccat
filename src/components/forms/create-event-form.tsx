@@ -50,7 +50,7 @@ export function CreateEventForm({
     const res = await createEvent({
       name: values.name,
       description: values.description,
-      status: 'draft',
+      status: 'DRAFT',
     });
 
     if (!res.ok) {
