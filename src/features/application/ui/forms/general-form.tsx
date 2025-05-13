@@ -25,7 +25,7 @@ import { Separator } from '@/components/ui/separator';
 import { Degree, Gender } from '@/generated/prisma/client';
 import { ApplicationRoutes } from '@/lib/consts/routes';
 import { cn } from '@/lib/utils/cn';
-import { translateDegree, translateGender } from '@/utils';
+import { translateDegree, translateGender } from '@/lib/utils/translations';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';

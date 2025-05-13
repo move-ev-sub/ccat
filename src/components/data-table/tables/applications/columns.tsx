@@ -7,7 +7,7 @@ import {
   translateDegree,
   translatePriorization,
   translateStatus,
-} from '@/utils';
+} from '@/lib/utils/translations';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '../../data-table-column-header';
 import { DataTableRowActions } from '../../data-table-row-actions';

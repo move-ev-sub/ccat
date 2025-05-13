@@ -13,7 +13,7 @@ import { useApplicationStore } from '@/features/application/stores/application.s
 import { SelectionsReviewGroup } from '@/features/application/ui/selections-review-group';
 import { UploadedFileCard } from '@/features/application/ui/uploaded-file';
 import { cn } from '@/lib/utils/cn';
-import { translateDegree, translateGender } from '@/utils';
+import { translateDegree, translateGender } from '@/lib/utils/translations';
 import { format } from 'date-fns';
 import React from 'react';
 
