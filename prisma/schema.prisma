@@ -26,6 +26,8 @@ model Event {
   subEvents    SubEvent[]
   slots        Slot[]
   applications Application[]
+
+  @@map("event")
 }
 
 model Phase {
@@ -39,6 +41,8 @@ model Phase {
   createdAt   DateTime  @default(now())
   createdBy   User      @relation(fields: [createdById], references: [id])
   createdById String    @db.Text
+
+  @@map("phase")
 }
 
 // #region Sub Events
@@ -62,6 +66,8 @@ model SubEvent {
   createdBy              User                   @relation("SubEventCreator", fields: [createdById], references: [id])
   createdById            String                 @db.Text
   subApplications        SubApplication[]
+
+  @@map("sub_event")
 }
 
 model Slot {
@@ -74,6 +80,8 @@ model Slot {
   createdBy   User       @relation(fields: [createdById], references: [id])
   createdById String     @db.Text
   SubEvent    SubEvent[]
+
+  @@map("slot")
 }
 
 // #region Applications
@@ -104,6 +112,8 @@ model Application {
   experienceConsulting   Int
   cvUrl                  String
   subApplications        SubApplication[]
+
+  @@map("application")
 }
 
 // #region Sub Applications
@@ -121,22 +131,20 @@ model SubApplication {
   priorization  SubApplicationPrioritzation
   User          User?                       @relation(fields: [userId], references: [id])
   userId        String?
+
+  @@map("sub_application")
 }
 
 model University {
   id           String        @id @unique @default(cuid()) @db.Text
   name         String
   applications Application[]
+
+  @@map("university")
 }
 
 // #region Enums
 // ============================================================
-
-enum Role {
-  ADMIN
-  USER
-  COMPANY
-}
 
 enum EventStatus {
   DRAFT

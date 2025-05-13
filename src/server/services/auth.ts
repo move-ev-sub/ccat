@@ -1,6 +1,6 @@
 'use server';
 
-import { User as PrismaUser, Role } from '@/generated/prisma/client';
+import { User as PrismaUser } from '@/generated/prisma/client';
 import { auth } from '@/utils/auth';
 
 import { CCATError } from '@/error';
@@ -233,47 +233,6 @@ export async function createSecurePassword(
     .slice(0, length); // Trim to the desired length
 
   return pw;
-}
-
-/**
- * Returns the Role of the current user. If no user is found, an error
- * is returned.
- *
- * @returns {ServiceResult<Role>} The Role of the current user.
- *
- * @deprecated Use the permissions provided by better auth instead. This function
- * will be removed in the future and is currently only implemented for backwards
- * compatibility.
- */
-export async function getCurrentRole(): Promise<ServiceResult<Role>> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return {
-      ok: false,
-      error: 'User is not authenticated.',
-    };
-  }
-
-  switch (session.user.role) {
-    case 'admin':
-      return {
-        ok: true,
-        data: 'ADMIN',
-      };
-    case 'company':
-      return {
-        ok: true,
-        data: 'COMPANY',
-      };
-    default:
-      return {
-        ok: true,
-        data: 'USER',
-      };
-  }
 }
 
 interface UpdateOwnSettingsArgs {
