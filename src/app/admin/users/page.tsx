@@ -1,8 +1,8 @@
-import { CreateUserDialog } from '@/components/create-user-dialog';
 import { columns } from '@/components/data-table/tables/users/columns';
 import { UsersDataTable } from '@/components/data-table/tables/users/users-data-table';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageTitle } from '@/components/page-header';
+import { CreateUserDialog } from '@/features/user/ui/create-user-dialog';
 import { getUsers } from '@/server/services/auth';
 
 export const dynamic = 'force-dynamic';

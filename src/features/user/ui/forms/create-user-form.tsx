@@ -1,16 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/utils/cn';
-import { createUser } from '@/server/services/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import { GeneratePasswordInput } from '../generate-passsword-input';
-import { Button } from '../ui/button';
-import { Checkbox } from '../ui/checkbox';
+import { GeneratePasswordInput } from '@/components/generate-passsword-input';
+import { RequiredMark } from '@/components/required-mark';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -19,57 +12,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import { RequiredMark } from './required-mark';
-
-const formSchema = z.object({
-  firstName: z
-    .string({
-      required_error: 'Vorname ist erforderlich',
-    })
-    .min(1, {
-      message: 'Vorname ist erforderlich',
-    }),
-  lastName: z
-    .string({
-      required_error: 'Nachname ist erforderlich',
-    })
-    .min(1, {
-      message: 'Nachname ist erforderlich',
-    }),
-  email: z
-    .string({
-      required_error: 'E-Mail ist erforderlich',
-    })
-    .email(),
-  password: z
-    .string({
-      required_error: 'Passwort ist erforderlich',
-    })
-    .min(6, {
-      message: 'Passwort muss mindestens 6 Zeichen lang sein',
-    }),
-  role: z.enum(['company', 'user']),
-  autoConfirmEmail: z.boolean(),
-});
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils/cn';
+import { createUser } from '@/server/services/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { createUserSchema } from '../../validations';
 
 export function CreateUserForm({
   className,
   ...props
-}: Omit<React.ComponentProps<'form'>, 'onError'> & {}) {
+}: React.ComponentProps<'form'>) {
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof createUserSchema>>({
+    resolver: zodResolver(createUserSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -80,7 +50,7 @@ export function CreateUserForm({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof createUserSchema>) {
     setLoading(true);
 
     const res = await createUser({

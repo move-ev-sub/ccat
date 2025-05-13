@@ -1,6 +1,6 @@
 'use client';
 
-import { RequiredMark } from '@/components/forms/required-mark';
+import { RequiredMark } from '@/components/required-mark';
 import { TimePicker24h } from '@/components/time-picker/time-picker-24h';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';

@@ -1,6 +1,6 @@
 'use client';
 
-import { RequiredMark } from '@/components/forms/required-mark';
+import { RequiredMark } from '@/components/required-mark';
 import {
   Form,
   FormControl,

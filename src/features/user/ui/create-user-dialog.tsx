@@ -1,15 +1,15 @@
 'use client';
 
-import { UserPlusIcon } from '@heroicons/react/16/solid';
-import { CreateUserForm } from './forms/create-user-form';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from '@/components/ui/dialog';
+import { CreateUserForm } from '@/features/user/ui/forms/create-user-form';
+import { UserPlusIcon } from '@heroicons/react/16/solid';
 
 export function CreateUserDialog() {
   return (
