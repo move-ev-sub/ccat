@@ -1,11 +1,13 @@
 'use server';
 
+import { GENERAL_ERROR_CODES } from '@/error/codes';
 import { Prisma } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
 import { auth } from '@/utils/auth';
 import { createClient } from '@/utils/supabase/server';
 import { User } from 'better-auth';
 import prisma from '../db';
+import { withAuth } from '../helpers';
 import { ServiceResult } from '../types/serviceResult';
 import { createSecurePassword } from './auth';
 import { existsBucket } from './storage';
@@ -14,22 +16,15 @@ import { existsBucket } from './storage';
  * Fetches all companies from the database. Only authenticated users can
  * fetch all companies.
  *
- * @returns
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [company:fetchAll]
+ *
+ * @returns A ServiceResult with the companies.
  */
-export async function getAllCompanies(): Promise<ServiceResult<User[]>> {
-  try {
-    const hasPermission = await auth.api.userHasPermission({
-      body: {
-        permissions: {
-          company: ['fetchAll'],
-        },
-      },
-    });
-
-    if (!hasPermission.success) {
-      throw new Error('User does not have permission to fetch all companies.');
-    }
-
+export const getAllCompanies = withAuth<[], User[]>(
+  async () => {
     const res = await prisma.user.findMany({
       where: {
         role: {
@@ -46,54 +41,44 @@ export async function getAllCompanies(): Promise<ServiceResult<User[]>> {
       ok: true,
       data: res,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: error.message,
-      };
-    }
-
-    return {
-      ok: false,
-      error: t.errors.failedToFetch('companies'),
-    };
+  },
+  {
+    permissions: {
+      company: ['fetchAll'],
+    },
   }
-}
+);
 
 /**
  * Returns a single company by its ID from the database. Only authenticated
  * users can fetch a company. Returns an error if the company was not found
  * or if more than one company was found.
  *
- * @param companyId
- * @returns
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [company:fetchSingle]
+ *
+ * @returns A ServiceResult with the company.
  */
-export async function getCompanyById(
-  companyId: string
-): Promise<ServiceResult<User>> {
-  const hasPermission = await auth.api.userHasPermission({
-    body: {
-      permissions: {
-        company: ['fetchSingle'],
-      },
+export const getCompanyById = withAuth<
+  [
+    {
+      /**
+       * The id of the company to fetch.
+       */
+      id: string;
     },
-  });
-
-  if (!hasPermission.success) {
-    return {
-      ok: false,
-      error: t.errors.notAuthorized(),
-    };
-  }
-
-  try {
+  ],
+  User
+>(
+  async ({ id }) => {
     // Get the company from the database
     const res = await prisma.user.findFirst({
       where: {
         AND: [
           {
-            id: companyId,
+            id,
           },
           {
             role: {
@@ -105,34 +90,29 @@ export async function getCompanyById(
     });
 
     // If no result was found return an error
-    if (res === null) {
-      throw new Error(t.errors.failedToFetch('company'));
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
     }
 
     return {
       ok: true,
       data: res,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: error.message,
-      };
-    }
-
-    return {
-      ok: false,
-      error: t.errors.failedToFetch('company'),
-    };
+  },
+  {
+    permissions: {
+      company: ['fetchSingle'],
+    },
   }
-}
+);
 
 /**
  * Creates a new company in the database. Only admins can create new companies.
  * When a new company is created, a new profile is also created for the company
  * and a password is generated. The logo of the company is stored in the storage
  * bucket under `logos/company/[companyId].{png,svg,jpeg}`.
+ *
+ * @deprecated Use the auth.createUser API instead and set the user role to company.
  *
  * @returns ServiceResult with an object that contains the new company's ID and
  * the password for the new company. If the creation fails, an error is returned.
