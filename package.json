@@ -19,7 +19,7 @@
     "db:seed": "prisma db seed",
     "prepare": "husky",
     "postinstall": "prisma generate",
-    "mail:dev": "email dev --port 3030 --dir './src/emails'"
+    "mail:dev": "email dev --port 3030 --dir './src/features/email/components'"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
