@@ -21,9 +21,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { auth } from '@/lib/api/auth';
+import { cn } from '@/lib/utils/cn';
 import { updateOwnSettings } from '@/server/services/auth';
-import { cn } from '@/utils';
-import { auth } from '@/utils/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import React from 'react';
