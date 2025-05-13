@@ -5,6 +5,8 @@ import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageTitle } from '@/components/page-header';
 import { getUsers } from '@/server/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminUsersPage() {
   const res = await getUsers();
 

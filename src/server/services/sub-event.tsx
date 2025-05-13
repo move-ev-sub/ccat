@@ -208,7 +208,7 @@ export const getSubEventsForEvent = withAuth<
  *
  * @returns All published and owned sub events.
  */
-export const getOwnSubEventsS = withAuth<[unknown], SubEvent[]>(
+export const getOwnSubEvents = withAuth<[unknown?], SubEvent[]>(
   async (_, session) => {
     const id = session.user.id;
 

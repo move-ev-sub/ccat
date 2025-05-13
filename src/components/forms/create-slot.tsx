@@ -75,7 +75,9 @@ export function CreateNewSlotForm({
       return;
     }
 
-    const res = await createSlot(eventId, values.startDate, values.endDate);
+    const res = await createSlot({
+      ...values,
+    });
 
     if (!res.ok) {
       setError(res.error);

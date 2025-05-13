@@ -130,7 +130,7 @@ export const createEvent = withAuth<[NewEventData], Event>(
  *
  * @returns A promise with the event.
  */
-export const getEventByIdNew = withAuth<[string], Event>(
+export const getEventById = withAuth<[string], Event>(
   async (eventId) => {
     const res = await prisma.event.findUniqueOrThrow({
       where: {

@@ -24,7 +24,7 @@ export default async function AdminEventSlotsSettingsPage({
   }>;
 }) {
   const eventId = (await params).eventId;
-  const res = await getSlotsForEvent(eventId);
+  const res = await getSlotsForEvent({ eventId });
 
   // TODO: handle case where eventId is null
   if (!res.ok) {

@@ -10,6 +10,8 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { EventsList } from './_components/events-list';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Veranstaltungen',
   description: 'Alle bisherigen und aktuellen Veranstaltungen.',

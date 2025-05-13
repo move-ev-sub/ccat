@@ -5,6 +5,8 @@ import { getPublishedEvents } from '@/server/services/event';
 import { Metadata } from 'next';
 import NoPublishedEvents from './_components/no-published-events';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Benutzerübersicht',
   description: 'Alle Veranstaltungen, welche derzeit verfügbar sind.',

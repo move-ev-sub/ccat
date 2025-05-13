@@ -35,7 +35,7 @@ async function fetchData({ eventId }: { eventId: string }): Promise<
     return companiesRes;
   }
 
-  const slotsRes = await getSlotsForEvent(eventId);
+  const slotsRes = await getSlotsForEvent({ eventId });
 
   if (!slotsRes.ok) {
     return slotsRes;
