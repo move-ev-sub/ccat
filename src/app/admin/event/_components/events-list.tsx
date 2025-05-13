@@ -1,7 +1,7 @@
-import { EventThumbnailCard } from '@/components/event-thumbnail-card/event-thumbnail-card';
 import { NoEvents, NoEventsForFilter } from '@/components/no-events';
 import { TabsContent } from '@/components/ui/tabs';
-import { getAllNonArchivedEvents } from '@/server/services/event';
+import { getAllNonArchivedEvents } from '@/features/event/services/eventService';
+import { EventThumbnailCard } from '@/features/event/ui/event-card';
 
 export async function EventsList() {
   const res = await getAllNonArchivedEvents();

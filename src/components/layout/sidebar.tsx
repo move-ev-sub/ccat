@@ -7,12 +7,16 @@ import { AdminRoutes, CompanyRoutes, UserRoutes } from '@/lib/consts/routes';
 import { Session } from '@/types/auth';
 import {
   ArrowUpRightIcon,
+  CalendarIcon,
   CheckIcon,
   ChevronUpDownIcon,
+  Cog6ToothIcon,
   ComputerDesktopIcon,
   DocumentCheckIcon,
+  HomeIcon,
   MoonIcon,
   SunIcon,
+  UsersIcon,
 } from '@heroicons/react/16/solid';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
@@ -56,18 +60,25 @@ import {
 //   },
 // ];
 
+const IconsMap = {
+  home: <HomeIcon />,
+  events: <CalendarIcon />,
+  users: <UsersIcon />,
+  settings: <Cog6ToothIcon />,
+};
+
 interface SidebarProps
   extends React.ComponentProps<typeof SidebarPrimitive.Sidebar> {
   items: {
     title: string;
     url: string;
-    icon: React.ElementType;
     type?: 'admin' | 'user';
+    icon: keyof typeof IconsMap;
   }[];
   session: Session;
 }
 
-export async function Sidebar({ items, session, ...props }: SidebarProps) {
+export function Sidebar({ items, session, ...props }: SidebarProps) {
   return (
     <SidebarPrimitive.Sidebar {...props}>
       <SidebarPrimitive.SidebarContent>
@@ -85,7 +96,8 @@ export async function Sidebar({ items, session, ...props }: SidebarProps) {
               {items.map((item) => (
                 <SidebarPrimitive.SidebarMenuItem key={item.title}>
                   <SidebarPrimitive.SidebarMenuLink href={item.url}>
-                    <item.icon />
+                    {IconsMap[item.icon]}
+
                     <span>{item.title}</span>
                   </SidebarPrimitive.SidebarMenuLink>
                 </SidebarPrimitive.SidebarMenuItem>

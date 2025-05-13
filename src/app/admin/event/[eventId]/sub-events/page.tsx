@@ -1,4 +1,4 @@
-import { getSubEventsForEvent } from '@/server/services/sub-event';
+import { getSubEventsForEvent } from '@/features/sub-event/services/subEventService';
 import { Metadata } from 'next';
 import { SubEventsList } from './_components/sub-events-list';
 

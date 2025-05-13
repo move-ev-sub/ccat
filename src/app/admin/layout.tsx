@@ -6,39 +6,10 @@ import {
 } from '@/components/ui/sidebar';
 import { auth } from '@/lib/api/auth';
 import { AdminRoutes } from '@/lib/consts/routes';
-import {
-  CalendarIcon,
-  Cog6ToothIcon,
-  HomeIcon,
-  UsersIcon,
-} from '@heroicons/react/16/solid';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import React from 'react';
-
-const sidebarItems = [
-  {
-    title: 'Dashboard',
-    url: AdminRoutes.DASHBOARD,
-    icon: HomeIcon,
-  },
-  {
-    title: 'Veranstaltungen',
-    url: AdminRoutes.EVENTS,
-    icon: CalendarIcon,
-  },
-  {
-    title: 'Nutzerverwaltung',
-    url: AdminRoutes.USERS,
-    icon: UsersIcon,
-  },
-  {
-    title: 'Settings',
-    url: AdminRoutes.PERSONAL_SETTINGS,
-    icon: Cog6ToothIcon,
-  },
-];
 
 export const metadata: Metadata = {
   robots: {
@@ -60,7 +31,32 @@ export default async function AdminLayout({
 
   return (
     <SidebarProvider>
-      <Sidebar items={sidebarItems} session={session} variant="inset" />
+      <Sidebar
+        items={[
+          {
+            title: 'Dashboard',
+            url: AdminRoutes.DASHBOARD,
+            icon: 'home',
+          },
+          {
+            title: 'Veranstaltungen',
+            url: AdminRoutes.EVENTS,
+            icon: 'events',
+          },
+          {
+            title: 'Nutzerverwaltung',
+            url: AdminRoutes.USERS,
+            icon: 'users',
+          },
+          {
+            title: 'Settings',
+            url: AdminRoutes.PERSONAL_SETTINGS,
+            icon: 'settings',
+          },
+        ]}
+        session={session}
+        variant="inset"
+      />
       <SidebarInset className="overflow-hidden">
         <main className="w-full">
           <div className="border-border border-b px-8 py-2">
