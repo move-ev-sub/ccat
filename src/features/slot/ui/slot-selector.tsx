@@ -1,17 +1,17 @@
 'use client';
 
-import { Slot } from '@/generated/prisma/client';
-import { cn } from '@/utils';
-import { ArrowTurnDownRightIcon } from '@heroicons/react/16/solid';
-import { format } from 'date-fns';
-import React from 'react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/select';
+} from '@/components/ui/select';
+import { Slot } from '@/generated/prisma/client';
+import { cn } from '@/lib/utils/cn';
+import { ArrowTurnDownRightIcon } from '@heroicons/react/16/solid';
+import { format } from 'date-fns';
+import React from 'react';
 
 type SlotEntries = Record<
   string,

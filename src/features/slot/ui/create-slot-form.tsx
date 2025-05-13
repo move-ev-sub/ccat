@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { TimePicker } from '@/components/time-picker/time-picker';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -21,13 +22,7 @@ import { createSlot } from '@/server/services/slot';
 import { addMinutes } from 'date-fns';
 import React from 'react';
 import { toast } from 'sonner';
-import { TimePicker } from '../time-picker/time-picker';
-
-const newSlotSchema = z.object({
-  eventId: z.string(),
-  startDate: z.date(),
-  endDate: z.date(),
-});
+import { createSlotSchema } from '../validations';
 
 export function CreateNewSlotForm({
   eventId,
@@ -42,8 +37,8 @@ export function CreateNewSlotForm({
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | undefined>();
 
-  const form = useForm<z.infer<typeof newSlotSchema>>({
-    resolver: zodResolver(newSlotSchema),
+  const form = useForm<z.infer<typeof createSlotSchema>>({
+    resolver: zodResolver(createSlotSchema),
     defaultValues: {
       eventId: eventId,
       startDate: baseDate,
@@ -59,7 +54,7 @@ export function CreateNewSlotForm({
     );
   }
 
-  async function onSubmit(values: z.infer<typeof newSlotSchema>) {
+  async function onSubmit(values: z.infer<typeof createSlotSchema>) {
     setLoading(true);
     setError(undefined);
 
