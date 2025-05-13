@@ -2,8 +2,20 @@
 
 import { SubEvent } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import prisma from '../db';
-import { withAuth } from '../helpers';
+import prisma from '@/lib/api/prisma';
+import { withAuth } from '@/lib/helpers/withAuth';
+import {
+  CreateSubEventArgs,
+  GetPublishedSubEventsForCompanyArgs,
+  GetSubEventsForCompanyArgs,
+  GetSubEventsForEventArgs,
+} from '../types';
+import {
+  createSubEventSchema,
+  getPublishedSubEventsForCompanySchema,
+  getSubEventsForCompanySchema,
+  getSubEventsForEventSchema,
+} from '../validations';
 
 /**
  * Creates a new sub-event within an existing event.
@@ -46,60 +58,25 @@ import { withAuth } from '../helpers';
  * - The function uses Prisma for database operations
  * - All dates are stored in UTC format
  */
-export const createSubEvent = withAuth<
-  [
-    {
-      /**
-       * The name of the sub-event
-       */
-      name: string;
-      /**
-       * The start date of the sub-event
-       */
-      startDate: Date;
-      /**
-       * The end date of the sub-event
-       */
-      endDate: Date;
-      /**
-       * The UUID of the parent event
-       */
-      eventId: string;
-      /**
-       * The maximum number of participants allowed for the sub-event
-       */
-      maxParticipants: number;
-      /**
-       * The description of the sub-event
-       */
-      description?: string;
-      /**
-       * The UUID of the host company
-       */
-      hostId: string;
-      /**
-       * The UUID of the slot
-       */
-      slotId: string;
-    },
-  ],
-  SubEvent
->(
-  async ({
-    args: [
-      {
-        name,
-        startDate,
-        endDate,
-        eventId,
-        maxParticipants,
-        description,
-        hostId,
-        slotId,
-      },
-    ],
-    session,
-  }) => {
+export const createSubEvent = withAuth<[CreateSubEventArgs], SubEvent>(
+  async ({ args: [arg0], session }) => {
+    const parseRes = await createSubEventSchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const {
+      name,
+      startDate,
+      endDate,
+      eventId,
+      maxParticipants,
+      description,
+      hostId,
+      slotId,
+    } = parseRes.data;
+
     // Check if start date is before end date
     if (startDate >= endDate) {
       throw new Error(t.errors.dateBeforeEnddate());
@@ -160,14 +137,18 @@ export const createSubEvent = withAuth<
  * @returns All sub events for the given event.
  */
 export const getSubEventsForEvent = withAuth<
-  [
-    {
-      eventId: string;
-    },
-  ],
+  [GetSubEventsForEventArgs],
   SubEvent[]
 >(
-  async ({ args: [{ eventId }] }) => {
+  async ({ args: [arg0] }) => {
+    const parseRes = await getSubEventsForEventSchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { eventId } = parseRes.data;
+
     const res = await prisma.subEvent.findMany({
       where: {
         AND: [
@@ -212,10 +193,6 @@ export const getSubEventsForEvent = withAuth<
  */
 export const getOwnSubEvents = withAuth<[unknown?], SubEvent[]>(
   async ({ session }) => {
-    console.log('Auth succesfull');
-
-    console.log('session: ', session);
-
     const id = session.user.id;
 
     // Fetch all sub events, where the host company is the currently authenticated
@@ -252,17 +229,18 @@ export const getOwnSubEvents = withAuth<[unknown?], SubEvent[]>(
 );
 
 export const getSubEventsForCompany = withAuth<
-  [
-    {
-      /**
-       * The ID of the company to fetch sub events for.
-       */
-      companyId: string;
-    },
-  ],
+  [GetSubEventsForCompanyArgs],
   SubEvent[]
 >(
-  async ({ args: [{ companyId }] }) => {
+  async ({ args: [arg0] }) => {
+    const parseRes = await getSubEventsForCompanySchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { companyId } = parseRes.data;
+
     const res = await prisma.subEvent.findMany({
       where: {
         hostId: companyId,
@@ -289,14 +267,19 @@ export const getSubEventsForCompany = withAuth<
  * @deprecated Use {@link getSubEventsForCompany} instead.
  */
 export const getPublishedSubEventsForCompany = withAuth<
-  [
-    {
-      companyId: string;
-    },
-  ],
+  [GetPublishedSubEventsForCompanyArgs],
   SubEvent[]
 >(
-  async ({ args: [{ companyId }] }) => {
+  async ({ args: [arg0] }) => {
+    const parseRes =
+      await getPublishedSubEventsForCompanySchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { companyId } = parseRes.data;
+
     const res = await prisma.subEvent.findMany({
       where: {
         hostId: companyId,

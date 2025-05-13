@@ -1,7 +1,6 @@
 'use client';
 
 import { RequiredMark } from '@/components/forms/required-mark';
-import { SlotSelector } from '@/components/slot-selector';
 import { TimePicker24h } from '@/components/time-picker/time-picker-24h';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -28,9 +27,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { SlotSelector } from '@/features/slot/ui/slot-selector';
 import { Slot } from '@/generated/prisma/client';
+import { cn } from '@/lib/utils/cn';
 import { createSubEvent } from '@/server/services/sub-event';
-import { cn } from '@/utils';
 import { CalendarIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User as AuthUser } from 'better-auth';
@@ -40,33 +40,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-const formSchema = z.object({
-  name: z
-    .string({
-      message: 'Der Name des Events ist erforderlich.',
-    })
-    .min(1, {
-      message: 'Der Name des Events ist erforderlich.',
-    }),
-  companyId: z
-    .string({
-      required_error: 'Bitte wähle ein Unternehmen aus.',
-    })
-    .min(1, {
-      message: 'Bitte wähle ein Unternehmen aus.',
-    }),
-  description: z.string().optional(),
-  slotId: z
-    .string({
-      required_error: 'Bitte wähle einen Slot aus.',
-    })
-    .min(1, {
-      message: 'Bitte wähle einen Slot aus.',
-    }),
-  startDate: z.date(),
-  endDate: z.date(),
-});
+import { createSubEventSchema } from '../validations';
 
 export function CreateSubEventForm({
   className,
@@ -82,21 +56,21 @@ export function CreateSubEventForm({
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof createSubEventSchema>>({
+    resolver: zodResolver(createSubEventSchema),
     defaultValues: {
       name: '',
       description: '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof createSubEventSchema>) {
     setLoading(false);
 
     const res = await createSubEvent({
       endDate: values.endDate,
       eventId: eventId,
-      hostId: values.companyId,
+      hostId: values.hostId,
       maxParticipants: 30,
       name: values.name,
       slotId: values.slotId,
@@ -141,7 +115,7 @@ export function CreateSubEventForm({
         />
         <FormField
           control={form.control}
-          name="companyId"
+          name="hostId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
