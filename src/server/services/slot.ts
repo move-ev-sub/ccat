@@ -27,7 +27,7 @@ export const createSlot = withAuth<
   ],
   Slot
 >(
-  async ({ eventId, startDate, endDate }, session) => {
+  async ({ args: [{ eventId, startDate, endDate }], session }) => {
     const existsEvent = await prisma.event.findUnique({
       where: {
         id: eventId,
@@ -105,7 +105,7 @@ export const getSlotsForEvent = withAuth<
   ],
   Slot[]
 >(
-  async ({ eventId }) => {
+  async ({ args: [{ eventId }] }) => {
     const res = await prisma.slot.findMany({
       where: {
         eventId: eventId,

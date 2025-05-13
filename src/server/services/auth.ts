@@ -307,7 +307,7 @@ interface UpdateOwnSettingsArgs {
  * @returns A ServiceResult with the status of the update.
  */
 export const updateOwnSettings = withAuth<[UpdateOwnSettingsArgs], void>(
-  async ({ firstName, lastName, notifyMe, emailReminders }) => {
+  async ({ args: [{ firstName, lastName, notifyMe, emailReminders }] }) => {
     const res = await auth.api.updateUser({
       headers: await headers(),
       body: {
@@ -378,7 +378,7 @@ export const getUserById = withAuth<
   ],
   PrismaUser
 >(
-  async ({ id }) => {
+  async ({ args: [{ id }] }) => {
     const res = await prisma.user.findUniqueOrThrow({
       where: { id },
     });
@@ -465,7 +465,7 @@ interface CreateUserArgs {
  * @returns A ServiceResult with the created user.
  */
 export const createUser = withAuth<[CreateUserArgs], UserWithRole>(
-  async ({ email, firstName, lastName, role, password }) => {
+  async ({ args: [{ email, firstName, lastName, role, password }] }) => {
     const res = await auth.api.createUser({
       body: {
         email,

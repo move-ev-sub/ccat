@@ -85,19 +85,21 @@ export const createSubEvent = withAuth<
   ],
   SubEvent
 >(
-  async (
-    {
-      name,
-      startDate,
-      endDate,
-      eventId,
-      maxParticipants,
-      description,
-      hostId,
-      slotId,
-    },
-    session
-  ) => {
+  async ({
+    args: [
+      {
+        name,
+        startDate,
+        endDate,
+        eventId,
+        maxParticipants,
+        description,
+        hostId,
+        slotId,
+      },
+    ],
+    session,
+  }) => {
     // Check if start date is before end date
     if (startDate >= endDate) {
       throw new Error(t.errors.dateBeforeEnddate());
@@ -165,7 +167,7 @@ export const getSubEventsForEvent = withAuth<
   ],
   SubEvent[]
 >(
-  async ({ eventId }) => {
+  async ({ args: [{ eventId }] }) => {
     const res = await prisma.subEvent.findMany({
       where: {
         AND: [
@@ -209,7 +211,11 @@ export const getSubEventsForEvent = withAuth<
  * @returns All published and owned sub events.
  */
 export const getOwnSubEvents = withAuth<[unknown?], SubEvent[]>(
-  async (_, session) => {
+  async ({ session }) => {
+    console.log('Auth succesfull');
+
+    console.log('session: ', session);
+
     const id = session.user.id;
 
     // Fetch all sub events, where the host company is the currently authenticated
@@ -256,7 +262,7 @@ export const getSubEventsForCompany = withAuth<
   ],
   SubEvent[]
 >(
-  async ({ companyId }) => {
+  async ({ args: [{ companyId }] }) => {
     const res = await prisma.subEvent.findMany({
       where: {
         hostId: companyId,
@@ -290,7 +296,7 @@ export const getPublishedSubEventsForCompany = withAuth<
   ],
   SubEvent[]
 >(
-  async ({ companyId }) => {
+  async ({ args: [{ companyId }] }) => {
     const res = await prisma.subEvent.findMany({
       where: {
         hostId: companyId,

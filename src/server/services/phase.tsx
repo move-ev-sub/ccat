@@ -40,7 +40,7 @@ export const updatePhase = withAuth<
   ],
   Phase
 >(
-  async ({ id, from, to }) => {
+  async ({ args: [{ id, from, to }] }) => {
     // All event phases must start in the future when editing them.
     if (from < new Date()) {
       throw new Error(t.errors.dateNotInFuture());
@@ -121,7 +121,7 @@ export const createPhase = withAuth<
   ],
   Phase
 >(
-  async ({ eventId, from, to, type }, session) => {
+  async ({ args: [{ eventId, from, to, type }], session }) => {
     // Check if a phase of the given type already exists for the selected event
     const exists = await existsPhase({ eventId, type });
 
@@ -202,7 +202,7 @@ export const existsPhase = withAuth<
   ],
   boolean
 >(
-  async ({ eventId, type }) => {
+  async ({ args: [{ eventId, type }] }) => {
     const res = await prisma.phase.findFirst({
       where: {
         eventId,
@@ -251,7 +251,7 @@ export const fetchPhasesForEvent = withAuth<
   ],
   Omit<Phase, 'createdById'>[]
 >(
-  async ({ eventId, sort }) => {
+  async ({ args: [{ eventId, sort }] }) => {
     const res = await prisma.phase.findMany({
       where: {
         eventId: eventId,
@@ -298,7 +298,7 @@ export const isPhasesSetupCompleted = withAuth<
   ],
   boolean
 >(
-  async ({ eventId }) => {
+  async ({ args: [{ eventId }] }) => {
     const res = await prisma.phase.findMany({
       where: {
         eventId,
@@ -366,7 +366,7 @@ export const getCurrentPhase = withAuth<
   ],
   Phase | null
 >(
-  async ({ eventId }) => {
+  async ({ args: [{ eventId }] }) => {
     const res = await prisma.phase.findFirst({
       where: {
         eventId,

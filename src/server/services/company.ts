@@ -72,7 +72,7 @@ export const getCompanyById = withAuth<
   ],
   User
 >(
-  async ({ id }) => {
+  async ({ args: [{ id }] }) => {
     // Get the company from the database
     const res = await prisma.user.findFirst({
       where: {

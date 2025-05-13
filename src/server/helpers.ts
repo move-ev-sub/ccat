@@ -26,6 +26,11 @@ type AuthorizationModeOptions =
     }
   | { mode?: never };
 
+type WithAuthHandlerArgs<TArgs extends unknown[]> = {
+  args: TArgs;
+  session: Session;
+};
+
 /**
  * Higher-order function that wraps server actions with standardized authentication, authorization, and error handling.
  *
@@ -37,8 +42,9 @@ type AuthorizationModeOptions =
  * @template TArgs - Tuple type of the arguments that the handler function accepts
  * @template TReturn - The return type of the handler function
  *
- * @param handler - The server action function to wrap. It receives any arguments passed to the wrapped function
- *                 followed by the session as its last argument.
+ * @param handler - The server action function to wrap. It receives an object containing:
+ *                 - args: The arguments passed to the wrapped function
+ *                 - session: The authenticated session
  *
  * @param authz - Optional authorization configuration:
  *   - `permissions`: Object specifying required permissions for each permission type
@@ -56,14 +62,14 @@ type AuthorizationModeOptions =
  *
  * @example
  * // Basic usage with authentication only
- * const getData = withAuth<[string], { name: string }>(async (id, session) => {
+ * const getData = withAuth<[string], { name: string }>(async ({ args: [id], session }) => {
  *   return { ok: true, data: { name: 'test' } };
  * });
  *
  * @example
  * // With permission requirements
  * const createCompany = withAuth<[CompanyData], Company>(
- *   async (data, session) => {
+ *   async ({ args: [data], session }) => {
  *     return { ok: true, data: await createCompany(data) };
  *   },
  *   { permissions: { company: ['create'] } }
@@ -72,7 +78,7 @@ type AuthorizationModeOptions =
  * @example
  * // With role-based authorization
  * const adminAction = withAuth<[AdminData], AdminResult>(
- *   async (data, session) => {
+ *   async ({ args: [data], session }) => {
  *     return { ok: true, data: await performAdminAction(data) };
  *   },
  *   {
@@ -86,7 +92,9 @@ type AuthorizationModeOptions =
  * );
  */
 export function withAuth<TArgs extends unknown[], TReturn>(
-  handler: (...args: [...TArgs, Session]) => Promise<ServiceResult<TReturn>>,
+  handler: (
+    params: WithAuthHandlerArgs<TArgs>
+  ) => Promise<ServiceResult<TReturn>>,
   authz?: AuthorizationOptions & AuthorizationModeOptions
 ) {
   // Return a regular function (not async) that returns a Promise
@@ -131,7 +139,7 @@ export function withAuth<TArgs extends unknown[], TReturn>(
           }
         }
 
-        return await handler(...args, session);
+        return await handler({ args, session });
       } catch (error) {
         console.error('withAuth error:', error);
 

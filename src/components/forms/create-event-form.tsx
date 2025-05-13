@@ -28,14 +28,9 @@ const formSchema = z.object({
 });
 
 export function CreateEventForm({
-  onError,
-  onSuccess,
   className,
   ...props
-}: Omit<React.ComponentProps<'form'>, 'onError'> & {
-  onError: () => void;
-  onSuccess: () => void;
-}) {
+}: Omit<React.ComponentProps<'form'>, 'onError'>) {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | undefined>();
   const router = useRouter();
@@ -59,13 +54,11 @@ export function CreateEventForm({
     });
 
     if (!res.ok) {
-      onError();
       toast.error(res.error);
       return;
     }
 
     setLoading(false);
-    onSuccess();
     toast.success('Veranstaltung wurde erfolgreich erstellt.');
     router.push(`/admin/event/${res.data.id}`);
   }

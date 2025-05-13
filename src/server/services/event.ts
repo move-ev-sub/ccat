@@ -5,7 +5,6 @@ import { Event, Phase } from '@/generated/prisma/client';
 import { auth } from '@/utils/auth';
 import prisma from '../db';
 import { withAuth } from '../helpers';
-import { NewEventData } from '../schemas/event';
 
 /**
  * Returns all published events from the database. Only accessible for
@@ -86,8 +85,16 @@ export const getAllEvents = withAuth<[], Event[]>(
  *
  * @returns A promise with the created event.
  */
-export const createEvent = withAuth<[NewEventData], Event>(
-  async ({ name, description }, session) => {
+export const createEvent = withAuth<
+  [
+    {
+      name: string;
+      description: string;
+    },
+  ],
+  Event
+>(
+  async ({ args: [{ name, description }], session }) => {
     const res = await prisma.event.create({
       data: {
         name,
@@ -131,7 +138,7 @@ export const createEvent = withAuth<[NewEventData], Event>(
  * @returns A promise with the event.
  */
 export const getEventById = withAuth<[string], Event>(
-  async (eventId) => {
+  async ({ args: [eventId] }) => {
     const res = await prisma.event.findUniqueOrThrow({
       where: {
         id: eventId,
@@ -230,7 +237,7 @@ export const getPublishedEventById = withAuth<
   ],
   EventWithPhases
 >(
-  async ({ eventId }) => {
+  async ({ args: [{ eventId }] }) => {
     const res = await prisma.event.findFirstOrThrow({
       where: {
         AND: [
