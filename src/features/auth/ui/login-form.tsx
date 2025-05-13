@@ -17,23 +17,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-const loginFormSchema = z.object({
-  email: z
-    .string({
-      required_error: 'Email ist erforderlich',
-    })
-    .email({
-      message: 'Ungültige E-Mail-Adresse',
-    }),
-  password: z
-    .string({
-      required_error: 'Passwort ist erforderlich',
-    })
-    .min(6, {
-      message: 'Passwort muss mindestens 6 Zeichen lang sein',
-    }),
-});
+import { signInWithPasswordSchema } from '../validations';
 
 export function LoginForm({
   className,
@@ -41,15 +25,15 @@ export function LoginForm({
 }: React.ComponentProps<'form'>) {
   const [loading, setLoading] = React.useState(false);
 
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<z.infer<typeof signInWithPasswordSchema>>({
+    resolver: zodResolver(signInWithPasswordSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+  async function onSubmit(values: z.infer<typeof signInWithPasswordSchema>) {
     setLoading(true);
 
     const res = await signInWithPassword(values.email, values.password);

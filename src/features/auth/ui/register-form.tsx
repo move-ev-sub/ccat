@@ -11,7 +11,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { passwordSchema } from '@/server/schemas/auth';
 import { signUpWithEmail } from '@/server/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -20,46 +19,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-const registerFormSchema = z
-  .object({
-    firstName: z
-      .string({
-        required_error: 'Vorname ist erforderlich',
-      })
-      .min(1, {
-        message: 'Vorname ist erforderlich',
-      }),
-    lastName: z
-      .string({
-        required_error: 'Nachname ist erforderlich',
-      })
-      .min(1, {
-        message: 'Nachname ist erforderlich',
-      }),
-    email: z
-      .string({
-        required_error: 'Email ist erforderlich',
-      })
-      .email({
-        message: 'Ungültige E-Mail-Adresse',
-      }),
-    password: passwordSchema,
-    confirmPassword: z
-      .string({
-        required_error: 'Passwort bestätigen ist erforderlich',
-      })
-      .min(1, {
-        message: 'Passwort bestätigen ist erforderlich',
-      }),
-    acceptLegal: z.boolean({
-      required_error: 'Bitte akzeptiere die Nutzungsbedingungen',
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwörter stimmen nicht überein',
-    path: ['confirmPassword'],
-  });
+import { registerFormSchema } from '../validations';
 
 export function RegisterForm() {
   const [loading, setLoading] = React.useState(false);

@@ -30,3 +30,20 @@ export const signUpWithEmailSchema = z.object({
   password: passwordSchema,
   acceptLegal: z.boolean(),
 });
+
+export const registerFormSchema = signUpWithEmailSchema
+  .and(
+    z.object({
+      confirmPassword: z
+        .string({
+          required_error: 'Passwort bestätigen ist erforderlich',
+        })
+        .min(1, {
+          message: 'Passwort bestätigen ist erforderlich',
+        }),
+    })
+  )
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwörter stimmen nicht überein',
+    path: ['confirmPassword'],
+  });
