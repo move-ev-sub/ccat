@@ -9,6 +9,18 @@ import {
 } from '../server/services/email';
 import { ac, admin, company, user } from './auth/permissions';
 
+export const adminOpts = {
+  adminRoles: ['admin'],
+  defaultRole: 'user',
+
+  ac,
+  roles: {
+    user,
+    company,
+    admin,
+  },
+};
+
 export const auth = betterAuth({
   logger: {
     level: 'debug',
@@ -70,21 +82,10 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    adminPlugin({
-      adminRoles: ['admin'],
-      defaultRole: 'user',
-      ac,
-      roles: {
-        user,
-        company,
-        admin,
-      },
-    }),
+    adminPlugin(adminOpts),
     // Needs to be the last plugin in the array
     nextCookies(),
   ],
 });
 
 export type Session = typeof auth.$Infer.Session;
-
-
