@@ -11,7 +11,9 @@ import {
   SidebarMenuItem,
   SidebarMenuLink,
 } from '@/components/ui/sidebar';
+import { auth } from '@/utils/auth';
 import { DocumentCheckIcon, HomeIcon } from '@heroicons/react/16/solid';
+import { headers } from 'next/headers';
 import React from 'react';
 import { SidebarProfileMenu } from './sidebar-profile-menu';
 
@@ -27,6 +29,14 @@ const items = [
 export async function CompanySidebar({}: React.ComponentProps<
   typeof Sidebar
 > & {}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    throw new Error('User is not authenticated.');
+  }
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -54,16 +64,7 @@ export async function CompanySidebar({}: React.ComponentProps<
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarProfileMenu
-          user={{
-            id: '',
-            email: 'christoph.langer100@gmail.com',
-            app_metadata: {},
-            user_metadata: {},
-            aud: '',
-            created_at: 'new Date(),',
-          }}
-        />
+        <SidebarProfileMenu session={session} />
       </SidebarFooter>
     </Sidebar>
   );

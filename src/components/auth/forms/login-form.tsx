@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { login } from '@/server/actions/auth';
+import { signInWithPassword } from '@/server/services/auth';
 import { cn } from '@/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
@@ -52,9 +52,9 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setLoading(true);
 
-    const res = await login(values);
+    const res = await signInWithPassword(values.email, values.password);
 
-    if (res.status === 'error') {
+    if (!res.ok) {
       toast.error(res.error);
     }
 

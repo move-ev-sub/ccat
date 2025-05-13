@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Degree, Gender } from '@/generated/prisma/client';
 import {
   ACCEPTED_FILE_TYPES,
   MAX_FILE_COUNT,
@@ -30,7 +31,6 @@ import {
 import { cn, translateDegree, translateGender } from '@/utils';
 import { ApplicationRoutes } from '@/utils/consts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Degree, Gender } from '@prisma/client';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React from 'react';

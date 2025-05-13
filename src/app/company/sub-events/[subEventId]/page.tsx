@@ -6,21 +6,22 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { FullSubApplication } from '@/server/types/sub-application';
-import { faker } from '@faker-js/faker';
-import { ArrowDownTrayIcon, ArrowUpIcon } from '@heroicons/react/16/solid';
 import {
   Degree,
   Gender,
   SubApplicationPrioritzation,
   SubApplicationStatus,
-} from '@prisma/client';
+} from '@/generated/prisma/client';
+import { FullSubApplication } from '@/server/types/sub-application';
+import { faker } from '@faker-js/faker';
+import { ArrowDownTrayIcon, ArrowUpIcon } from '@heroicons/react/16/solid';
 
 export default async function ListPage() {
   const data: FullSubApplication[] = [1, ...Array(100)].map(() => ({
-    applicationId: faker.string.uuid(),
-    coverLetter: 'sdf',
+    applicationId: faker.string.hexadecimal({ length: 32 }),
+    coverLetter: faker.person.bio(),
     id: faker.string.uuid(),
+    userId: faker.string.hexadecimal({ length: 32 }),
     prioritized: false,
     priorization: faker.helpers.arrayElement<SubApplicationPrioritzation>([
       'PRIO_1',

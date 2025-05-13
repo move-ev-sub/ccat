@@ -22,7 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Slot } from '@prisma/client';
+import { Slot } from '@/generated/prisma/client';
 import React from 'react';
 import { toast } from 'sonner';
 import { TimePicker } from '../time-picker/time-picker';

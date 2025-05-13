@@ -1,10 +1,17 @@
 'use server';
 
-import { createClient } from '@/utils/supabase/server';
-import { Profile, Role } from '@prisma/client';
-import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
+import { User as PrismaUser } from '@/generated/prisma/client';
+import { auth } from '@/utils/auth';
+
+import { CCATError } from '@/error';
+import { GENERAL_ERROR_CODES } from '@/error/codes';
+import { User } from 'better-auth';
+import { UserWithRole } from 'better-auth/plugins';
 import { randomBytes } from 'crypto';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import prisma from '../db';
+import { withAuth } from '../helpers';
 import { passwordSchema } from '../schemas/auth';
 import { ServiceResult } from '../types/serviceResult';
 
@@ -28,7 +35,7 @@ interface SignUpWithEmailArgs {
  */
 export async function signUpWithEmail(
   args: SignUpWithEmailArgs
-): Promise<ServiceResult<{ user: User | null; session: Session | null }>> {
+): Promise<ServiceResult<void>> {
   const { firstName, lastName, email, password } = args;
 
   const parseRes = await passwordSchema.safeParseAsync(password);
@@ -47,50 +54,27 @@ export async function signUpWithEmail(
     };
   }
 
-  const client = await createClient();
-
-  const { error, data } = await client.auth.signUp({
-    email: email,
-    password: password,
-  });
-
-  if (error || !data?.user) {
-    console.error(
-      'Error when signing up:',
-      error?.message || 'Ein unbekannter Fehler ist aufgetreten.'
-    );
-    return {
-      ok: false,
-      error: error?.message || 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
-
-  // Create a profile for the user
-  const res = await prisma.profile.create({
-    data: {
-      id: data.user.id,
-      role: 'USER',
-      email: email,
-      userProfile: {
-        create: {
-          firstName: firstName,
-          lastName: lastName,
-          emailReminders: false,
-          notifyMe: false,
-        },
+  try {
+    await auth.api.signUpEmail({
+      body: {
+        email,
+        password,
+        firstName,
+        lastName,
+        name: firstName,
+        emailReminders: false,
+        notifyMe: false,
       },
-    },
-  });
+    });
 
-  if (!res) {
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.error('Error when signing up with email:', error);
     return {
       ok: false,
-      error:
-        'Ein unbekannter Fehler ist aufgetreten. Es konnte kein Profil für den Benutzer erstellt werden.',
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
-
-  return { ok: true, data };
 }
 
 /**
@@ -104,12 +88,7 @@ export async function signUpWithEmail(
 export async function signInWithPassword(
   email: string,
   password: string
-): Promise<
-  ServiceResult<{
-    user: User | null;
-    session: Session | null;
-  }>
-> {
+): Promise<ServiceResult<void>> {
   if (!email || !password) {
     console.log('Error when logging in: Email and password are required.');
     return {
@@ -118,156 +97,123 @@ export async function signInWithPassword(
     };
   }
 
-  const client = await createClient();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  // TODO: Check if the supabase client exists -> Optional
-
-  if (await isAuthenticated(client)) {
+  if (session) {
     return {
       ok: false,
       error: 'User is already authenticated.',
     };
   }
 
-  // Sign in with email and password
-  const { error, data } = await client.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    await auth.api.signInEmail({
+      body: {
+        email,
+        password,
+      },
+    });
 
-  if (error) {
+    return {
+      ok: true,
+      data: undefined,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+
     return {
       ok: false,
-      error: error.message,
+      error: 'Ein unbekannter Fehler ist aufgetreten.',
     };
   }
 
-  return { ok: true, data };
+  // Sign in with email and password
+  // const { error, data } = await client.auth.signInWithPassword({
+  //   email,
+  //   password,
+  // });
+
+  // if (error) {
+  //   return {
+  //     ok: false,
+  //     error: error.message,
+  //   };
+  // }
+
+  // return { ok: true, data };
 }
 
 /**
  * Signs the current user out.
- *
- * @param client
- * @returns
  */
-export async function signOut(client?: SupabaseClient): Promise<undefined> {
-  if (!client) {
-    client = await createClient();
-  }
+export async function signOut(): Promise<undefined> {
+  try {
+    await auth.api.signOut({
+      headers: await headers(),
+    });
 
-  // Only authenticated users can sign out
-  if (!(await isAuthenticated(client))) {
-    return;
+    redirect('/auth/login');
+  } catch (error) {
+    console.error(error);
   }
-
-  client.auth.signOut();
 }
 
 /**
  * Returns the current user object.
  *
- * @param client - Supabase client (optional)
  * @returns The current user object.
+ *
+ * @deprecated Use the user object provided by the better auth session instead.
  */
-export async function getUser(client?: SupabaseClient): Promise<User | null> {
-  if (!client) {
-    client = await createClient();
+export async function getUser(): Promise<User | null> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return null;
   }
 
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
-  return user;
-}
-
-/**
- * Checks if the current user is authenticated by checking if the
- * supabase auth client returns a valid user object.
- *
- * @param client - Supabase client (optional)
- *
- * @returns boolean - `false` if the user is not authenticated, `true` if the user is authenticated.
- */
-export async function isAuthenticated(
-  client?: SupabaseClient
-): Promise<boolean> {
-  if (!client) {
-    client = await createClient();
-  }
-
-  const user = await getUser(client);
-
-  return user !== null && user.id !== null;
+  return session.user;
 }
 
 /**
  * Checks if the current user is an admin.
  *
  * @returns boolean - `false` if the user is not an admin, `true` if the user is an admin.
+ *
+ * @deprecated Use the permissions provided by better auth instead.
  */
-export async function isAdmin(
-  client?: SupabaseClient
-): Promise<ServiceResult<boolean>> {
-  console.debug('[isAdmin] Checking if user is an admin!');
+export async function isAdmin(): Promise<ServiceResult<boolean>> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (!client) {
-    client = await createClient();
-    console.debug('[isAdmin] Supabase Client created');
-  }
-
-  // Check if user is authenticated
-  if (!(await isAuthenticated(client))) {
-    console.debug('[isAdmin] User is not authenticated');
+  if (!session) {
     return {
       ok: false,
       error: 'User is not authenticated.',
     };
   }
 
-  console.debug('[isAdmin] User is authenticated');
-  console.debug('[isAdmin] Getting user object');
-  const user = await getUser(client);
-  console.debug('[isAdmin] User object:', user);
-
-  if (!user) {
+  if (session.user.role === 'admin') {
     return {
-      ok: false,
-      error: 'No user object found.',
+      ok: true,
+      data: true,
     };
   }
 
-  const { id: userId } = user;
-
-  try {
-    console.debug('[isAdmin] Getting profile for user', userId);
-    const profile = await prisma.profile.findFirstOrThrow({
-      where: {
-        id: userId,
-      },
-    });
-    console.debug('[isAdmin] Profile:', profile);
-
-    console.debug('[isAdmin] Checking User Role: ', profile.role);
-    // Check if user is an admin
-    if (!profile || profile.role !== 'ADMIN') {
-      return {
-        ok: false,
-        error: 'User is not authorized.',
-      };
-    }
-
-    console.debug('[isAdmin] User is an admin');
-
-    return { ok: true, data: true };
-  } catch (error) {
-    console.error('Error when checking if user is an admin:', error);
-    return {
-      ok: false,
-      error: 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
+  return {
+    ok: false,
+    error: 'User is not an admin.',
+  };
 }
 
 /**
@@ -289,103 +235,58 @@ export async function createSecurePassword(
   return pw;
 }
 
+interface UpdateOwnSettingsArgs {
+  /**
+   * The first name of the user.
+   */
+  firstName: string;
+  /**
+   * The last name of the user.
+   */
+  lastName: string;
+  /**
+   * Whether the user wants to receive email reminders.
+   */
+  notifyMe: boolean;
+  /**
+   * Whether the user wants to receive email reminders.
+   */
+  emailReminders: boolean;
+}
+
 /**
- * Returns the Role of the current user. If no user is found, an error
- * is returned.
+ * Updates the first name, last name, notify me and email reminders of the
+ * current user.
  *
- * @returns {ServiceResult<Role>} The Role of the current user.
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * is authenticated.
+ *
+ * @requires {permission} [authenticated]
+ *
+ * @returns A ServiceResult with the status of the update.
  */
-export async function getCurrentRole(): Promise<ServiceResult<Role>> {
-  const client = await createClient();
-
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: 'User is not authenticated.',
-    };
-  }
-
-  const user = await getUser(client);
-
-  if (!user) {
-    return {
-      ok: false,
-      error: 'No user object found.',
-    };
-  }
-
-  try {
-    const profile = await prisma.profile.findFirstOrThrow({
-      where: {
-        id: user.id,
+export const updateOwnSettings = withAuth<[UpdateOwnSettingsArgs], void>(
+  async ({ args: [{ firstName, lastName, notifyMe, emailReminders }] }) => {
+    const res = await auth.api.updateUser({
+      headers: await headers(),
+      body: {
+        firstName,
+        lastName,
+        notifyMe,
+        emailReminders,
       },
     });
 
-    if (!profile) {
-      return {
-        ok: false,
-        error: `No profile found for user with id ${user.id}`,
-      };
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
     }
 
     return {
       ok: true,
-      data: profile.role,
-    };
-  } catch (error) {
-    console.error('Error when getting the current role:', error);
-    return {
-      ok: false,
-      error: 'Ein unbekannter Fehler ist aufgetreten.',
+      data: undefined,
     };
   }
-}
-
-interface UpdateUserSettingsArgs {
-  idPrisma: string;
-  firstName: string;
-  lastName: string;
-}
-/**
- * Updates first name and last name of user in the userProfile table.
- * Returns the updated profile.
- *
- * @param idPrisma - The Prisma ID of the user.
- * @param firstName - The first name of the user.
- * @param lastName - The last name of the user.
- *
- * @returns A promise with the status of the update and the updated profile data.
- */
-export async function updateUserSettings(
-  args: UpdateUserSettingsArgs
-): Promise<ServiceResult<Profile>> {
-  const { idPrisma, firstName, lastName } = args;
-
-  // should we add a try catch here, to get prisma specific errors?
-  const res = await prisma.profile.update({
-    where: {
-      id: idPrisma,
-    },
-    data: {
-      userProfile: {
-        update: {
-          firstName: firstName,
-          lastName: lastName,
-        },
-      },
-    },
-  });
-
-  if (!res) {
-    return {
-      ok: false,
-      error:
-        'Ein unbekannter Fehler ist aufgetreten. User-Profil konnte nicht aktualisiert werden.',
-    };
-  }
-
-  return { ok: true, data: res };
-}
+);
 
 interface RequestPasswordResetArgs {
   email: string;
@@ -394,27 +295,163 @@ interface RequestPasswordResetArgs {
 /**
  * Sends a link to the user's email with which they can log back into their account and
  * reset their password.
+ *
+ * @deprecated
  */
-export async function requestPasswordReset({
-  email,
-}: RequestPasswordResetArgs): Promise<ServiceResult<void>> {
-  const client = await createClient();
+export async function requestPasswordReset({}: RequestPasswordResetArgs): Promise<
+  ServiceResult<void>
+> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (await isAuthenticated()) {
+  if (session) {
     return {
       ok: false,
       error: 'User is already authenticated.',
     };
   }
 
-  const { error } = await client.auth.resetPasswordForEmail(email);
-
-  if (error) {
-    return {
-      ok: false,
-      error: error.message ?? 'Ein unbekannter Fehler ist aufgetreten.',
-    };
-  }
-
-  return { ok: true, data: undefined };
+  return { ok: false, error: 'Feature not implemented.' };
 }
+
+/**
+ * Returns the user with the given id. Throws an error if no user with the given
+ * id exists.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [userProfile:fetchAll]
+ *
+ * @returns A ServiceResult with the user.
+ */
+export const getUserById = withAuth<
+  [
+    {
+      /**
+       * The id of the user to get.
+       */
+      id: string;
+    },
+  ],
+  PrismaUser
+>(
+  async ({ args: [{ id }] }) => {
+    const res = await prisma.user.findUniqueOrThrow({
+      where: { id },
+    });
+
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      userProfile: ['fetchAll'],
+    },
+  }
+);
+
+/**
+ * Returns all users from the database.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [userProfile:fetchAll]
+ *
+ * @returns A ServiceResult with the users from the database.
+ */
+export const getUsers = withAuth<[], PrismaUser[]>(
+  async () => {
+    const res = await prisma.user.findMany();
+
+    if (!res) {
+      throw new CCATError(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      userProfile: ['fetchAll'],
+    },
+  }
+);
+
+interface CreateUserArgs {
+  /**
+   * The email of the user.
+   */
+  email: string;
+  /**
+   * The first name of the user.
+   */
+  firstName: string;
+  /**
+   * The last name of the user.
+   */
+  lastName: string;
+  /**
+   * The password of the user.
+   */
+  password: string;
+  /**
+   * The role of the user.
+   *
+   * @default 'user'
+   */
+  role: 'user' | 'company';
+}
+
+/**
+ * Creates a new user with the given email, first name, last name, role and password.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [user:create]
+ *
+ * @returns A ServiceResult with the created user.
+ */
+export const createUser = withAuth<[CreateUserArgs], UserWithRole>(
+  async ({ args: [{ email, firstName, lastName, role, password }] }) => {
+    const res = await auth.api.createUser({
+      body: {
+        email,
+        password,
+        role,
+        name: firstName,
+        data: {
+          firstName,
+          lastName,
+          emailReminders: false,
+          notifyMe: false,
+        },
+      },
+    });
+
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
+    return {
+      ok: true,
+      data: res.user,
+    };
+  },
+  {
+    permissions: {
+      user: ['create'],
+    },
+  }
+);

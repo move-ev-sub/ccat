@@ -1,9 +1,9 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
+import { SubEvent } from '@/generated/prisma/client';
 import { cn } from '@/utils';
 import { ApplicationRoutes } from '@/utils/consts';
-import { SubEvent } from '@prisma/client';
 import React from 'react';
 import { Selection, useApplicationStore } from '../stores/application.store';
 import { NoEventsFound } from './empty-states';

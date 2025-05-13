@@ -13,6 +13,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { AdminRoutes, CompanyRoutes, UserRoutes } from '@/constants/routes';
+import { Session } from '@/utils/auth';
 import { createClient } from '@/utils/supabase/client';
 import {
   ArrowUpRightIcon,
@@ -22,16 +24,15 @@ import {
   MoonIcon,
   SunIcon,
 } from '@heroicons/react/16/solid';
-import { User } from '@supabase/supabase-js';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export function SidebarProfileMenu({
-  user,
+  session,
   ...props
 }: React.ComponentProps<typeof DropdownMenu> & {
-  user: User;
+  session: Session;
 }) {
   const supabase = createClient();
   const router = useRouter();
@@ -46,12 +47,14 @@ export function SidebarProfileMenu({
     setTheme(theme);
   };
 
+  const user = session.user;
+
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger asChild>
         <button className="border-border bg-background focus-indicator focus-visible:ring-offset-background-muted hover:bg-background-muted flex w-full items-center justify-start gap-2.5 rounded-lg border px-2.5 py-1.5">
           <span className="text-foreground truncate text-sm font-medium">
-            {user.email ?? 'Unbekannt'}
+            {user.email}
           </span>
           <ChevronUpDownIcon className="text-secondary ml-auto size-4 shrink-0" />
         </button>
@@ -60,7 +63,7 @@ export function SidebarProfileMenu({
         <DropdownMenuContent className="w-56">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="truncate">
-              christoph.langer100@gmail.com
+              {user.email}
             </DropdownMenuLabel>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
@@ -117,7 +120,17 @@ export function SidebarProfileMenu({
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
               {/* TODO: Redirect users to their own settings page */}
-              <Link href={'/settings'}>Einstellungen</Link>
+              <Link
+                href={
+                  user.role == 'admin'
+                    ? AdminRoutes.PERSONAL_SETTINGS
+                    : user.role == 'company'
+                      ? CompanyRoutes.PERSONAL_SETTINGS
+                      : UserRoutes.PERSONAL_SETTINGS
+                }
+              >
+                Einstellungen
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem variant="destructive" onSelect={onLogout}>
               Abmelden

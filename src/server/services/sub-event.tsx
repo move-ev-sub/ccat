@@ -1,51 +1,9 @@
 'use server';
 
+import { SubEvent } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { SubEvent } from '@prisma/client';
-import { validate as uuidValidate } from 'uuid';
 import prisma from '../db';
-import { ServiceResult } from '../types/serviceResult';
-import { getUser, isAdmin, isAuthenticated } from './auth';
-
-/**
- * The parameters for creating a sub-event.
- *
- * @see {@link createSubEvent}
- */
-interface CreateSubEventParams {
-  /**
-   * The name of the sub-event
-   */
-  name: string;
-  /**
-   * The start date of the sub-event
-   */
-  startDate: Date;
-  /**
-   * The end date of the sub-event
-   */
-  endDate: Date;
-  /**
-   * The UUID of the parent event
-   */
-  eventId: string;
-  /**
-   * The maximum number of participants allowed for the sub-event
-   */
-  maxParticipants: number;
-  /**
-   * The description of the sub-event
-   */
-  description?: string;
-  /**
-   * The UUID of the host company
-   */
-  hostId: string;
-  /**
-   * The UUID of the slot
-   */
-  slotId: string;
-}
+import { withAuth } from '../helpers';
 
 /**
  * Creates a new sub-event within an existing event.
@@ -74,15 +32,8 @@ interface CreateSubEventParams {
  * }
  * ```
  *
- * @param {Object} params - The parameters for creating a sub-event
- * @param {string} params.name - The name of the sub-event
- * @param {Date} params.startDate - The start date and time of the sub-event
- * @param {Date} params.endDate - The end date and time of the sub-event
- * @param {string} params.eventId - The UUID of the parent event
- * @param {number} params.maxParticipants - The maximum number of participants allowed
- * @param {string} [params.description] - Optional description of the sub-event
  *
- * @returns {Promise<ServiceResult<SubEvent>>} A promise that resolves to a ServiceResult containing either:
+ * @returns A promise that resolves to a ServiceResult containing either:
  * - The created SubEvent object if successful
  * - An error message if the creation fails
  *
@@ -95,76 +46,77 @@ interface CreateSubEventParams {
  * - The function uses Prisma for database operations
  * - All dates are stored in UTC format
  */
-export async function createSubEvent({
-  name,
-  startDate,
-  endDate,
-  eventId,
-  maxParticipants,
-  description,
-  hostId,
-  slotId,
-}: CreateSubEventParams): Promise<ServiceResult<SubEvent>> {
-  console.log('EventID', eventId);
-  console.log('HostID', hostId);
-  console.log('SlotID', slotId);
+export const createSubEvent = withAuth<
+  [
+    {
+      /**
+       * The name of the sub-event
+       */
+      name: string;
+      /**
+       * The start date of the sub-event
+       */
+      startDate: Date;
+      /**
+       * The end date of the sub-event
+       */
+      endDate: Date;
+      /**
+       * The UUID of the parent event
+       */
+      eventId: string;
+      /**
+       * The maximum number of participants allowed for the sub-event
+       */
+      maxParticipants: number;
+      /**
+       * The description of the sub-event
+       */
+      description?: string;
+      /**
+       * The UUID of the host company
+       */
+      hostId: string;
+      /**
+       * The UUID of the slot
+       */
+      slotId: string;
+    },
+  ],
+  SubEvent
+>(
+  async ({
+    args: [
+      {
+        name,
+        startDate,
+        endDate,
+        eventId,
+        maxParticipants,
+        description,
+        hostId,
+        slotId,
+      },
+    ],
+    session,
+  }) => {
+    // Check if start date is before end date
+    if (startDate >= endDate) {
+      throw new Error(t.errors.dateBeforeEnddate());
+    }
 
-  // Check if provided uuids are valid
-  if (
-    !uuidValidate(eventId) ||
-    !uuidValidate(hostId) ||
-    !uuidValidate(slotId)
-  ) {
-    return {
-      ok: false,
-      error: t.errors.nInvalidUUID(),
-    };
-  }
+    // Check if dates are in the future
+    if (startDate < new Date() || endDate < new Date()) {
+      throw new Error(t.errors.dateNotInFuture());
+    }
 
-  // Check if start date is before end date
-  if (startDate >= endDate) {
-    return {
-      ok: false,
-      error: t.errors.dateBeforeEnddate(),
-    };
-  }
+    // Check if max participants is positive
+    if (maxParticipants <= 0) {
+      throw new Error(t.errors.maxParticipantsNotPositive());
+    }
 
-  // Check if dates are in the future
-  if (startDate < new Date() || endDate < new Date()) {
-    return {
-      ok: false,
-      error: t.errors.dateNotInFuture(),
-    };
-  }
+    const createdById = session.user.id;
 
-  // Check if max participants is positive
-  if (maxParticipants <= 0) {
-    return {
-      ok: false,
-      error: t.errors.maxParticipantsNotPositive(),
-    };
-  }
-
-  // Only admins can create new sub events
-  if (!(await isAdmin())) {
-    return {
-      ok: false,
-      error: t.errors.noAdmin(),
-    };
-  }
-
-  const user = await getUser();
-
-  if (!user) {
-    return {
-      ok: false,
-      error: t.errors.userNotFoundGeneric(),
-    };
-  }
-
-  const createdById = user.id;
-
-  try {
     const res = await prisma.subEvent.create({
       data: {
         name,
@@ -180,133 +132,192 @@ export async function createSubEvent({
     });
 
     if (!res) {
-      return {
-        ok: false,
-        error: t.errors.failedToCreate('Sub Event'),
-      };
+      throw new Error(t.errors.failedToCreate('Sub Event'));
     }
 
     return {
       ok: true,
       data: res,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: t.errors.failedToCreate('Sub Event') + error.message,
-      };
-    }
-
-    console.log('Type of error', typeof error);
-
-    return {
-      ok: false,
-      error: t.errors.failedToCreate('Sub Event') + error,
-    };
+  },
+  {
+    permissions: {
+      subEvent: ['create'],
+    },
   }
-}
+);
 
-export async function getSubEventsForEvent({
-  eventId,
-}: {
-  eventId: string;
-}): Promise<ServiceResult<SubEvent[]>> {
-  // Only authenticated users can get sub events
-  if (!(await isAuthenticated())) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  // Check if event ID is valid
-  if (!uuidValidate(eventId)) {
-    return {
-      ok: false,
-      error: t.errors.invalidUUID(eventId),
-    };
-  }
-
-  try {
+/**
+ * Returns all sub events for a given event.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [subEvent:fetchAll]
+ *
+ * @todo TODO: Add distinction between published and unpublished sub events
+ *
+ * @returns All sub events for the given event.
+ */
+export const getSubEventsForEvent = withAuth<
+  [
+    {
+      eventId: string;
+    },
+  ],
+  SubEvent[]
+>(
+  async ({ args: [{ eventId }] }) => {
     const res = await prisma.subEvent.findMany({
       where: {
-        eventId,
+        AND: [
+          {
+            eventId,
+          },
+          // {
+          //   event: {
+          //     status: 'PUBLISHED',
+          //   },
+          // },
+        ],
       },
     });
 
     if (!res) {
-      return {
-        ok: false,
-        error: t.errors.failedToGet('Sub Events'),
-      };
+      throw new Error(t.errors.failedToGet('Sub Events'));
     }
 
     return {
       ok: true,
       data: res,
     };
-  } catch (error) {
-    if (error instanceof Error) {
-      return {
-        ok: false,
-        error: t.errors.failedToGet('Sub Events') + error.message,
-      };
-    }
-    return {
-      ok: false,
-      error: t.errors.failedToGet('Sub Events') + error,
-    };
-  }
-}
-
-interface GetOpenSubEventsForCompanyParams {
-  companyId: string;
-}
-
-export async function getOpenSubEventsForCompany({
-  companyId,
-}: GetOpenSubEventsForCompanyParams): Promise<ServiceResult<SubEvent[]>> {
-  // Only authenticated users can get sub events
-  if (!(await isAuthenticated())) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  // Check if company ID is valid
-  if (!uuidValidate(companyId)) {
-    return {
-      ok: false,
-      error: t.errors.invalidUUID(companyId),
-    };
-  }
-
-  const res = await prisma.subEvent.findMany({
-    where: {
-      AND: [
-        {
-          hostId: companyId,
-        },
-        {
-          event: {
-            status: 'PUBLISHED',
-          },
-        },
-      ],
+  },
+  {
+    permissions: {
+      subEvent: ['fetchAll'],
     },
-  });
-
-  if (!res) {
-    return {
-      ok: false,
-      error: t.errors.failedToGet('Sub Events'),
-    };
   }
+);
 
-  return {
-    ok: true,
-    data: res,
-  };
-}
+/**
+ * Returns all sub events, where the host company is the currently authenticated
+ * user and the main event is published.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [subEvent:fetchOwn]
+ *
+ * @returns All published and owned sub events.
+ */
+export const getOwnSubEvents = withAuth<[unknown?], SubEvent[]>(
+  async ({ session }) => {
+    console.log('Auth succesfull');
+
+    console.log('session: ', session);
+
+    const id = session.user.id;
+
+    // Fetch all sub events, where the host company is the currently authenticated
+    // user and the main event is published.
+    const res = await prisma.subEvent.findMany({
+      where: {
+        AND: [
+          {
+            id,
+          },
+          {
+            event: {
+              status: 'PUBLISHED',
+            },
+          },
+        ],
+      },
+    });
+
+    if (!res) {
+      throw new Error(t.errors.failedToGet('Sub Events'));
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      subEvent: ['fetchOwn'],
+    },
+  }
+);
+
+export const getSubEventsForCompany = withAuth<
+  [
+    {
+      /**
+       * The ID of the company to fetch sub events for.
+       */
+      companyId: string;
+    },
+  ],
+  SubEvent[]
+>(
+  async ({ args: [{ companyId }] }) => {
+    const res = await prisma.subEvent.findMany({
+      where: {
+        hostId: companyId,
+      },
+    });
+
+    if (!res) {
+      throw new Error(t.errors.failedToGet('Sub Events'));
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      subEvent: ['fetchAll'],
+    },
+  }
+);
+
+/**
+ * @deprecated Use {@link getSubEventsForCompany} instead.
+ */
+export const getPublishedSubEventsForCompany = withAuth<
+  [
+    {
+      companyId: string;
+    },
+  ],
+  SubEvent[]
+>(
+  async ({ args: [{ companyId }] }) => {
+    const res = await prisma.subEvent.findMany({
+      where: {
+        hostId: companyId,
+        event: {
+          status: 'PUBLISHED',
+        },
+      },
+    });
+
+    if (!res) {
+      throw new Error(t.errors.failedToGet('Sub Events'));
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      subEvent: ['fetchAll'],
+    },
+  }
+);

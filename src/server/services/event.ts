@@ -1,108 +1,83 @@
 'use server';
 
-import { messages as t } from '@/i18n';
-import { createClient } from '@/utils/supabase/server';
-import { Event, Phase, Prisma } from '@prisma/client';
-import { validate } from 'uuid';
+import { AUTH_ERROR_CODES, GENERAL_ERROR_CODES } from '@/error/codes';
+import { Event, EventStatus, Phase } from '@/generated/prisma/client';
+import { auth } from '@/utils/auth';
 import prisma from '../db';
-import { NewEventData } from '../schemas/event';
-import { ServiceResult } from '../types/serviceResult';
-import { getUser, isAdmin, isAuthenticated } from './auth';
+import { withAuth } from '../helpers';
 
 /**
  * Returns all published events from the database. Only accessible for
  * authenticated users.
  *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [authenticated]
+ *
  * @returns A promise with all published events.
  */
-export async function getPublishedEvents(): Promise<
-  ServiceResult<(Event & { phases: Phase[] })[]>
-> {
-  const client = await createClient();
+export const getPublishedEvents = withAuth<[], (Event & { phases: Phase[] })[]>(
+  async () => {
+    // Fetch all events where status is published and include the phases
+    const res = await prisma.event.findMany({
+      where: {
+        status: 'PUBLISHED',
+      },
+      include: {
+        phases: true,
+      },
+    });
 
-  // Only authenticated users can fetch see
-  if (!isAuthenticated(client)) {
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
     return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
+      ok: true,
+      data: res,
     };
   }
-
-  // Fetch all events where status is published and include the phases
-  const res = await prisma.event.findMany({
-    where: {
-      status: 'PUBLISHED',
-    },
-    include: {
-      phases: true,
-    },
-  });
-
-  if (!res) {
-    return {
-      ok: false,
-      error: t.errors.failedToFetch('events'),
-    };
-  }
-
-  return {
-    ok: true,
-    data: res,
-  };
-}
+);
 
 /**
- * Returns all events from the database. Only admins can fetch all events.
+ * Returns all events from the database including drafts, archived and
+ * published events.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [event:fetchAll]
  *
  * @returns A promise with all events.
  */
-export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
-  const client = await createClient();
+export const getAllEvents = withAuth<[], Event[]>(
+  async () => {
+    const res = await prisma.event.findMany();
 
-  if (!(await isAuthenticated(client))) {
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
     return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
+      ok: true,
+      data: res,
     };
+  },
+  {
+    permissions: {
+      event: ['fetchAll'],
+    },
   }
-
-  const user = await getUser(client);
-
-  if (user === null) {
-    return {
-      ok: false,
-      error: t.errors.failedToFetch('user'),
-    };
-  }
-
-  // Only admins can fetch ALL events
-  if (!(await isAdmin(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthorized(),
-    };
-  }
-
-  // TODO: This needs to be optimized
-  // When at scale, we should not fetch all events at once
-  // but rather paginate the results
-  const res = await prisma.event.findMany();
-
-  if (!res || res.length === 0) {
-    return {
-      ok: false,
-      error: t.errors.failedToFetch('events'),
-    };
-  }
-
-  return {
-    ok: true,
-    data: res,
-  };
-}
+);
 
 /**
  * Creates a new event in the database. Only admins can create new events.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [event:create]
  *
  * @param name The name of the event.
  * @param description The description of the event.
@@ -110,57 +85,41 @@ export async function getAllEvents(): Promise<ServiceResult<Event[]>> {
  *
  * @returns A promise with the created event.
  */
-export async function createEvent({
-  name,
-  description,
-}: NewEventData): Promise<ServiceResult<Event>> {
-  const client = await createClient();
-
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  // Only admins can create new events
-  if (!(await isAdmin(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthorized(),
-    };
-  }
-
-  const user = await getUser(client);
-
-  if (user === null) {
-    return {
-      ok: false,
-      error: t.errors.failedToFetch('user'),
-    };
-  }
-
-  const res = await prisma.event.create({
-    data: {
-      name,
-      description,
-      status: 'DRAFT',
-      createdById: user.id,
+export const createEvent = withAuth<
+  [
+    {
+      name: string;
+      description?: string;
+      status?: EventStatus;
     },
-  });
+  ],
+  Event
+>(
+  async ({ args: [{ name, description }], session }) => {
+    const res = await prisma.event.create({
+      data: {
+        name,
+        description,
+        status: 'DRAFT',
+        createdById: session.user.id,
+      },
+    });
 
-  if (res === null) {
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
     return {
-      ok: false,
-      error: t.errors.notCreated('Unternehmen'),
+      ok: true,
+      data: res,
     };
+  },
+  {
+    permissions: {
+      event: ['create'],
+    },
   }
-
-  return {
-    ok: true,
-    data: res,
-  };
-}
+);
 
 /**
  * Returns a single event from the database by its ID. If multiple events
@@ -169,119 +128,117 @@ export async function createEvent({
  * If the event is not published and the user is not an admin, the event
  * will not be returned.
  *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [event:fetchPublished]
+ * @requires {permission} [event:fetchAll] - For unpublished events
+ *
  * @param eventId - The ID of the event to fetch.
  *
  * @returns A promise with the event.
  */
-export async function getEventById(
-  eventId: string
-): Promise<ServiceResult<Event>> {
-  const client = await createClient();
-
-  // Only authenticated users can fetch events
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  // Get the event from the database
-
-  const res = await prisma.event.findFirst({
-    where: {
-      id: eventId,
-    },
-  });
-
-  // Check if more than one event was found
-  if (res === null) {
-    return {
-      ok: false,
-      error: t.errors.eventNotFound(eventId),
-    };
-  }
-
-  // Only admins can fetch unpublished events
-  if (res.status !== 'PUBLISHED' && !(await isAdmin(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthorized(),
-    };
-  }
-
-  return {
-    ok: true,
-    data: res,
-  };
-}
-
-export async function getAllNonArchivedEvents(): Promise<
-  ServiceResult<Event[]>
-> {
-  const client = await createClient();
-
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthenticated(),
-    };
-  }
-
-  if (!(await isAdmin(client))) {
-    return {
-      ok: false,
-      error: t.errors.notAuthorized(),
-    };
-  }
-
-  const res = await prisma.event.findMany({
-    where: {
-      NOT: {
-        status: 'ARCHIVED',
+export const getEventById = withAuth<[string], Event>(
+  async ({ args: [eventId] }) => {
+    const res = await prisma.event.findUniqueOrThrow({
+      where: {
+        id: eventId,
       },
-    },
-  });
+    });
 
-  if (!res) {
+    if (!res) {
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
+    }
+
+    if (res.status !== 'PUBLISHED') {
+      const hasPermission = await auth.api.userHasPermission({
+        body: {
+          permissions: {
+            event: ['fetchAll'],
+          },
+        },
+      });
+
+      if (!hasPermission) {
+        throw new Error(AUTH_ERROR_CODES.USER_NOT_AUTHORIZED);
+      }
+    }
+
     return {
-      ok: false,
-      error: t.errors.failedToFetch('events'),
+      ok: true,
+      data: res,
     };
+  },
+  {
+    permissions: {
+      event: ['fetchPublished'],
+    },
   }
+);
 
-  return {
-    ok: true,
-    data: res,
-  };
-}
+/**
+ * Returns all non-archived events from the database. Only accessible for
+ * admins.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [event:fetchAll]
+ *
+ * @returns A promise with all non-archived events.
+ */
+export const getAllNonArchivedEvents = withAuth<[], Event[]>(
+  async () => {
+    const res = await prisma.event.findMany({
+      where: {
+        NOT: {
+          status: 'ARCHIVED',
+        },
+      },
+    });
+
+    if (!res) {
+      throw new Error('Failed to fetch Events.');
+    }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      event: ['fetchAll'],
+    },
+  }
+);
 
 interface EventWithPhases extends Event {
   phases: Phase[];
 }
 
-export async function getPublishedEventById({
-  eventId,
-}: {
-  eventId: string;
-}): Promise<ServiceResult<EventWithPhases>> {
-  if (!validate(eventId)) {
-    return {
-      ok: false,
-      error: 'Invalid event ID.',
-    };
-  }
-
-  const client = await createClient();
-
-  if (!(await isAuthenticated(client))) {
-    return {
-      ok: false,
-      error: 'User is not authenticated.',
-    };
-  }
-
-  try {
+/**
+ * Returns a published event from the database by its ID. Only accessible for
+ * admins.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [event:fetchPublished]
+ *
+ * @param eventId - The ID of the event to fetch.
+ *
+ * @returns A promise with the event.
+ */
+export const getPublishedEventById = withAuth<
+  [
+    {
+      eventId: string;
+    },
+  ],
+  EventWithPhases
+>(
+  async ({ args: [{ eventId }] }) => {
     const res = await prisma.event.findFirstOrThrow({
       where: {
         AND: [
@@ -303,27 +260,17 @@ export async function getPublishedEventById({
     });
 
     if (res.phases.length === 0) {
-      return {
-        ok: false,
-        error: 'Event has no application phase.',
-      };
+      throw new Error('Event has no application phase.');
     }
 
     return {
       ok: true,
       data: res,
     };
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return {
-        ok: false,
-        error: error.message,
-      };
-    }
-
-    return {
-      ok: false,
-      error: 'Failed to fetch event. Something went wrong.',
-    };
+  },
+  {
+    permissions: {
+      event: ['fetchPublished'],
+    },
   }
-}
+);

@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { SubEvent } from '@/generated/prisma/client';
 import { cn } from '@/utils';
 import {
   CalendarIcon,
@@ -19,7 +20,6 @@ import {
   MinusIcon,
   PlusIcon,
 } from '@heroicons/react/16/solid';
-import { SubEvent } from '@prisma/client';
 import { format } from 'date-fns';
 import React from 'react';
 import { Selection, useApplicationStore } from '../stores/application.store';

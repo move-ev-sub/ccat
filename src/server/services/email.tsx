@@ -1,5 +1,7 @@
 'use server';
 
+import ConfirmEmail from '@/emails/auth/confirm-email';
+import ResetPasswordEmail from '@/emails/auth/reset-password';
 import ApplicationConfirmEmail from '@/emails/transactional/application-confirm';
 import { Email } from '@/utils/consts';
 import React from 'react';
@@ -100,6 +102,42 @@ export async function sendApplicationConfirmMail({
   return sendReactEmail({
     subject: 'Bewerbung erfolgreich abgeschickt',
     react: ApplicationConfirmEmail,
+    ...props,
+  });
+}
+
+/**
+ * Sends a confirmation email to the user to confirm their email address.
+ *
+ * @see {@link ConfirmEmail}
+ *
+ * @param props - The props to pass to the {@link ConfirmEmail} component.
+ */
+export async function sendConfirmEmail({
+  ...props
+}: SendEmailProps<React.ComponentProps<typeof ConfirmEmail>>): Promise<
+  ServiceResult<CreateEmailResponseSuccess>
+> {
+  return sendReactEmail({
+    subject: 'Bestätige deine E-Mail-Adresse um dein Konto zu aktivieren',
+    react: ConfirmEmail,
+    ...props,
+  });
+}
+
+/**
+ * Sends a reset password email to the user to reset their password.
+ *
+ * @see {@link ResetPasswordEmail}
+ */
+export async function sendResetPasswordEmail({
+  ...props
+}: SendEmailProps<React.ComponentProps<typeof ResetPasswordEmail>>): Promise<
+  ServiceResult<CreateEmailResponseSuccess>
+> {
+  return sendReactEmail({
+    subject: 'Setze dein Passwort zurück',
+    react: ResetPasswordEmail,
     ...props,
   });
 }

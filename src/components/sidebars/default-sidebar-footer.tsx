@@ -1,24 +1,25 @@
 'use server';
 
 import { SidebarFooter } from '@/components/ui/sidebar';
-import { createClient } from '@/utils/supabase/server';
+import { auth } from '@/utils/auth';
+import { headers } from 'next/headers';
 import { SidebarProfileMenu } from './sidebar-profile-menu';
 
 export async function DefaultSidebarFooter({
   ...props
 }: React.ComponentProps<typeof SidebarFooter>) {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (error) {
+  if (!session) {
     // TODO: Handle error
-    console.error(error);
     return <p>Error fetching user data. Please try again later.</p>;
   }
 
   return (
     <SidebarFooter {...props}>
-      <SidebarProfileMenu user={data.user} />
+      <SidebarProfileMenu session={session} />
     </SidebarFooter>
   );
 }

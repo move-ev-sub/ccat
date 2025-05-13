@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { fetchSlotsForEvent } from '@/server/services/slot';
+import { Slot } from '@/generated/prisma/client';
+import { getSlotsForEvent } from '@/server/services/slot';
 import {
   ArrowUpRightIcon,
   InformationCircleIcon,
 } from '@heroicons/react/16/solid';
-import { Slot } from '@prisma/client';
 import { format } from 'date-fns';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -24,7 +24,7 @@ export default async function AdminEventSlotsSettingsPage({
   }>;
 }) {
   const eventId = (await params).eventId;
-  const res = await fetchSlotsForEvent(eventId);
+  const res = await getSlotsForEvent({ eventId });
 
   // TODO: handle case where eventId is null
   if (!res.ok) {

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardLink } from '@/components/ui/card';
+import { SubEvent } from '@/generated/prisma/client';
 import { cn } from '@/utils';
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/16/solid';
-import { SubEvent } from '@prisma/client';
 import { format } from 'date-fns';
 import React from 'react';
 

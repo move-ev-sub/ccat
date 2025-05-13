@@ -1,9 +1,9 @@
+import { EventStatus } from '@/generated/prisma/client';
 import {
   EyeIcon,
   InboxArrowDownIcon,
   InboxStackIcon,
 } from '@heroicons/react/16/solid';
-import { EventStatus } from '@prisma/client';
 import React from 'react';
 
 interface EventStatusToIconProps extends React.ComponentProps<'svg'> {

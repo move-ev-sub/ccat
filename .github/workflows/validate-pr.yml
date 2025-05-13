@@ -20,6 +20,8 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: THIS_IS_A_TEST_KEY_AND_SHOULD_NOT_BE_USED_IN_PRODUCTION
       DATABASE_URL: postgresql://postgres:password@localhost:5432/t3-test
       RESEND_API_KEY: re_THIS_IS_A_TEST_KEY_AND_SHOULD_NOT_BE_USED_IN_PRODUCT
+      BETTER_AUTH_URL: https://localhost:3000
+      BETTER_AUTH_SECRET: HeBgtn6DafaNTREtTJu13VLxNq4ODXW2
 
     steps:
       - name: Checkout code
