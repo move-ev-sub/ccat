@@ -51,13 +51,14 @@ export function SlotSelector({
     }, {} as SlotEntries);
   }, [slots]);
 
-  React.useEffect(() => {
+  const handleDayChange = (day: string) => {
+    setDayValue(day);
     onValueChange(undefined);
-  }, [dayValue, onValueChange]);
+  };
 
   return (
     <div data-slot={'slot-selector'} className={cn(className)}>
-      <Select value={dayValue} onValueChange={setDayValue} {...props}>
+      <Select value={dayValue} onValueChange={handleDayChange} {...props}>
         <SelectTrigger>
           <SelectValue placeholder="Wähle ein Datum" />
         </SelectTrigger>

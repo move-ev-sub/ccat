@@ -10,3 +10,7 @@ export const createSlotSchema = z.object({
 export const getSlotsForEventSchema = z.object({
   eventId: cuidSchema,
 });
+
+export const countSlotsForEventSchema = z.object({
+  eventId: cuidSchema,
+});

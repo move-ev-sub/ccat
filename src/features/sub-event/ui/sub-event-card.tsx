@@ -20,18 +20,17 @@ import React from 'react';
  * @todo TODO: The Card Icon should be replaced with the actual sub-event type icon.
  *             Currently, the ChatBubbleLeftRightIcon is used as a placeholder.
  */
-export function SubEventThumbnailCard({
+export function SubEventCard({
   className,
   subEvent,
   href,
   ...props
 }: React.ComponentProps<typeof Card> & {
   /**
-   * The sub event from which the thumbnail should be generated.
+   * The sub event from which the card should be generated.
    */
   subEvent: SubEvent;
-
-  href?: string;
+  href: string;
 }) {
   /**
    * Checks if two dates are on the same calendar day.
@@ -72,8 +71,6 @@ export function SubEventThumbnailCard({
   // Format the time between the start and end date
   const timeBetween = `${format(subEvent.startDate, 'HH:mm')} - ${format(subEvent.endDate, 'HH:mm')}`;
 
-  const subEventPath = `/admin/event/${subEvent.eventId}/sub-events/${subEvent.id}`;
-
   return (
     <Card className={cn('h-fit', className)} {...props}>
       <CardHeader>
@@ -81,7 +78,7 @@ export function SubEventThumbnailCard({
         <div className="border-border bg-background text-accent w-fit rounded-md border p-2">
           <ChatBubbleLeftRightIcon className="size-5" />
         </div>
-        <CardLink href={href ?? subEventPath} className="mt-4">
+        <CardLink href={href} className="mt-4">
           {subEvent.name}
         </CardLink>
       </CardHeader>

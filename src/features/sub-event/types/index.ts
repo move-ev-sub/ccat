@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  canCreateSubEventSchema,
   createSubEventSchema,
   getPublishedSubEventsForCompanySchema,
   getSubEventsForCompanySchema,
@@ -19,3 +20,5 @@ export type GetSubEventsForCompanyArgs = z.infer<
 export type GetPublishedSubEventsForCompanyArgs = z.infer<
   typeof getPublishedSubEventsForCompanySchema
 >;
+
+export type CanCreateSubEventArgs = z.infer<typeof canCreateSubEventSchema>;

@@ -16,11 +16,39 @@ import { withAuth } from '@/lib/helpers/withAuth';
  */
 export const getAllCompanies = withAuth<[], PrismaUser[]>(
   async () => {
-    const res = await prisma.user.findMany();
+    const res = await prisma.user.findMany({
+      where: {
+        role: {
+          contains: 'company',
+        },
+      },
+    });
 
     if (!res) {
       throw new CCATError(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
     }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      company: ['fetchAll'],
+    },
+  }
+);
+
+export const countCompanyUsers = withAuth<[unknown?], number>(
+  async () => {
+    const res = await prisma.user.count({
+      where: {
+        role: {
+          contains: 'company',
+        },
+      },
+    });
 
     return {
       ok: true,

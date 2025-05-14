@@ -1,7 +1,7 @@
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageTitle } from '@/components/page-header';
-import { SubEventThumbnailCard } from '@/components/sub-event-thumbnail-card';
 import { getOwnSubEvents } from '@/features/sub-event/services/subEventService';
+import { SubEventThumbnailCard } from '@/features/sub-event/ui/sub-event-card';
 import { cn } from '@/lib/utils/cn';
 import { ArchiveBoxIcon } from '@heroicons/react/24/outline';
 

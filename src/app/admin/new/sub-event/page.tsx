@@ -36,7 +36,10 @@ async function fetchData({ eventId }: { eventId: string }): Promise<
     return companiesRes;
   }
 
+  console.log('eventId', eventId);
   const slotsRes = await getSlotsForEvent({ eventId });
+
+  console.log(JSON.stringify(slotsRes, null, 2));
 
   if (!slotsRes.ok) {
     return slotsRes;
@@ -44,6 +47,9 @@ async function fetchData({ eventId }: { eventId: string }): Promise<
 
   const companies = companiesRes.data;
   const slots = slotsRes.data;
+
+  console.log(JSON.stringify(slots, null, 2));
+  console.log(JSON.stringify(companies, null, 2));
 
   if (companies.length === 0) {
     return {
@@ -89,6 +95,7 @@ export default async function NewSubEventPage({
   const res = await fetchData({ eventId });
 
   if (!res.ok) {
+    console.error(res.error);
     throw new Error(res.error);
   }
 

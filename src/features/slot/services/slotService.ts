@@ -4,8 +4,16 @@ import { Slot } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
 import prisma from '@/lib/api/prisma';
 import { withAuth } from '@/lib/helpers/withAuth';
-import { CreateSlotArgs, GetSlotsForEventArgs } from '../types';
-import { createSlotSchema, getSlotsForEventSchema } from '../validations';
+import {
+  CountSlotsForEventArgs,
+  CreateSlotArgs,
+  GetSlotsForEventArgs,
+} from '../types';
+import {
+  countSlotsForEventSchema,
+  createSlotSchema,
+  getSlotsForEventSchema,
+} from '../validations';
 
 /**
  * Creates a new Time Slot for an Event in which sub events can be
@@ -115,8 +123,46 @@ export const getSlotsForEvent = withAuth<[GetSlotsForEventArgs], Slot[]>(
     });
 
     if (!res) {
-      throw new Error(t.errors.failedToGet('Slots'));
+      throw new Error(JSON.stringify(res));
     }
+
+    return {
+      ok: true,
+      data: res,
+    };
+  },
+  {
+    permissions: {
+      slot: ['fetchAll'],
+    },
+  }
+);
+
+/**
+ * Counts the number of slots for a given event.
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [slot:fetchAll]
+ *
+ * @returns The number of slots for the event.
+ */
+export const countSlotsForEvent = withAuth<[CountSlotsForEventArgs], number>(
+  async ({ args: [arg0] }) => {
+    const parseRes = await countSlotsForEventSchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { eventId } = parseRes.data;
+
+    const res = await prisma.slot.count({
+      where: {
+        eventId: eventId,
+      },
+    });
 
     return {
       ok: true,

@@ -1,6 +1,5 @@
 'use client';
 
-import { SubEventThumbnailCard } from '@/components/sub-event-thumbnail-card';
 import {
   Form,
   FormControl,
@@ -9,6 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { SubEventThumbnailCard } from '@/features/sub-event/ui/sub-event-card';
 import { SubEvent } from '@/generated/prisma/client';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
