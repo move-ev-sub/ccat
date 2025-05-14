@@ -61,6 +61,8 @@ export function CreateSubEventForm({
     defaultValues: {
       name: '',
       description: '',
+      maxParticipants: 30,
+      eventId,
     },
   });
 
@@ -68,14 +70,7 @@ export function CreateSubEventForm({
     setLoading(false);
 
     const res = await createSubEvent({
-      endDate: values.endDate,
-      eventId: eventId,
-      hostId: values.hostId,
-      maxParticipants: 30,
-      name: values.name,
-      slotId: values.slotId,
-      startDate: values.startDate,
-      description: values.description,
+      ...values,
     });
 
     if (!res.ok) {
@@ -275,6 +270,7 @@ export function CreateSubEventForm({
             </FormItem>
           )}
         />
+
         <Button
           type="submit"
           variant={'accent'}

@@ -20,18 +20,17 @@ import React from 'react';
  * @todo TODO: The Card Icon should be replaced with the actual sub-event type icon.
  *             Currently, the ChatBubbleLeftRightIcon is used as a placeholder.
  */
-export function SubEventThumbnailCard({
+export function SubEventCard({
   className,
   subEvent,
   href,
   ...props
 }: React.ComponentProps<typeof Card> & {
   /**
-   * The sub event from which the thumbnail should be generated.
+   * The sub event from which the card should be generated.
    */
   subEvent: SubEvent;
-
-  href?: string;
+  href: string;
 }) {
   /**
    * Checks if two dates are on the same calendar day.
@@ -72,8 +71,6 @@ export function SubEventThumbnailCard({
   // Format the time between the start and end date
   const timeBetween = `${format(subEvent.startDate, 'HH:mm')} - ${format(subEvent.endDate, 'HH:mm')}`;
 
-  const subEventPath = `/admin/event/${subEvent.eventId}/sub-events/${subEvent.id}`;
-
   return (
     <Card className={cn('h-fit', className)} {...props}>
       <CardHeader>
@@ -81,7 +78,7 @@ export function SubEventThumbnailCard({
         <div className="border-border bg-background text-accent w-fit rounded-md border p-2">
           <ChatBubbleLeftRightIcon className="size-5" />
         </div>
-        <CardLink href={href ?? subEventPath} className="mt-4">
+        <CardLink href={href} className="mt-4">
           {subEvent.name}
         </CardLink>
       </CardHeader>
@@ -89,28 +86,16 @@ export function SubEventThumbnailCard({
         <dl>
           {sameDay ? (
             <>
-              <SubEventThumbnailCardListItem
-                label="Datum"
-                value={formattedStart}
-              />
-              <SubEventThumbnailCardListItem
-                label="Uhrzeit"
-                value={timeBetween}
-              />
+              <SubEventCardListItem label="Datum" value={formattedStart} />
+              <SubEventCardListItem label="Uhrzeit" value={timeBetween} />
             </>
           ) : (
             <>
-              <SubEventThumbnailCardListItem
-                label="Start"
-                value={formattedStart}
-              />
-              <SubEventThumbnailCardListItem
-                label="Ende"
-                value={formattedEnd}
-              />
+              <SubEventCardListItem label="Start" value={formattedStart} />
+              <SubEventCardListItem label="Ende" value={formattedEnd} />
             </>
           )}
-          <SubEventThumbnailCardListItem
+          <SubEventCardListItem
             label="Max. Teilnehmer"
             value={subEvent.maxParticipants.toString()}
           />
@@ -121,10 +106,10 @@ export function SubEventThumbnailCard({
 }
 
 /**
- * The SubEventThumbnailCardListItem serves as a small helper component to
- * keep the styles in sync for the desc items in the SubEventThumbnailCard.
+ * The SubEventCardListItem serves as a small helper component to
+ * keep the styles in sync for the description list items in the SubEventCard.
  */
-function SubEventThumbnailCardListItem({
+function SubEventCardListItem({
   className,
   label,
   value,
@@ -136,7 +121,7 @@ function SubEventThumbnailCardListItem({
   return (
     <>
       <div
-        data-slot={'sub-event-thumbnail-card-list-item'}
+        data-slot={'sub-event-card-list-item'}
         className={cn(
           'border-border flex justify-between border-b py-2 text-sm first:pt-0 last:border-none last:pb-0',
           className

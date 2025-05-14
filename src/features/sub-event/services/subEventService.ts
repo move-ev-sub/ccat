@@ -1,16 +1,20 @@
 'use server';
 
+import { countSlotsForEvent } from '@/features/slot/services/slotService';
+import { countCompanyUsers } from '@/features/user/services/companyService';
 import { SubEvent } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
 import prisma from '@/lib/api/prisma';
 import { withAuth } from '@/lib/helpers/withAuth';
 import {
+  CanCreateSubEventArgs,
   CreateSubEventArgs,
   GetPublishedSubEventsForCompanyArgs,
   GetSubEventsForCompanyArgs,
   GetSubEventsForEventArgs,
 } from '../types';
 import {
+  canCreateSubEventSchema,
   createSubEventSchema,
   getPublishedSubEventsForCompanySchema,
   getSubEventsForCompanySchema,
@@ -301,6 +305,66 @@ export const getPublishedSubEventsForCompany = withAuth<
   {
     permissions: {
       subEvent: ['fetchAll'],
+    },
+  }
+);
+
+/**
+ * Checks if a sub event can be created for a given event. The criteria are:
+ * - The event has at least one slot
+ * - At least one company user exists
+ *
+ * The function is wrapped with the `withAuth` helper to ensure that the user
+ * has the required permissions.
+ *
+ * @requires {permission} [subEvent:create]
+ *
+ * @returns A promise that resolves to a ServiceResult containing either:
+ * - true if a sub event can be created
+ * - false otherwise
+ */
+export const canCreateSubEvent = withAuth<[CanCreateSubEventArgs], boolean>(
+  async ({ args: [arg0] }) => {
+    const parseRes = await canCreateSubEventSchema.safeParseAsync(arg0);
+
+    if (!parseRes.success) {
+      throw new Error(parseRes.error.message);
+    }
+
+    const { eventId } = parseRes.data;
+
+    const companyCountRes = await countCompanyUsers();
+
+    if (!companyCountRes.ok) {
+      throw new Error(companyCountRes.error);
+    }
+
+    const slotCountRes = await countSlotsForEvent({
+      eventId,
+    });
+
+    if (!slotCountRes.ok) {
+      throw new Error(slotCountRes.error);
+    }
+
+    const { data: slotCount } = slotCountRes;
+    const { data: companyCount } = companyCountRes;
+
+    if (slotCount >= 1 && companyCount >= 1) {
+      return {
+        ok: true,
+        data: true,
+      };
+    }
+
+    return {
+      ok: true,
+      data: false,
+    };
+  },
+  {
+    permissions: {
+      subEvent: ['create'],
     },
   }
 );
