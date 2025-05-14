@@ -12,16 +12,17 @@ import {
   ChevronUpDownIcon,
   Cog6ToothIcon,
   ComputerDesktopIcon,
-  DocumentCheckIcon,
   HomeIcon,
   MoonIcon,
   SunIcon,
   UsersIcon,
 } from '@heroicons/react/16/solid';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import MoveLogo from '../../../public/move-logo.svg';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -82,15 +83,14 @@ export function Sidebar({ items, session, ...props }: SidebarProps) {
   return (
     <SidebarPrimitive.Sidebar {...props}>
       <SidebarPrimitive.SidebarContent>
-        <SidebarPrimitive.SidebarHeader>
-          <div className="flex items-center justify-start gap-4 p-2">
-            <div className="bg-background border-border-secondary rounded-md border p-2">
-              <DocumentCheckIcon className="text-accent size-4" />
-            </div>
-            <p className="text-foreground font-medium">CCAT</p>
-          </div>
+        <SidebarPrimitive.SidebarHeader className="h-12">
+          <Image src={MoveLogo} alt="Move Logo" className="h-full w-fit" />
         </SidebarPrimitive.SidebarHeader>
+        <SidebarPrimitive.SidebarSeparator />
         <SidebarPrimitive.SidebarGroup>
+          <SidebarPrimitive.SidebarGroupLabel>
+            Navigation
+          </SidebarPrimitive.SidebarGroupLabel>
           <SidebarPrimitive.SidebarGroupContent>
             <SidebarPrimitive.SidebarMenu base="">
               {items.map((item) => (

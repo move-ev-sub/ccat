@@ -1,4 +1,6 @@
+import { Navbar } from '@/components/layout/navbar';
 import { SubNavigation, SubNavigationItem } from '@/components/navigation';
+import { AdminRoutes } from '@/lib/consts/routes';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -19,6 +21,18 @@ export default async function AdminEventLayout({
 
   return (
     <>
+      <Navbar
+        breadcrumbs={[
+          {
+            label: 'Veranstaltungen',
+            href: AdminRoutes.EVENTS,
+          },
+          {
+            label: 'Veranstaltung',
+            href: '#',
+          },
+        ]}
+      />
       <SubNavigation base={`/admin/event/${eventId}`} className="pl-8">
         <SubNavigationItem href={`/`}>Übersicht</SubNavigationItem>
         <SubNavigationItem href={'/sub-events'}>

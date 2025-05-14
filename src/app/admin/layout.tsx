@@ -1,9 +1,5 @@
 import { Sidebar } from '@/components/layout/sidebar';
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { auth } from '@/lib/api/auth';
 import { AdminRoutes } from '@/lib/consts/routes';
 import { Metadata } from 'next';
@@ -55,15 +51,9 @@ export default async function AdminLayout({
           },
         ]}
         session={session}
-        variant="inset"
       />
       <SidebarInset className="overflow-hidden">
-        <main className="w-full">
-          <div className="border-border border-b px-8 py-2">
-            <SidebarTrigger />
-          </div>
-          {children}
-        </main>
+        <main className="w-full">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,3 +1,4 @@
+import { Navbar } from '@/components/layout/navbar';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -6,6 +7,7 @@ import { CreateEventDialog } from '@/features/event/ui/create-event-dialog';
 import { EventsList } from '@/features/event/ui/event-list';
 import { EventStatusToIcon } from '@/features/event/ui/event-status-to-icon';
 import { messages as t } from '@/i18n';
+import { AdminRoutes } from '@/lib/consts/routes';
 import { ListBulletIcon } from '@heroicons/react/16/solid';
 import { Metadata } from 'next';
 
@@ -29,37 +31,47 @@ export default async function AdminOverviewPage() {
   const events = res.data;
 
   return (
-    <PageContainer>
-      <PageHeader>
-        <div className="flex flex-wrap items-start justify-between gap-6">
-          <div>
-            <PageTitle>{t.pages.events.title()}</PageTitle>
-            <PageDesc>{t.pages.events.description()}</PageDesc>
+    <>
+      <Navbar
+        breadcrumbs={[
+          {
+            label: 'Veranstaltungen',
+            href: AdminRoutes.EVENTS,
+          },
+        ]}
+      />
+      <PageContainer>
+        <PageHeader>
+          <div className="flex flex-wrap items-start justify-between gap-6">
+            <div>
+              <PageTitle>{t.pages.events.title()}</PageTitle>
+              <PageDesc>{t.pages.events.description()}</PageDesc>
+            </div>
+            {/* @TODO: Link to CreateNewEvent Page */}
+            <CreateEventDialog />
           </div>
-          {/* @TODO: Link to CreateNewEvent Page */}
-          <CreateEventDialog />
-        </div>
-      </PageHeader>
-      {/* <div className="bg-border mt-6 h-px w-full" /> */}
-      <Tabs defaultValue="all" className="mt-to-header">
-        <div className="container px-0 sm:px-8">
-          <TabsList className="pl-8 sm:pl-0">
-            <TabsTrigger value="all">
-              <ListBulletIcon /> {t.pages.events.allEvents()}
-            </TabsTrigger>
-            <TabsTrigger value="published">
-              <EventStatusToIcon status="PUBLISHED" />{' '}
-              {t.pages.events.publishedEvents()}
-            </TabsTrigger>
-            <TabsTrigger value="drafts">
-              <EventStatusToIcon status="DRAFT" />{' '}
-              {t.pages.events.draftEvents()}
-            </TabsTrigger>
-          </TabsList>
-        </div>
+        </PageHeader>
+        {/* <div className="bg-border mt-6 h-px w-full" /> */}
+        <Tabs defaultValue="all" className="mt-to-header">
+          <div className="container px-0 sm:px-8">
+            <TabsList className="pl-8 sm:pl-0">
+              <TabsTrigger value="all">
+                <ListBulletIcon /> {t.pages.events.allEvents()}
+              </TabsTrigger>
+              <TabsTrigger value="published">
+                <EventStatusToIcon status="PUBLISHED" />{' '}
+                {t.pages.events.publishedEvents()}
+              </TabsTrigger>
+              <TabsTrigger value="drafts">
+                <EventStatusToIcon status="DRAFT" />{' '}
+                {t.pages.events.draftEvents()}
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        <EventsList events={events} />
-      </Tabs>
-    </PageContainer>
+          <EventsList events={events} />
+        </Tabs>
+      </PageContainer>
+    </>
   );
 }
