@@ -3,6 +3,7 @@
 import { Slot } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
 import prisma from '@/lib/api/prisma';
+import { GENERAL_ERROR_CODES } from '@/lib/error/codes';
 import { withAuth } from '@/lib/helpers/withAuth';
 import {
   CountSlotsForEventArgs,
@@ -123,7 +124,7 @@ export const getSlotsForEvent = withAuth<[GetSlotsForEventArgs], Slot[]>(
     });
 
     if (!res) {
-      throw new Error(JSON.stringify(res));
+      throw new Error(GENERAL_ERROR_CODES.UNKNOWN_ERROR);
     }
 
     return {

@@ -78,7 +78,7 @@ export default async function AdminSubEventsPage({
               </span>
             </TooltipTrigger>
             <TooltipContent className="max-w-80 text-center">
-              Um eine Untveranstaltung zu erstellen, wird mindestens ein Slot
+              Um eine Unterveranstaltung zu erstellen, wird mindestens ein Slot
               und ein Unternehmen benötigt.
             </TooltipContent>
           </Tooltip>

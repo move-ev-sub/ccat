@@ -86,28 +86,16 @@ export function SubEventCard({
         <dl>
           {sameDay ? (
             <>
-              <SubEventThumbnailCardListItem
-                label="Datum"
-                value={formattedStart}
-              />
-              <SubEventThumbnailCardListItem
-                label="Uhrzeit"
-                value={timeBetween}
-              />
+              <SubEventCardListItem label="Datum" value={formattedStart} />
+              <SubEventCardListItem label="Uhrzeit" value={timeBetween} />
             </>
           ) : (
             <>
-              <SubEventThumbnailCardListItem
-                label="Start"
-                value={formattedStart}
-              />
-              <SubEventThumbnailCardListItem
-                label="Ende"
-                value={formattedEnd}
-              />
+              <SubEventCardListItem label="Start" value={formattedStart} />
+              <SubEventCardListItem label="Ende" value={formattedEnd} />
             </>
           )}
-          <SubEventThumbnailCardListItem
+          <SubEventCardListItem
             label="Max. Teilnehmer"
             value={subEvent.maxParticipants.toString()}
           />
@@ -118,10 +106,10 @@ export function SubEventCard({
 }
 
 /**
- * The SubEventThumbnailCardListItem serves as a small helper component to
- * keep the styles in sync for the desc items in the SubEventThumbnailCard.
+ * The SubEventCardListItem serves as a small helper component to
+ * keep the styles in sync for the description list items in the SubEventCard.
  */
-function SubEventThumbnailCardListItem({
+function SubEventCardListItem({
   className,
   label,
   value,
@@ -133,7 +121,7 @@ function SubEventThumbnailCardListItem({
   return (
     <>
       <div
-        data-slot={'sub-event-thumbnail-card-list-item'}
+        data-slot={'sub-event-card-list-item'}
         className={cn(
           'border-border flex justify-between border-b py-2 text-sm first:pt-0 last:border-none last:pb-0',
           className
