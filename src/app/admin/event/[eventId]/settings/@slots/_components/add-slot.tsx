@@ -28,11 +28,7 @@ export function AddSlotButton({
         <div className="px-6 py-12">
           <p className="text-foreground font-medium">Slot hinzufügen</p>
           <Separator className="mt-4 mb-6" />
-          <CreateNewSlotForm
-            baseDate={new Date()}
-            eventId={eventId}
-            onSuccess={() => setOpen(false)}
-          />
+          <CreateNewSlotForm eventId={eventId} />
         </div>
       </SheetContent>
     </Sheet>
