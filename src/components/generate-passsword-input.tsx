@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { ArrowPathIcon } from '@heroicons/react/16/solid';
 import { randomBytes } from 'crypto';
 import React from 'react';

@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
 import Link from 'next/link';
 import React from 'react';

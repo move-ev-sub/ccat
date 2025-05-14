@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
 export function NoSubEvents({

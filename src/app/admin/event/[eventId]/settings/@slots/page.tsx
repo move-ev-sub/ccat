@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getSlotsForEvent } from '@/features/slot/services/slotService';
 import { Slot } from '@/generated/prisma/client';
-import { getSlotsForEvent } from '@/server/services/slot';
 import {
   ArrowUpRightIcon,
   InformationCircleIcon,

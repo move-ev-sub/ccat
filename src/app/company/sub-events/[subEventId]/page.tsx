@@ -6,13 +6,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { FullSubApplication } from '@/features/sub-application/types';
 import {
   Degree,
   Gender,
   SubApplicationPrioritzation,
   SubApplicationStatus,
 } from '@/generated/prisma/client';
-import { FullSubApplication } from '@/server/types/sub-application';
 import { faker } from '@faker-js/faker';
 import { ArrowDownTrayIcon, ArrowUpIcon } from '@heroicons/react/16/solid';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { tabsListVariants } from '@/components/ui/tabs/tabs-list';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import React from 'react';
 import { SubNavProvider } from './sub-navigation.context';
 

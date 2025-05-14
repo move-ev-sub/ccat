@@ -283,7 +283,7 @@
   :root {
     --sidebar: var(--primary-100);
     --sidebar-background: #ffffff;
-    --sidebar-foreground: var(--primary-800);
+    --sidebar-foreground: var(--primary-600);
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: var(--primary-200);

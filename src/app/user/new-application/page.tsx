@@ -1,4 +1,4 @@
-import { ApplicationRoutes } from '@/utils/consts';
+import { ApplicationRoutes } from '@/lib/consts/routes';
 import { redirect } from 'next/navigation';
 
 /**

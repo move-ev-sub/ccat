@@ -1,10 +1,11 @@
-import { CreateSubEventForm } from '@/components/forms/create-sub-event-form';
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { getSlotsForEvent } from '@/features/slot/services/slotService';
+import { CreateSubEventForm } from '@/features/sub-event/ui/create-sub-event-form';
+import { getAllCompanies } from '@/features/user/services/companyService';
 import { Slot } from '@/generated/prisma/client';
 import { messages as t } from '@/i18n';
-import { getAllCompanies } from '@/server/services/company';
-import { getSlotsForEvent } from '@/server/services/slot';
-import { ServiceResult } from '@/server/types/serviceResult';
+import { ServiceResult } from '@/types';
+
 import { User as AuthUser } from 'better-auth';
 import { Metadata } from 'next';
 

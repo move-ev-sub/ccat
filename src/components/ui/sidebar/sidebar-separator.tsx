@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { Separator } from '../separator';
 
 export function SidebarSeparator({

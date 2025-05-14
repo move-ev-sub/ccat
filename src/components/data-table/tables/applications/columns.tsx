@@ -1,13 +1,13 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { FullSubApplication } from '@/server/types/sub-application';
+import { FullSubApplication } from '@/features/sub-application/types';
+import { cn } from '@/lib/utils/cn';
 import {
-  cn,
   translateDegree,
   translatePriorization,
   translateStatus,
-} from '@/utils';
+} from '@/lib/utils/translations';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '../../data-table-column-header';
 import { DataTableRowActions } from '../../data-table-row-actions';

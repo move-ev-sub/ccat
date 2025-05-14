@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import * as TabsPrimtiive from '@radix-ui/react-tabs';
 import { cva } from 'class-variance-authority';
 import React from 'react';

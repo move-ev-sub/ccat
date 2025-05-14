@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { HomeIcon } from '@heroicons/react/16/solid';
 import React from 'react';
 import { Crumb } from './crumb';

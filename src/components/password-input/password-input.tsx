@@ -1,7 +1,7 @@
 'use client';
 
 import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { EyeIcon } from '@heroicons/react/16/solid';
 import React from 'react';
 import { PasswordInputCriteria } from './password-input-criteria';

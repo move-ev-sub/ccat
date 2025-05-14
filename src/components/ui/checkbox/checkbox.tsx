@@ -4,7 +4,7 @@ import { CheckIcon } from '@heroicons/react/16/solid';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import * as React from 'react';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 
 function Checkbox({
   className,

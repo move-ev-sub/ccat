@@ -1,7 +1,7 @@
 'use client';
 
+import { cn } from '@/lib/utils/cn';
 import * as React from 'react';
-import { cn } from '@/utils';
 
 export function DialogHeader({
   className,

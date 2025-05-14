@@ -2,9 +2,9 @@ import {
   AuthDescription,
   AuthHeader,
   AuthTitle,
-} from '@/components/auth/auth-header';
-import { RegisterForm } from '@/components/auth/forms/register-form';
-import { cn } from '@/utils';
+} from '@/features/auth/ui/auth-header';
+import { RegisterForm } from '@/features/auth/ui/register-form';
+import { cn } from '@/lib/utils/cn';
 import Link from 'next/link';
 
 export default async function RegisterPage() {

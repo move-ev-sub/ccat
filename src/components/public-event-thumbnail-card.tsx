@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Event, Phase } from '@/generated/prisma/client';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import {
   ArrowUpRightIcon,
   InformationCircleIcon,

@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import React from 'react';
 
 export function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {

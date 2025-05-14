@@ -7,7 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { CalendarIcon } from '@heroicons/react/16/solid';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';

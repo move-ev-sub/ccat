@@ -17,7 +17,8 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useControllableState } from '@/hooks/use-controllable-state';
-import { cn, formatBytes } from '@/utils';
+import { cn } from '@/lib/utils/cn';
+import { formatBytes } from '@/lib/utils/format-bytes';
 import { XMarkIcon } from '@heroicons/react/16/solid';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 

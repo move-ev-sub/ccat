@@ -5,7 +5,7 @@
  * @see https://www.w3schools.com/tags/tag_dl.asp
  * @see https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/description-lists#component-d9372707af2e94e67936e94d7339cbb3
  */
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import React from 'react';
 
 export function DescriptionList({

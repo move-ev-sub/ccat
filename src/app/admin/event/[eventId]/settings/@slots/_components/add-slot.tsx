@@ -1,9 +1,9 @@
 'use client';
 
-import { CreateNewSlotForm } from '@/components/forms/create-slot';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { CreateNewSlotForm } from '@/features/slot/ui/create-slot-form';
 import { useEventId } from '@/hooks/use-event-id';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import React from 'react';
@@ -28,11 +28,7 @@ export function AddSlotButton({
         <div className="px-6 py-12">
           <p className="text-foreground font-medium">Slot hinzufügen</p>
           <Separator className="mt-4 mb-6" />
-          <CreateNewSlotForm
-            baseDate={new Date()}
-            eventId={eventId}
-            onSuccess={() => setOpen(false)}
-          />
+          <CreateNewSlotForm eventId={eventId} />
         </div>
       </SheetContent>
     </Sheet>

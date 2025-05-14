@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { User as PrismaUser } from '@/generated/prisma/client';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { DataTableColumnHeader } from '../../data-table-column-header';

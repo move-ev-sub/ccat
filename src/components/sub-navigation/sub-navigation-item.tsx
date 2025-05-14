@@ -1,7 +1,7 @@
 'use client';
 
 import { tabsTriggerVariants } from '@/components/ui/tabs/tabs-trigger';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';

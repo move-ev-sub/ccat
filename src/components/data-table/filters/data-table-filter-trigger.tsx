@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import React from 'react';
 

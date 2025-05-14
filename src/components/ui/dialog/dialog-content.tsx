@@ -1,11 +1,11 @@
 'use client';
 
-import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import * as React from 'react';
 
-import { cn } from '@/utils';
-import { DialogPortal } from './dialog-portal';
+import { cn } from '@/lib/utils/cn';
 import { DialogOverlay } from './dialog-overlay';
+import { DialogPortal } from './dialog-portal';
 
 import { XMarkIcon } from '@heroicons/react/24/solid';
 

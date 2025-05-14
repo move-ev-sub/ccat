@@ -1,7 +1,7 @@
-import { PersonalSettingsForm } from '@/components/auth/forms/personal-settings-form';
 import { PageContainer } from '@/components/page-container';
 import { PageTitle } from '@/components/page-header';
-import { auth } from '@/utils/auth';
+import { PersonalSettingsForm } from '@/features/auth/ui/personal-settings-form';
+import { auth } from '@/lib/api/auth';
 import { headers } from 'next/headers';
 
 export default async function CompanyPersonalSettingsPage() {

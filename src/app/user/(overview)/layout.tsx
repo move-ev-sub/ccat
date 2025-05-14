@@ -1,7 +1,4 @@
-import { UserProfileMenu } from '@/components/profile-dropdown-menu/user-profile-menu';
-import { auth } from '@/utils/auth';
 import { Metadata } from 'next';
-import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -17,16 +14,6 @@ export const metadata: Metadata = {
 export default async function UserLayout({
   children,
 }: React.PropsWithChildren) {
-  const sessionRes = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!sessionRes) {
-    throw new Error('User not authenticated');
-  }
-
-  const user = sessionRes.user;
-
   return (
     <main>
       <nav className="border-border flex w-full items-center justify-start gap-6 border-b px-8 py-3">
@@ -39,7 +26,6 @@ export default async function UserLayout({
         >
           Veranstaltungen
         </Link>
-        <UserProfileMenu profile={user} className="ml-auto" />
       </nav>
       {children}
     </main>

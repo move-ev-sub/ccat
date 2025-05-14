@@ -4,7 +4,7 @@ import { ChevronRightIcon } from '@heroicons/react/16/solid';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import * as React from 'react';
 
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 
 export function DropdownMenuSubTrigger({
   className,

@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 
 /**
  * A Page Container can be used to wrap the main content of a page. It provides a consistent

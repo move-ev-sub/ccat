@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils/cn';
 import {
   ArrowRightStartOnRectangleIcon,
   BuildingOfficeIcon,
