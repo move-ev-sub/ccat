@@ -46,7 +46,7 @@ const selectTriggerVariants = cva([
   // invalid
   'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive aria-invalid:focus-visible:ring-4',
   // placeholder
-  'data-[placeholder]:text-muted-foreground data-[placeholder]:font-medium',
+  'data-[placeholder]:text-secondary data-[placeholder]:font-medium',
   // focus
   'focus-visible:ring-ring focus-visible:border-ring focus-visible:ring-1',
   // select value
