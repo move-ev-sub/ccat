@@ -13,6 +13,8 @@ export const buttonVariants = cva(
     'focus-visible:ring-4 focus-visible:outline-none',
     // disabled
     'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
+    // icon
+    '[&_svg]:pointer-events-none [&_svg]:shrink-0',
   ],
   {
     variants: {
@@ -32,7 +34,7 @@ export const buttonVariants = cva(
         outline: [
           [
             // colors
-            'text-zinc-700 [&_svg:not([class*="text-"])]:text-zinc-400 dark:text-white dark:[&_svg:not([class*="text-"])]:text-zinc-400',
+            'text-zinc-700 [&_svg:not([class*="text-"])]:text-zinc-500 dark:text-white dark:[&_svg:not([class*="text-"])]:text-zinc-400',
             // borders
             'border border-zinc-300 dark:border-zinc-700',
             // shadows
@@ -45,7 +47,7 @@ export const buttonVariants = cva(
         ],
         ghost: [
           // colors
-          'text-zinc-700 [&_svg:not([class*="text-"])]:text-zinc-400 dark:text-white dark:[&_svg:not([class*="text-"])]:text-zinc-400',
+          'text-zinc-700 [&_svg:not([class*="text-"])]:text-zinc-500 dark:text-white dark:[&_svg:not([class*="text-"])]:text-zinc-400',
           // hover
           'hover:bg-zinc-50 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100',
           // focus
