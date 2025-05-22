@@ -28,7 +28,7 @@ describe('Badge', () => {
       render(<Badge variant="default">Default Badge</Badge>);
 
       const badge = screen.getByText('Default Badge');
-      expect(badge).toHaveClass('border-border-secondary');
+      expect(badge).toHaveClass('border-foreground');
       expect(badge).toHaveClass('bg-background-muted');
       expect(badge).toHaveClass('text-foreground');
     });
