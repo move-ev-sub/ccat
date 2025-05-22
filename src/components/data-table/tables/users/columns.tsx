@@ -17,6 +17,7 @@ export const columns = [
     ),
     meta: {
       displayName: 'Name',
+      className: 'text-secondary',
     },
     enableSorting: true,
     enableHiding: false,
@@ -28,6 +29,7 @@ export const columns = [
     ),
     meta: {
       displayName: 'E-Mail',
+      className: 'text-secondary',
     },
     enableSorting: true,
     enableHiding: true,
@@ -84,6 +86,7 @@ export const columns = [
     ),
     meta: {
       displayName: 'Erstellt am',
+      className: 'text-muted-foreground',
     },
     cell: ({ row }) => {
       return <div>{format(row.original.createdAt, 'dd.MM.yyyy, HH:mm')}</div>;
@@ -98,6 +101,7 @@ export const columns = [
     ),
     meta: {
       displayName: 'E-Mail bestätigt',
+      className: 'text-secondary',
     },
     cell: ({ row }) => {
       return row.original.emailVerified ? (

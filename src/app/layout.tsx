@@ -1,7 +1,7 @@
 import { Providers } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
-import '@/styles/globals.css';
 import { cn } from '@/lib/utils/cn';
+import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 

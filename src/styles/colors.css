@@ -140,7 +140,7 @@
   .dark {
     --border: var(--primary-700);
     --border-secondary: var(--primary-600);
-    --border-input: var(--primary-600);
+    --border-input: var(--primary-600)   ;
   }
 }
 

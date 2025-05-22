@@ -5,7 +5,7 @@ export const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-border-secondary bg-background-muted text-foreground ',
+        default: 'border-foreground bg-background-muted text-foreground ',
         warn: 'border-amber-300 bg-amber-100 text-amber-800 dark:text-amber-50 dark:bg-amber-950 dark:border-amber-700',
         error:
           'border-red-300 bg-red-100 text-red-800 dark:text-red-50 dark:bg-red-950 dark:border-red-700',

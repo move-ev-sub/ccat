@@ -9,7 +9,7 @@ export function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
         // base
         'p-4 text-sm',
         // text color
-        'text-muted-foreground',
+        'text-muted-background',
         className
       )}
       {...props}
