@@ -87,12 +87,7 @@ export function RequestPasswordResetForm({
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full"
-          variant={'accent'}
-        >
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? 'Lädt...' : 'Passwort zurücksetzen'}
         </Button>
       </form>

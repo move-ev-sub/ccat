@@ -87,12 +87,7 @@ export function LoginForm({
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full"
-          variant={'accent'}
-        >
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? 'Lädt...' : 'Anmelden'}
         </Button>
       </form>
