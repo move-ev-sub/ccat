@@ -70,6 +70,8 @@ export const buttonVariants = cva(
         sm: 'h-8 text-sm px-3.5 py-2 [&_svg:not([class*="size-"])]:size-4',
         md: 'h-10 text-sm px-4 py-2.5 [&_svg:not([class*="size-"])]:size-4',
         lg: 'h-11 text-base px-4.5 py-2.5 [&_svg:not([class*="size-"])]:size-5',
+        input:
+          'h-input text-sm px-4 py-2.5 [&_svg:not([class*="size-"])]:size-4',
       },
     },
     defaultVariants: {

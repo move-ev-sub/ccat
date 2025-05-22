@@ -1,8 +1,8 @@
 'use client';
 
-import { tabsListVariants } from '@/components/ui/tabs/tabs-list';
 import { cn } from '@/lib/utils/cn';
 import React from 'react';
+import { tabsListVariants } from '../ui/tabs';
 import { SubNavProvider } from './sub-navigation.context';
 
 export function SubNavigation({

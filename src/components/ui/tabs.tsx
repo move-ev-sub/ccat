@@ -22,7 +22,9 @@ function Tabs({
 
 //#region TabsList
 //==================================================
-const tabsListVariants = cva(['flex justify-start items-center w-fit gap-2']);
+export const tabsListVariants = cva([
+  'flex justify-start items-center w-fit gap-2',
+]);
 
 interface TabsListProps
   extends React.ComponentProps<typeof TabsPrimitive.List>,
@@ -41,7 +43,7 @@ function TabsList({ className, ...props }: TabsListProps) {
 //#region TabsTrigger
 //==================================================
 
-const tabsTriggerVariants = cva([
+export const tabsTriggerVariants = cva([
   // base
   'text-sm font-semibold text-primary-700 dark:text-primary-200 rounded-lg px-3.5 py-2 [&_svg:not([class*="size-"])]:size-4 h-8',
   // alignment

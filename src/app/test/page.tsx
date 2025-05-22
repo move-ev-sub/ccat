@@ -1,3 +1,5 @@
+import { ThemeSwitch } from '@/components/theme-switch';
+import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
@@ -11,8 +13,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { HomeIcon } from '@heroicons/react/16/solid';
+import {
+  ArchiveBoxArrowDownIcon,
+  CloudArrowUpIcon,
+  DocumentArrowDownIcon,
+  HomeIcon,
+} from '@heroicons/react/16/solid';
 
 export default function TestPage() {
   return (
@@ -68,6 +74,19 @@ export default function TestPage() {
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
+        <div className="mt-12">
+          <ButtonGroup>
+            <ButtonGroupItem>
+              <ArchiveBoxArrowDownIcon /> Archivieren
+            </ButtonGroupItem>
+            <ButtonGroupItem>
+              <DocumentArrowDownIcon /> Exportieren
+            </ButtonGroupItem>
+            <ButtonGroupItem>
+              <CloudArrowUpIcon /> Importieren
+            </ButtonGroupItem>
+          </ButtonGroup>
         </div>
       </div>
     </main>
