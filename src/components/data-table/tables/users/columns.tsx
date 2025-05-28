@@ -55,16 +55,7 @@ export const columns = [
             </Badge>
           );
         case 'company':
-          return (
-            <Badge
-              className={cn(
-                'block rounded-full border-solid !px-2',
-                'border-blue-500 bg-blue-100 text-blue-700'
-              )}
-            >
-              Unternehmen
-            </Badge>
-          );
+          return <Badge variant={'blue'}>Unternehmen</Badge>;
         default:
           return (
             <Badge className={cn('block rounded-full border-solid !px-2')}>
