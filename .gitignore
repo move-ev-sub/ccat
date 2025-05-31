@@ -48,3 +48,5 @@ docs/.vitepress/cache
 .turbo
 
 src/generated/**/*
+# Sentry Config File
+.env.sentry-build-plugin
