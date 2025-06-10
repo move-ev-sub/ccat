@@ -33,7 +33,7 @@ import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { FILE_CONSTRAINTS } from '../../consts/file';
 import { useApplicationStore } from '../../stores/application.store';
 import { FormSection } from '../form-section';
@@ -46,24 +46,21 @@ import { PageNavigation } from '../page-navigation';
  *
  * @see https://github.com/colinhacks/zod/discussions/3339#discussioncomment-8859717
  */
-const gradeSchema = z
-  .string({
-    required_error: 'Dieses Feld ist erforderlich',
-    invalid_type_error: 'Bitte gebe eine gültige Zahl ein',
-  })
-  .transform((val) => Number(`${val}`.replace(',', '.')))
-  .pipe(
-    z
-      .number()
-      .min(1, 'Note muss zwischen 1,0 und 6,0 liegen')
-      .max(6, 'Note muss zwischen 1,0 und 6,0 liegen')
-  )
-  .or(
-    z
-      .number()
-      .min(1, 'Note muss zwischen 1,0 und 6,0 liegen')
-      .max(6, 'Note muss zwischen 1,0 und 6,0 liegen')
-  );
+// const gradeSchema = z
+//   .string()
+//   .transform((val) => Number(`${val}`.replace(',', '.')))
+//   .pipe(
+//     z
+//       .number()
+//       .min(1, 'Note muss zwischen 1,0 und 6,0 liegen')
+//       .max(6, 'Note muss zwischen 1,0 und 6,0 liegen')
+//   )
+//   .or(
+//     z
+//       .number()
+//       .min(1, 'Note muss zwischen 1,0 und 6,0 liegen')
+//       .max(6, 'Note muss zwischen 1,0 und 6,0 liegen')
+//   );
 
 export const generalFormSchema = z.object({
   // ================== Personal Information ==================
@@ -84,14 +81,11 @@ export const generalFormSchema = z.object({
   }),
   expectedGraduationYear: z.number().min(1, 'Dieses Feld ist erforderlich'),
   fieldOfStudy: z.string().min(1, 'Dieses Feld ist erforderlich'),
-  semester: z
-    .number({
-      required_error: 'Dieses Feld ist erforderlich',
-      invalid_type_error: 'Bitte gebe eine gültige Semesterzahl ein',
-    })
-    .min(1, 'Bitte gebe eine gültige Semesterzahl ein'),
-  currentGpa: gradeSchema,
-  abiturGrade: gradeSchema,
+  semester: z.number().min(1, 'Bitte gebe eine gültige Semesterzahl ein'),
+  currentGpa: z.number().min(1, 'Bitte gebe eine gültige Note ein'),
+  abiturGrade: z.number().min(1, 'Bitte gebe eine gültige Note ein'),
+  // currentGpa: gradeSchema,
+  // abiturGrade: gradeSchema,
   experienceAbroad: z.number(),
   experienceConsulting: z.number(),
 
