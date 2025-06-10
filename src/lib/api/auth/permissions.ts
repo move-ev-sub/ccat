@@ -17,6 +17,7 @@ export const statement = {
   phase: ['create', 'update', 'delete', 'fetchAll'],
   slot: ['create', 'update', 'delete', 'fetchAll'],
   userProfile: ['fetchAll'],
+  application: ['fetchOwn'],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -24,6 +25,7 @@ export const ac = createAccessControl(statement);
 // ========================= USER =========================
 export const user = ac.newRole({
   subEvent: ['create', 'share', 'delete'],
+  application: ['fetchOwn'],
 });
 
 // ======================== COMPANY ========================
@@ -47,6 +49,7 @@ export const admin = ac.newRole({
   phase: ['create', 'update', 'delete', 'fetchAll'],
   slot: ['create', 'update', 'delete', 'fetchAll'],
   userProfile: ['fetchAll'],
+  application: ['fetchOwn'],
   // Append default admin statements
   ...adminAc.statements,
 });

@@ -112,7 +112,7 @@ model Application {
   experienceConsulting   Int
   cvUrl                  String
   subApplications        SubApplication[]
-  updatedAt              DateTime          @updatedAt
+  updatedAt              DateTime          @default(now()) @updatedAt
   createdAt              DateTime          @default(now())
 
   @@map("application")
