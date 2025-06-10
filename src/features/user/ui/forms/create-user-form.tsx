@@ -80,40 +80,85 @@ export function CreateUserForm({
       >
         <FormField
           control={form.control}
-          name="firstName"
+          name="role"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="col-span-2">
               <FormLabel>
-                Vorname
+                Rolle
                 <RequiredMark />
               </FormLabel>
               <FormControl>
-                <Input placeholder="Kevin" {...field} />
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Rolle auswählen" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">Benutzer</SelectItem>
+                    <SelectItem value="company">Unternehmen</SelectItem>
+                    <SelectItem value="admin" disabled>
+                      Administrator
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </FormControl>
-              <FormDescription>
-                Wenn du eine neue Firma erstellst, kannst du hier den Namen der
-                Firma eingeben.
-              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Nachname
-                <RequiredMark />
-              </FormLabel>
-              <FormControl>
-                <Input placeholder="Großkreuz" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {form.watch('role') === 'user' ? (
+          <>
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Vorname
+                    <RequiredMark />
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Kevin" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Nachname
+                    <RequiredMark />
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Großkreuz" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        ) : (
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>
+                  Firmenname
+                  <RequiredMark />
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="Musterfirma GmbH" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="email"
@@ -143,34 +188,6 @@ export function CreateUserForm({
               <FormControl>
                 <GeneratePasswordInput placeholder="************" {...field} />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem className="col-span-2">
-              <FormLabel>
-                Rolle
-                <RequiredMark />
-              </FormLabel>
-              <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Rolle auswählen" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="user">Benutzer</SelectItem>
-                    <SelectItem value="company">Unternehmen</SelectItem>
-                    <SelectItem value="admin" disabled>
-                      Administrator
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-
               <FormMessage />
             </FormItem>
           )}
