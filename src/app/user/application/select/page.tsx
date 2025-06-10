@@ -1,7 +1,9 @@
 'use client';
 
-import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
-import { SubEventsList } from '@/features/application/ui/sub-events-list';
+import { PageDesc, PageTitle } from '@/components/page-header';
+import { Separator } from '@/components/ui/separator';
+import { ApplicationFormHeader } from '@/features/application/ui/application-form-header';
+import { SelectSubEventsForm } from '@/features/application/ui/forms/select-subevents-form';
 import { SubEvent } from '@/generated/prisma/client';
 
 const base: SubEvent = {
@@ -68,14 +70,17 @@ const SUB_EVENTS: SubEvent[] = [
 
 export default function NewApplicationSelectPage() {
   return (
-    <section>
-      <PageHeader className="px-0">
+    <>
+      <ApplicationFormHeader>
         <PageTitle>Eventauswahl</PageTitle>
         <PageDesc>
           Bitte wähle die Events aus, die du besuchen möchtest.
         </PageDesc>
-      </PageHeader>
-      <SubEventsList subEvents={SUB_EVENTS} className="mt-to-header" />
-    </section>
+      </ApplicationFormHeader>
+      <Separator className="my-12" />
+      <div className="mx-auto w-full max-w-4xl px-8">
+        <SelectSubEventsForm subEvents={SUB_EVENTS} />
+      </div>
+    </>
   );
 }

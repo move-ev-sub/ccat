@@ -1,5 +1,7 @@
 'use client';
 
+import * as React from 'react';
+
 import { DatePicker } from '@/components/birth-date-picker-new';
 import { FileUpload } from '@/components/file-upload';
 import {
@@ -29,12 +31,12 @@ import { translateDegree, translateGender } from '@/lib/utils/translations';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import React from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
 import { z } from 'zod';
 import { FILE_CONSTRAINTS } from '../../consts/file';
 import { useApplicationStore } from '../../stores/application.store';
+import { FormSection } from '../form-section';
 import { PageNavigation } from '../page-navigation';
 
 /**
@@ -118,88 +120,82 @@ export function ApplicationGeneralForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <section
-          id="personal-information"
-          className="grid gap-8 md:grid-cols-4"
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormSection id="personal-information" label="1. Persönliche Angaben">
+          <FirstNameField form={form} className="xl:col-span-3" />
+          <LastNameField form={form} className="xl:col-span-3" />
+          <GenderField form={form} className="md:col-span-2 xl:col-span-3" />
+          <BirthDateField form={form} className="md:col-span-2 xl:col-span-3" />
+        </FormSection>
+
+        <Separator className="my-20" />
+
+        <FormSection id="academic-information" label="2. Akademische Angaben">
+          <UniversityField
+            form={form}
+            className="md:col-span-2 xl:col-span-3"
+          />
+          <FieldOfStudyField
+            form={form}
+            className="md:col-span-2 xl:col-span-3"
+          />
+          <CurrentDegreeField form={form} className="xl:col-span-2" />
+          <TargetDegreeField form={form} className="xl:col-span-2" />
+          <ExpectedGraduationYearField form={form} className="xl:col-span-2" />
+          <SemesterField form={form} className="xl:col-span-2" />
+          <CurrentGpaField form={form} className="xl:col-span-2" />
+          <AbiturGradeField form={form} className="xl:col-span-2" />
+        </FormSection>
+
+        <Separator className="my-20" />
+
+        <FormSection
+          id="professional-information"
+          label="3. Berufliche Angaben"
         >
-          <div>
-            <p className="text-foreground font-medium md:text-sm">
-              Persönliche Angaben
-            </p>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-2 md:col-span-3">
-            <FirstNameField form={form} />
-            <LastNameField form={form} />
-            <GenderField form={form} />
-            <BirthDateField form={form} />
-          </div>
-        </section>
-        <Separator className="my-10" />
-        <section
-          id="academic-information"
-          className="grid gap-8 md:grid-cols-4"
-        >
-          <div>
-            <p className="text-foreground font-medium md:text-sm">
-              Akademische Angaben
-            </p>
-          </div>
-          <div className="grid gap-8 md:col-span-3 md:grid-cols-2 lg:grid-cols-3">
-            <UniversityField
-              form={form}
-              className="md:col-span-2 lg:col-span-3"
-            />
-            <CurrentDegreeField form={form} />
-            <TargetDegreeField form={form} />
-            <ExpectedGraduationYearField form={form} />
-            <FieldOfStudyField
-              form={form}
-              className="md:col-span-2 lg:col-span-3"
-            />
-            <SemesterField form={form} />
-            <CurrentGpaField form={form} />
-            <AbiturGradeField form={form} />
-            <ExperienceAbroadField form={form} />
-            <ExperienceConsultingField form={form} />
-          </div>
-        </section>
-        <Separator className="my-10" />
-        <section id="documents" className="grid gap-8 md:grid-cols-4">
-          <div>
-            <p className="text-foreground font-medium md:text-sm">Dokumente</p>
-          </div>
-          <div className="md:col-span-3">
-            <FormField
-              control={form.control}
-              name="cv"
-              render={({ field }) => (
-                <div className="space-y-6">
-                  <FormItem className="w-full space-y-2">
-                    <FormLabel>Lebenslauf</FormLabel>
-                    <FormControl>
-                      <FileUpload
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        accept={FILE_CONSTRAINTS.ACCEPTED_FILE_TYPES}
-                        maxFileCount={FILE_CONSTRAINTS.MAX_FILE_COUNT}
-                        maxSize={FILE_CONSTRAINTS.MAX_FILE_SIZE}
-                        ref={field.ref}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </div>
-              )}
-            />
-          </div>
-        </section>
+          <ExperienceAbroadField
+            form={form}
+            className="md:col-span-2 xl:col-span-3"
+          />
+          <ExperienceConsultingField
+            form={form}
+            className="md:col-span-2 xl:col-span-3"
+          />
+        </FormSection>
+
+        <Separator className="my-20" />
+
+        <FormSection id="documents" label="4. Dokumente">
+          <FormField
+            control={form.control}
+            name="cv"
+            render={({ field }) => (
+              <div className="space-y-6 md:col-span-2 xl:col-span-6">
+                <FormItem className="w-full space-y-2">
+                  <FormLabel>Lebenslauf</FormLabel>
+                  <FormControl>
+                    <FileUpload
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      accept={FILE_CONSTRAINTS.ACCEPTED_FILE_TYPES}
+                      maxFileCount={FILE_CONSTRAINTS.MAX_FILE_COUNT}
+                      maxSize={FILE_CONSTRAINTS.MAX_FILE_SIZE}
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </div>
+            )}
+          />
+        </FormSection>
         <PageNavigation
           canGoBack={false}
           canGoForward={true}
           nextButtonProps={{
             type: 'submit',
           }}
+          className="mt-20"
         />
         <FormError visible={!!error} message={error} />
       </form>
@@ -339,7 +335,14 @@ function UniversityField({ form, className }: FieldProps) {
         <FormItem className={className}>
           <FormLabel>Universität</FormLabel>
           <FormControl>
-            <Input placeholder="Universität Münster" {...field} />
+            <Input
+              placeholder="Universität Münster"
+              {...field}
+              aria-label="Universität"
+              type="text"
+              autoComplete="university"
+              aria-required
+            />
           </FormControl>
           <FormMessage />
         </FormItem>

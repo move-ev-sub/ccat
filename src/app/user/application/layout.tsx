@@ -6,7 +6,7 @@ import {
   ApplicationStoreProvider,
   SlotEntry,
 } from '@/features/application/stores/application.store';
-import { StepNavigation } from '@/features/application/ui/step-navigation';
+import { FormProgress } from '@/features/application/ui/form-progress';
 
 async function getSlots(): Promise<Slot[]> {
   return [
@@ -61,11 +61,11 @@ export default async function NewApplicationLayout({
       }}
     >
       <main className="hidden lg:block">
-        <PageContainer className="container grid grid-cols-5 gap-8">
-          <aside className="sticky top-10 h-fit sm:top-12">
-            <StepNavigation />
-          </aside>
-          <div className="col-span-4">{children}</div>
+        <PageContainer>
+          <div className="mx-auto mb-12 max-w-4xl px-8">
+            <FormProgress />
+          </div>
+          {children}
         </PageContainer>
       </main>
       <div className="lg:hidden">
