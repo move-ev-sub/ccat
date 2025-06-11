@@ -24,20 +24,24 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { FILE_CONSTRAINTS } from '@/features/application/consts/file';
+import {
+  BackButton,
+  ForwardButton,
+  StepsNavigation,
+} from '@/flows/_lib/steps/steps-navigation';
+import { useStepsContext } from '@/flows/_lib/steps/steps.context';
+import { FormSection } from '@/flows/_lib/ui/form-section';
 import { Degree, Gender } from '@/generated/prisma/client';
-import { ApplicationRoutes } from '@/lib/consts/routes';
 import { cn } from '@/lib/utils/cn';
 import { translateDegree, translateGender } from '@/lib/utils/translations';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { useRouter } from 'next/navigation';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
 import { z } from 'zod/v4';
-import { FormSection } from '../../../../flows/_lib/ui/form-section';
-import { FILE_CONSTRAINTS } from '../../consts/file';
 import { useApplicationStore } from '../../stores/application.store';
-import { PageNavigation } from '../page-navigation';
+import { generalSchema } from '../../validations/forms';
 
 /**
  * Not really a clean solution, but it works for now
@@ -62,54 +66,23 @@ import { PageNavigation } from '../page-navigation';
 //       .max(6, 'Note muss zwischen 1,0 und 6,0 liegen')
 //   );
 
-export const generalFormSchema = z.object({
-  // ================== Personal Information ==================
-  firstName: z.string().min(1, 'Dieses Feld ist erforderlich'),
-  lastName: z.string().min(1, 'Dieses Feld ist erforderlich'),
-  birthDate: z.date(),
-  gender: z.nativeEnum(Gender, {
-    message: 'Dieses Feld ist erforderlich',
-  }),
-
-  // ================== Academic Information ==================
-  university: z.string().min(1, 'Dieses Feld ist erforderlich'),
-  currentDegree: z.nativeEnum(Degree, {
-    message: 'Dieses Feld ist erforderlich',
-  }),
-  targetDegree: z.enum([Degree.BACHELOR, Degree.MASTER], {
-    message: 'Dieses Feld ist erforderlich',
-  }),
-  expectedGraduationYear: z.number().min(1, 'Dieses Feld ist erforderlich'),
-  fieldOfStudy: z.string().min(1, 'Dieses Feld ist erforderlich'),
-  semester: z.number().min(1, 'Bitte gebe eine gültige Semesterzahl ein'),
-  currentGpa: z.number().min(1, 'Bitte gebe eine gültige Note ein'),
-  abiturGrade: z.number().min(1, 'Bitte gebe eine gültige Note ein'),
-  // currentGpa: gradeSchema,
-  // abiturGrade: gradeSchema,
-  experienceAbroad: z.number(),
-  experienceConsulting: z.number(),
-
-  // ======================= Documents =======================
-  cv: z.array(z.instanceof(File)).max(1),
-});
-
-export function ApplicationGeneralForm() {
+export function GeneralForm() {
   const { general, setGeneral } = useApplicationStore((state) => state);
   const [error, setError] = React.useState<string | undefined>();
-  const router = useRouter();
-  const form = useForm<z.infer<typeof generalFormSchema>>({
-    resolver: zodResolver(generalFormSchema),
+  const { goForward } = useStepsContext();
+  const form = useForm<z.infer<typeof generalSchema>>({
+    resolver: zodResolver(generalSchema),
     defaultValues: {
       ...general,
+      birthDate: new Date(general.birthDate) ?? new Date(),
     },
   });
 
-  async function onSubmit(values: z.infer<typeof generalFormSchema>) {
+  async function onSubmit(values: z.infer<typeof generalSchema>) {
     setError(undefined);
     setGeneral(values);
-    // setData({ ...data, general: values });
 
-    router.push(ApplicationRoutes.SELECT_ROUTE);
+    goForward();
   }
 
   return (
@@ -183,15 +156,12 @@ export function ApplicationGeneralForm() {
             )}
           />
         </FormSection>
-        <PageNavigation
-          canGoBack={false}
-          canGoForward={true}
-          nextButtonProps={{
-            type: 'submit',
-          }}
-          className="mt-20"
-        />
         <FormError visible={!!error} message={error} />
+        <Separator className="my-12" />
+        <StepsNavigation>
+          <BackButton />
+          <ForwardButton type="submit" onClick={() => {}} />
+        </StepsNavigation>
       </form>
     </Form>
   );
@@ -200,7 +170,7 @@ export function ApplicationGeneralForm() {
 // =========================== FIELDS ===========================
 
 interface FieldProps {
-  form: UseFormReturn<z.infer<typeof generalFormSchema>>;
+  form: UseFormReturn<z.infer<typeof generalSchema>>;
   className?: string;
 }
 

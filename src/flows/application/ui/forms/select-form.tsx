@@ -1,16 +1,20 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { NoEventsFound } from '@/features/application/ui/empty-states';
+import {
+  BackButton,
+  ForwardButton,
+  StepsNavigation,
+} from '@/flows/_lib/steps/steps-navigation';
 import { SubEvent } from '@/generated/prisma/client';
-import { ApplicationRoutes } from '@/lib/consts/routes';
 import { cn } from '@/lib/utils/cn';
 import React from 'react';
 import { Selection, useApplicationStore } from '../../stores/application.store';
-import { NoEventsFound } from '../empty-states';
-import { PageNavigation } from '../page-navigation';
 import { SubEventSelectCard } from '../sub-event-select-card';
 
-export function SelectSubEventsForm({
+export function SelectForm({
   subEvents,
   className,
   ...props
@@ -52,13 +56,14 @@ export function SelectSubEventsForm({
         )}
       </div>
 
-      <PageNavigation
-        previousRoute={ApplicationRoutes.GENERAL_ROUTE}
-        canGoBack
-        nextRoute={ApplicationRoutes.COVER_LETTERS_ROUTE}
-        canGoForward={flattendSelections.length > 0}
-        className="mt-12"
-      />
+      <Separator className="my-12" />
+      <StepsNavigation>
+        <BackButton />
+        <ForwardButton
+          type="submit"
+          disabled={flattendSelections.length === 0}
+        />
+      </StepsNavigation>
     </section>
   );
 }

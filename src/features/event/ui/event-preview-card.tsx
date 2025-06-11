@@ -25,7 +25,7 @@ export function EventPreviewCard({
         {event.description}
       </p>
       <Link
-        href={`/user/event/${event.id}`}
+        href={`/user/application/${event.id}`}
         className="text-accent focus-indicator mt-6 flex w-fit items-center justify-center gap-1.5 rounded-md text-sm font-medium"
       >
         <span className="absolute inset-0" />

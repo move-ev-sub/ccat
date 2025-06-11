@@ -1,5 +1,7 @@
 import { cn } from '@/lib/utils/cn';
 
+// #region FormSection
+// =============================================================
 interface FormSectionProps
   extends Omit<React.ComponentProps<'section'>, 'label' | 'id'> {
   label: string;
@@ -22,6 +24,8 @@ export function FormSection({
   );
 }
 
+// #region FormSectionLabel
+// =============================================================
 export function FormSectionLabel({
   className,
   ...props

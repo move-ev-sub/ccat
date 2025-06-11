@@ -17,10 +17,10 @@
  */
 'use client';
 
-import { generalFormSchema } from '@/features/application/ui/forms/general-form';
+import { generalSchema } from '@/flows/application/validations/forms';
 import { CoverLetterRequirement, Prisma } from '@/generated/prisma/client';
 import React from 'react';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { createStore, StateCreator, useStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -29,7 +29,7 @@ import { immer } from 'zustand/middleware/immer';
 // ============================================================
 
 /** A unique key to determine the store in the session storage */
-const STORE_KEY = 'new_application_store';
+const STORE_KEY = 'create_application_store';
 
 // #region Types
 // ============================================================
@@ -135,11 +135,15 @@ export interface SlotEntry {
 // #region Slice Types
 // ============================================================
 
+interface InternalState {
+  eventId: string;
+}
+
 /**
  * State for the General Slice
  */
 interface GeneralState {
-  general: z.infer<typeof generalFormSchema>;
+  general: z.infer<typeof generalSchema>;
 }
 
 /**
@@ -151,7 +155,7 @@ interface GeneralActions {
    *
    * @param general The general application data to set. This comes from the general form.
    */
-  setGeneral: (general: z.infer<typeof generalFormSchema>) => void;
+  setGeneral: (general: z.infer<typeof generalSchema>) => void;
 }
 
 type GeneralSlice = GeneralState & GeneralActions;
@@ -234,12 +238,13 @@ interface SelectionsActions {
 
 type SelectionsSlice = SelectionsState & SelectionsActions;
 
-type Slices = GeneralSlice & SelectionsSlice;
+type Slices = GeneralSlice & SelectionsSlice & InternalState;
 
 // #region default state
 // ============================================================
 
-export const defaultState: SelectionsState & GeneralState = {
+export const defaultState: SelectionsState & GeneralState & InternalState = {
+  eventId: '',
   general: {
     firstName: '',
     lastName: '',
@@ -247,18 +252,29 @@ export const defaultState: SelectionsState & GeneralState = {
     gender: 'MALE',
     currentDegree: 'ABITUR',
     university: '',
-    abiturGrade: 0,
+    abiturGrade: '0.0',
     targetDegree: 'BACHELOR',
     expectedGraduationYear: 0,
     fieldOfStudy: '',
     semester: 0,
-    currentGpa: 0,
+    currentGpa: '0.0',
     experienceConsulting: 0,
     experienceAbroad: 0,
     cv: [],
   },
   slots: {},
 };
+
+// #region Internal Slice
+// ============================================================
+export const createInternalSlice: StateCreator<
+  Slices,
+  [['zustand/immer', never], ['zustand/persist', unknown]],
+  [],
+  InternalState
+> = () => ({
+  eventId: defaultState.eventId,
+});
 
 // #region General Slice
 // ============================================================
@@ -348,6 +364,7 @@ export const createApplicationStore = (
         (...args) => ({
           ...createGeneralSlice(...args),
           ...createSubApplicationSlice(...args),
+          ...createInternalSlice(...args),
           ...initialState,
         }),
         {
@@ -369,7 +386,9 @@ export const ApplicationStoreContext = React.createContext<
 
 export interface ApplicationStoreProviderProps {
   children: React.ReactNode;
-  initialState?: Partial<SelectionsState> & Partial<GeneralState>;
+  initialState?: Partial<SelectionsState> &
+    Partial<GeneralState> &
+    Partial<InternalState>;
 }
 
 export function ApplicationStoreProvider({
