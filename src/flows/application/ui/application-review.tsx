@@ -8,7 +8,6 @@ import {
   DescriptionListTerm,
 } from '@/components/ui/description-list';
 import { Separator } from '@/components/ui/separator';
-import { SelectionsReviewGroup } from '@/features/application/ui/selections-review-group';
 import { UploadedFileCard } from '@/features/application/ui/uploaded-file';
 import {
   BackButton,
@@ -19,6 +18,7 @@ import { ArchiveBoxIcon, PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { format } from 'date-fns';
 import { useApplicationStore } from '../stores/application.store';
 import { ReviewSection } from './review-section';
+import { SelectionsReviewGroup } from './selections-review-group';
 
 export function ApplicationReview() {
   const { general, slots } = useApplicationStore((state) => state);

@@ -67,6 +67,8 @@ export default async function ListPage() {
       experienceAbroad: faker.number.int({ min: 0, max: 10 }),
       experienceConsulting: faker.number.int({ min: 0, max: 10 }),
       experienceInternships: faker.number.int({ min: 0, max: 10 }),
+      createdAt: faker.date.past(),
+      updatedAt: faker.date.past(),
     },
   }));
 
