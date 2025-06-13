@@ -2,7 +2,13 @@
 
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -29,10 +35,8 @@ export function ApplicationsCountChart() {
   return (
     <Card className="h-fit">
       <CardHeader>
-        <CardTitle>Bewerbungen gesamt</CardTitle>
-        <p className="text-secondary mt-2 text-sm">
-          Anzahl aller Bewerbungen verteil über alle aktive Veranstaltungen
-        </p>
+        <CardDescription>Bewerbungen gesamt</CardDescription>
+        <CardTitle size={'lg'}>1512</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

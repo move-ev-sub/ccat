@@ -6,12 +6,15 @@ import { SiteConfig } from '@/lib/config/site';
 import { AdminRoutes, CompanyRoutes, UserRoutes } from '@/lib/consts/routes';
 import { Session } from '@/types/auth';
 import {
+  ArrowRightStartOnRectangleIcon,
   ArrowUpRightIcon,
+  BookOpenIcon,
   CalendarIcon,
   CheckIcon,
   ChevronUpDownIcon,
   Cog6ToothIcon,
   ComputerDesktopIcon,
+  DocumentPlusIcon,
   HomeIcon,
   MoonIcon,
   SunIcon,
@@ -150,7 +153,16 @@ export function SidebarProfileMenu({
               {user.email}
             </DropdownMenuLabel>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger>
+                {theme === 'light' ? (
+                  <SunIcon />
+                ) : theme === 'dark' ? (
+                  <MoonIcon />
+                ) : (
+                  <ComputerDesktopIcon />
+                )}
+                Theme
+              </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 <DropdownMenuItem
                   className="group"
@@ -186,12 +198,14 @@ export function SidebarProfileMenu({
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
               <Link href={SiteConfig.links.docs} target="_blank">
+                <BookOpenIcon />
                 Dokumentation
                 <ArrowUpRightIcon className="ml-auto" />
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href={SiteConfig.links.changelog} target="_blank">
+                <DocumentPlusIcon />
                 Changelog
                 <ArrowUpRightIcon className="ml-auto" />
               </Link>
@@ -210,10 +224,12 @@ export function SidebarProfileMenu({
                       : UserRoutes.PERSONAL_SETTINGS
                 }
               >
+                <Cog6ToothIcon />
                 Einstellungen
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem variant="destructive" onSelect={onLogout}>
+              <ArrowRightStartOnRectangleIcon />
               Abmelden
             </DropdownMenuItem>
           </DropdownMenuGroup>

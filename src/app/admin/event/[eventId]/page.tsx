@@ -1,3 +1,5 @@
+import { PageContainer } from '@/components/page-container';
+import { PageDesc, PageTitle } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -23,27 +25,24 @@ export default async function AdminEventOverviewPage({
   const { name } = res.data;
 
   return (
-    <div className="py-12">
-      <div className="container">
-        {/* Page Header */}
+    <PageContainer>
+      <header className="px-8 pb-12">
         <div className="flex flex-wrap justify-between gap-6">
           {/* Page Title */}
           <div>
-            <p className="text-foreground text-2xl font-medium sm:text-xl">
-              {name}
-            </p>
-            <p className="text-secondary mt-2 max-w-prose text-base sm:text-sm">
+            <PageTitle>{name}</PageTitle>
+            <PageDesc>
               Eine Überblick über die Veranstaltung. Hier kannst du alle
               Bewerbungen einsehen, bearbeiten und neue erstellen.
-            </p>
+            </PageDesc>
           </div>
-          <Button variant={'accent'} className="shrink-0">
+          <Button variant={'outline'} className="shrink-0">
             Neu erstellen <PlusIcon />
           </Button>
         </div>
-        <Separator className="mt-8" orientation="horizontal" />
-      </div>
-      <div className="container mt-12">
+      </header>
+      <Separator />
+      <div className="mt-12 px-8">
         <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
           <Card className="relative">
             <CardContent>
@@ -57,6 +56,6 @@ export default async function AdminEventOverviewPage({
           <PhasesCard eventId={eventId} />
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

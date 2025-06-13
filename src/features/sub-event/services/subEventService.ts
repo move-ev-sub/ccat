@@ -205,7 +205,7 @@ export const getOwnSubEvents = withAuth<[unknown?], SubEvent[]>(
       where: {
         AND: [
           {
-            id,
+            hostId: id,
           },
           {
             event: {

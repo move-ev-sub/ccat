@@ -6,7 +6,7 @@ export const inputVariants = cva([
   'shadow-sm',
   'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-ring',
   'aria-invalid:ring-4 aria-invalid:ring-red-100 aria-invalid:border-red-400',
-  'disabled:bg-background-muted disabled:placeholder:text-primary-400 disabled:pointer-events-none disabled:cursor-not-allowed dark:disabled:placeholder:text-primary-700',
+  'disabled:bg-background-muted disabled:placeholder:text-primary-400 disabled:pointer-events-none disabled:cursor-not-allowed dark:disabled:placeholder:text-primary-700 disabled:text-primary-500',
 ]);
 
 interface InputProps
