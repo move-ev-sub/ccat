@@ -133,12 +133,7 @@ export function CreateNewSlotForm({
           )}
         />
 
-        <Button
-          type="submit"
-          variant={'accent'}
-          disabled={loading}
-          className="w-full"
-        >
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? 'Lädt...' : 'Slot erstellen'}
         </Button>
       </form>

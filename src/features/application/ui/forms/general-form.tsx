@@ -12,8 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { inputVariants } from '@/components/ui/input/input';
+import { Input, inputVariants } from '@/components/ui/input';
 import {
   Select,
   SelectContent,

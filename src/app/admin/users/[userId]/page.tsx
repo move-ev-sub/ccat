@@ -207,10 +207,10 @@ export default async function AdminUserPage({
               </p>
               <p className="text-secondary text-base">
                 {banned ? (
-                  <Badge variant={'error'}>Ja</Badge>
+                  <Badge variant={'red'}>Ja</Badge>
                 ) : (
                   <Badge
-                    variant={'success'}
+                    variant={'green'}
                     className="rounded-full border-solid !px-1.5"
                   >
                     Nein

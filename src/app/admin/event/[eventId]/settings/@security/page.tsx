@@ -33,7 +33,7 @@ export default async function AdminEventSecuritySettingsPage() {
               </p>
             </div>
             <div className="mt-7 flex items-start justify-end">
-              <Button className="w-fit" variant={'warning'}>
+              <Button className="w-fit" variant={'destructive'}>
                 Archivieren <ArchiveBoxArrowDownIcon />
               </Button>
             </div>

@@ -27,7 +27,7 @@ export default function Error({
           {error.message} {error.digest && `(${error.digest})`}
         </p>
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Button variant={'accent'} onClick={reset}>
+          <Button onClick={reset}>
             Erneut versuchen
             <ArrowPathIcon />
           </Button>

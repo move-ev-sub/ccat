@@ -1,4 +1,3 @@
-import { TooltipTitle } from '@/app/test/tooltip';
 import { PageContainer } from '@/components/page-container';
 import { PageDesc, PageTitle } from '@/components/page-header';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipDescription,
+  TooltipTitle,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {

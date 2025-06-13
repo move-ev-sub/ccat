@@ -65,11 +65,7 @@ export function PublicEventThumbnailCard({
               <InformationCircleIcon />
             </Link>
           </Button>
-          <Button
-            asChild
-            variant={'accent'}
-            disabled={!isApplicationPhaseActive}
-          >
+          <Button asChild disabled={!isApplicationPhaseActive}>
             <Link
               href={`/user/${id}`}
               aria-disabled={!isApplicationPhaseActive}

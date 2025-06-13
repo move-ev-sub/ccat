@@ -19,7 +19,7 @@ export function NoEvents({ className, ...props }: React.ComponentProps<'div'>) {
         <p className="text-secondary mt-2 max-w-prose text-sm">
           Erstelle eine neue Veranstaltung, um sie hier anzuzeigen.
         </p>
-        <Button className="mt-6" variant={'accent'}>
+        <Button className="mt-6">
           Neu erstellen <PlusIcon />
         </Button>
       </div>

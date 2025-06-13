@@ -20,7 +20,7 @@ export function DataTableRowActions<
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="input" className="group aspect-square size-7">
+        <Button variant="outline" className="group aspect-square size-7">
           <EllipsisVerticalIcon
             className="size-4 shrink-0 text-gray-500 group-hover:text-gray-700 group-data-[state=open]:text-gray-700 group-hover:dark:text-gray-300 group-data-[state=open]:dark:text-gray-300"
             aria-hidden="true"

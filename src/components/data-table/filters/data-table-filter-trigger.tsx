@@ -22,7 +22,7 @@ export function DataTableFilterTrigger({
     <PopoverTrigger asChild {...props}>
       <Button
         data-slot={'data-table-filter-trigger'}
-        variant={'input'}
+        variant={'outline'}
         className={cn('border-dashed whitespace-nowrap', className)}
       >
         <PlusIcon />

@@ -19,7 +19,7 @@ export default async function PasswordResetRequestSentPage() {
           ein paar Minuten dauern, bis du die E-Mail erhältst.
         </AuthDescription>
       </AuthHeader>
-      <Button asChild variant={'accent'}>
+      <Button asChild>
         <Link href={'/'}>
           Bereits bestätigt? Zur Anmeldung
           <ArrowRightIcon />

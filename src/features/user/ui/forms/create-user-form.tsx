@@ -201,12 +201,7 @@ export function CreateUserForm({
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={loading}
-          className="col-span-2 w-full"
-          variant={'accent'}
-        >
+        <Button type="submit" disabled={loading} className="col-span-2 w-full">
           {loading ? 'Lädt...' : 'Nutzer erstellen'}
         </Button>
       </form>

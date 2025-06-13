@@ -146,12 +146,7 @@ export function EditSlotForm({
           )}
         />
 
-        <Button
-          type="submit"
-          variant={'accent'}
-          disabled={loading}
-          className="w-full"
-        >
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? 'Lädt...' : 'Speichern'}
         </Button>
         <FormError visible={!!error} message={error} className="hidden" />
