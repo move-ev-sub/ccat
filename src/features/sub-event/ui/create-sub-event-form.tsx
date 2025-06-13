@@ -192,12 +192,13 @@ export function CreateSubEventForm({
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
+                      size="input"
                       className={cn(
-                        'w-full justify-start text-left font-normal',
+                        'w-full justify-start text-left font-medium',
                         !field.value && 'text-muted-foreground'
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="mr-2" />
                       {field.value ? (
                         format(field.value, 'PPP HH:mm:ss')
                       ) : (
@@ -238,12 +239,13 @@ export function CreateSubEventForm({
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
+                      size="input"
                       className={cn(
-                        'w-full justify-start text-left font-normal',
+                        'w-full justify-start text-left font-medium',
                         !field.value && 'text-muted-foreground'
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="mr-2" />
                       {field.value ? (
                         format(field.value, 'PPP HH:mm:ss')
                       ) : (
@@ -271,12 +273,7 @@ export function CreateSubEventForm({
           )}
         />
 
-        <Button
-          type="submit"
-          variant={'accent'}
-          disabled={loading}
-          className="col-span-2 w-full"
-        >
+        <Button type="submit" disabled={loading} className="col-span-2 w-full">
           {loading ? 'Lädt...' : 'Veranstaltung erstellen'}
         </Button>
       </form>

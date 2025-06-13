@@ -25,7 +25,7 @@ export default async function AdminEventPhasesSettingsPage() {
             <div className="col-span-2">
               <p className="flex items-center justify-start gap-2.5">
                 <span className="font-medium">Vorbereitungsphase</span>
-                <Badge variant={'error'}>Nicht eingerichtet</Badge>
+                <Badge variant={'red'}>Nicht eingerichtet</Badge>
               </p>
               <p className="text-secondary mt-2 max-w-prose text-xs">
                 In der Vorbereitungsphase hast du Zeit die Veranstaltung zu
@@ -45,7 +45,7 @@ export default async function AdminEventPhasesSettingsPage() {
           <CardFooter className="flex items-center justify-end gap-4">
             <Button variant={'outline'}>Abbrechen</Button>
 
-            <Button variant={'accent'}>Speichern</Button>
+            <Button>Speichern</Button>
           </CardFooter>
         </Card>
         <Card>
@@ -53,7 +53,7 @@ export default async function AdminEventPhasesSettingsPage() {
             <div className="col-span-2">
               <p className="flex items-center justify-start gap-2.5">
                 <span className="font-medium">Bewerbungsphase</span>
-                <Badge variant={'error'}>Nicht eingerichtet</Badge>
+                <Badge variant={'red'}>Nicht eingerichtet</Badge>
               </p>
               <p className="text-secondary mt-2 max-w-prose text-xs">
                 Nachdem die Vorbereitungsphase abgeschlossen ist, startet die
@@ -75,9 +75,7 @@ export default async function AdminEventPhasesSettingsPage() {
               Abbrechen
             </Button>
 
-            <Button variant={'accent'} disabled>
-              Speichern
-            </Button>
+            <Button disabled>Speichern</Button>
           </CardFooter>
         </Card>
       </div>

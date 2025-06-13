@@ -1,10 +1,10 @@
 'use client';
 
-import { tabsTriggerVariants } from '@/components/ui/tabs/tabs-trigger';
 import { cn } from '@/lib/utils/cn';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import { tabsTriggerVariants } from '../ui/tabs';
 import { useSubNavContext } from './sub-navigation.context';
 
 export function SubNavigationItem({

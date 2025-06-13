@@ -18,7 +18,7 @@ export default async function PasswordResetRequestSentPage() {
           Passworts geschickt.
         </AuthDescription>
       </AuthHeader>
-      <Button asChild variant={'accent'}>
+      <Button asChild variant={'outline'}>
         <Link href={'/'}>
           Zurück zur Anmeldung
           <ArrowRightIcon />

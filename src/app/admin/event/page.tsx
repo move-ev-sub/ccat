@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/layout/navbar';
 import { PageContainer } from '@/components/page-container';
-import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
+import { PageDesc, PageTitle } from '@/components/page-header';
+import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getAllNonArchivedEvents } from '@/features/event/services/eventService';
 import { CreateEventDialog } from '@/features/event/ui/create-event-dialog';
@@ -41,7 +42,7 @@ export default async function AdminOverviewPage() {
         ]}
       />
       <PageContainer>
-        <PageHeader>
+        <header className="px-8">
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div>
               <PageTitle>{t.pages.events.title()}</PageTitle>
@@ -50,10 +51,11 @@ export default async function AdminOverviewPage() {
             {/* @TODO: Link to CreateNewEvent Page */}
             <CreateEventDialog />
           </div>
-        </PageHeader>
+        </header>
+        <Separator className="my-12" />
         {/* <div className="bg-border mt-6 h-px w-full" /> */}
-        <Tabs defaultValue="all" className="mt-to-header">
-          <div className="container px-0 sm:px-8">
+        <Tabs defaultValue="all">
+          <div className="px-8">
             <TabsList className="pl-8 sm:pl-0">
               <TabsTrigger value="all">
                 <ListBulletIcon /> {t.pages.events.allEvents()}

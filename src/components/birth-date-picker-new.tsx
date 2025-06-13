@@ -643,7 +643,6 @@ export function SingleDatePicker({
                   Abbrechen
                 </Button>
                 <Button
-                  variant="accent"
                   className="h-8 w-full"
                   type="button"
                   disabled={!date}

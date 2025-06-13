@@ -89,9 +89,7 @@ export function DataTableCheckboxFilter<TData, TValue>({
                 </li>
               ))}
             </ul>
-            <Button variant={'accent'} className="h-7 w-full">
-              Anwenden
-            </Button>
+            <Button className="h-7 w-full">Anwenden</Button>
             {isFiltered && (
               <Button
                 variant={'outline'}

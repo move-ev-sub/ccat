@@ -3,7 +3,12 @@
 import { cn } from '@/lib/utils/cn';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Button } from '../button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTitle,
+  TooltipTrigger,
+} from '../tooltip';
 import { useSidebar } from './sidebar.context';
 
 export function SidebarTrigger({
@@ -31,7 +36,9 @@ export function SidebarTrigger({
           <span className="sr-only">Toggle Sidebar</span>
         </Button>
       </TooltipTrigger>
-      <TooltipContent>Seitenleiste umschalten (⌘B)</TooltipContent>
+      <TooltipContent>
+        <TooltipTitle>Seitenleiste umschalten (⌘B)</TooltipTitle>
+      </TooltipContent>
     </Tooltip>
   );
 }

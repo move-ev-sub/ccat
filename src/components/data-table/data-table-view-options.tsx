@@ -24,7 +24,7 @@ export function ViewOptions<TData>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild {...props}>
-        <Button variant="input">
+        <Button variant="outline">
           <EyeIcon className="text-secondary" />
           Anzeigeoptionen
         </Button>

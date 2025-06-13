@@ -30,7 +30,7 @@ export const user = ac.newRole({
 
 // ======================== COMPANY ========================
 export const company = ac.newRole({
-  subEvent: ['create', 'share', 'delete'],
+  subEvent: ['create', 'share', 'fetchOwn'],
 });
 
 // ========================= ADMIN =========================

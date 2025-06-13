@@ -1,6 +1,13 @@
 import { Pinger } from '@/components/pinger';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter, CardLink } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardLink,
+  CardTitle,
+} from '@/components/ui/card';
 import { Event } from '@/generated/prisma/client';
 import { cn } from '@/lib/utils/cn';
 import { CalendarIcon } from '@heroicons/react/16/solid';
@@ -47,12 +54,12 @@ export async function EventThumbnailCard({
             )}
           </div>
           {event.status === 'PUBLISHED' && (
-            <Badge className="ml-auto" variant={'success'}>
+            <Badge className="ml-auto" variant={'green'}>
               Veröffentlicht
             </Badge>
           )}
           {event.status === 'ARCHIVED' && (
-            <Badge className="ml-auto" variant={'warn'}>
+            <Badge className="ml-auto" variant={'yellow'}>
               Archiviert
             </Badge>
           )}
@@ -62,13 +69,11 @@ export async function EventThumbnailCard({
         </div>
 
         <CardLink href={eventPath} className="mt-6">
-          {event.name}
+          <CardTitle>{event.name}</CardTitle>
         </CardLink>
 
         {/* Description */}
-        <p className="text-secondary mt-1 text-sm">
-          Erstellt am {formattedDate}
-        </p>
+        <CardDescription>Erstellt am {formattedDate}</CardDescription>
       </CardContent>
       <CardFooter>
         <small className="text-xs">352 Bewerbungen</small>

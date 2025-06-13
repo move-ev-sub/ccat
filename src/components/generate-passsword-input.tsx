@@ -44,7 +44,7 @@ export function GeneratePasswordInput({
         className={cn('grow')}
       />
       <Button
-        variant={'input'}
+        variant={'outline'}
         type="button"
         className="h-9 shrink-0"
         onClick={onClick}

@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/layout/navbar';
 import { SubNavigation, SubNavigationItem } from '@/components/navigation';
+import { Separator } from '@/components/ui/separator';
 import { AdminRoutes } from '@/lib/consts/routes';
 import { Metadata } from 'next';
 import React from 'react';
@@ -33,7 +34,10 @@ export default async function AdminEventLayout({
           },
         ]}
       />
-      <SubNavigation base={`/admin/event/${eventId}`} className="pl-8">
+      <SubNavigation
+        base={`/admin/event/${eventId}`}
+        className="max-w-none py-2 pl-8"
+      >
         <SubNavigationItem href={`/`}>Übersicht</SubNavigationItem>
         <SubNavigationItem href={'/sub-events'}>
           Unterveranstaltungen
@@ -45,6 +49,7 @@ export default async function AdminEventLayout({
         <SubNavigationItem href={'/slots'}>Slots</SubNavigationItem>
         <SubNavigationItem href={'/settings'}>Einstellungen</SubNavigationItem>
       </SubNavigation>
+      <Separator />
       {children}
     </>
   );

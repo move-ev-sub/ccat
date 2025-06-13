@@ -152,12 +152,12 @@ export function PhaseSetupForm({
                     {title}
                   </FormLabel>
                   {!phase ? (
-                    <Badge variant={'warn'}>
+                    <Badge variant={'orange'}>
                       <ExclamationTriangleIcon />
                       Nicht eingerichtet
                     </Badge>
                   ) : (
-                    <Badge variant={'success'}>
+                    <Badge variant={'green'}>
                       <CheckIcon />
                       Eingerichtet
                     </Badge>

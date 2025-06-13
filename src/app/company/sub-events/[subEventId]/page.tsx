@@ -86,7 +86,8 @@ export default async function ListPage() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant={'input'}
+                variant={'outline'}
+                size={'input'}
                 className="!bg-background !cursor-default !opacity-70"
                 tabIndex={-1}
               >
@@ -98,7 +99,7 @@ export default async function ListPage() {
               Diese Funktion ist derzeit nicht verfügbar.
             </TooltipContent>
           </Tooltip>
-          <Button variant={'input'}>
+          <Button variant={'outline'} size={'input'}>
             <ArrowDownTrayIcon className="size-4" />
             Exportieren
             <span className="border-border-secondary bg-background-muted block rounded-md border px-1.5 py-0.5 text-xs">

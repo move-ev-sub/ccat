@@ -4,6 +4,8 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
+  TooltipDescription,
+  TooltipTitle,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
@@ -78,8 +80,11 @@ export default async function AdminSubEventsPage({
               </span>
             </TooltipTrigger>
             <TooltipContent className="max-w-80 text-center">
-              Um eine Unterveranstaltung zu erstellen, wird mindestens ein Slot
-              und ein Unternehmen benötigt.
+              <TooltipTitle>Nicht verfügbar</TooltipTitle>
+              <TooltipDescription>
+                Um eine Unterveranstaltung zu erstellen, wird mindestens ein
+                Slot und ein Unternehmen benötigt.
+              </TooltipDescription>
             </TooltipContent>
           </Tooltip>
         )}

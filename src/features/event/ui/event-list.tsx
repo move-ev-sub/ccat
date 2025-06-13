@@ -27,9 +27,9 @@ export async function EventsList({
   }
 
   return (
-    <div className={cn('container pt-8', className)} {...props}>
+    <div className={cn('px-8 pt-8', className)} {...props}>
       <TabsContent asChild value="all">
-        <div className="relative isolate grid gap-8 lg:grid-cols-2">
+        <div className="relative isolate grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
             <EventThumbnailCard key={event.id} event={event} />
           ))}
