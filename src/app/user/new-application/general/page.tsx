@@ -1,5 +1,4 @@
 import { PageDesc, PageHeader, PageTitle } from '@/components/page-header';
-import { ApplicationGeneralForm } from '@/features/application/ui/forms/general-form';
 
 export default function NewApplicationGeneralPage() {
   return (
@@ -12,7 +11,6 @@ export default function NewApplicationGeneralPage() {
         </PageDesc>
       </PageHeader>
       <div className="h-to-header" />
-      <ApplicationGeneralForm />
     </section>
   );
 }
