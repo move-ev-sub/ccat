@@ -93,7 +93,7 @@ model Application {
   eventId                String            @db.Text
   user                   User              @relation(fields: [userId], references: [id])
   userId                 String            @db.Text
-  status                 ApplicationStatus @default(SAVED)
+  status                 ApplicationStatus @default(DRAFT)
   firstName              String
   lastName               String
   birthDate              DateTime
@@ -112,6 +112,8 @@ model Application {
   experienceConsulting   Int
   cvUrl                  String
   subApplications        SubApplication[]
+  updatedAt              DateTime          @default(now()) @updatedAt
+  createdAt              DateTime          @default(now())
 
   @@map("application")
 }
@@ -162,7 +164,7 @@ enum PhaseType {
 }
 
 enum ApplicationStatus {
-  SAVED
+  DRAFT
   SUBMITTED
   CLOSED
 }
